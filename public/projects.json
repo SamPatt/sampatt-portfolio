@@ -1,0 +1,20 @@
+[
+    {
+      "name": "HaveWords.ai",
+      "live": "https://havewords.ai/",
+      "git": "https://github.com/SamPatt/HaveWords.ai",
+      "image": "https://i.imgur.com/FAsLFdN.png"
+    },
+    {
+      "name": "Close Encounters of the Cute Kind",
+      "live": "http://sampatt.com/close-encounters-of-the-cute-kind/",
+      "git": "https://github.com/SamPatt/close-encounters-of-the-cute-kind",
+      "image": "https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif"
+    },
+    {
+      "name": "Pawzbe",
+      "live": "https://pawzbe.com/",
+      "git": "https://github.com/SamPatt/pawzbe",
+      "image": "https://camo.githubusercontent.com/0eca8aa207366fc386342f309b0cbdbef9c35eb62e977c12e19eb69b93393963/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67"
+    }
+  ]
