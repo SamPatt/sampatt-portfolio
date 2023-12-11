@@ -12,15 +12,16 @@ import About from "./pages/About";
 import Projects from "./pages/Projects";
 
 function App() {
-
   return (
-    <div className="App">
+    <div className="app-container"> 
       <Header />
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+      <main className="content">
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   );
