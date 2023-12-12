@@ -1,21 +1,43 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const AIChat = () => {
     const [userInput, setUserInput] = useState('');
     const [conversation, setConversation] = useState([]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         const userMessage = { role: 'user', content: userInput };
-        const newConversation = [...conversation, userMessage];
+        setConversation(prev => [...prev, userMessage]);
+
+        const eventSource = new EventSource(`http://localhost:4000/api/stream-response?message=${encodeURIComponent(userInput)}`);
+
+        eventSource.onmessage = (event) => {
+            const chunk = JSON.parse(event.data);
         
-        try {
-            const response = await axios.post('http://localhost:4000/api/query', { messages: newConversation }); //TODO, change in production
-            const aiMessage = { role: 'assistant', content: response.data };
-            setConversation([...newConversation, aiMessage]);
-        } catch (error) {
-            console.error('Error in AI response:', error);
-        }
+            if (chunk.choices && chunk.choices.length > 0 && chunk.choices[0].delta) {
+                const contentChunk = chunk.choices[0].delta.content || ''; // Fallback to empty string if undefined
+        
+                setConversation(prevConversation => {
+                    const newConversation = [...prevConversation];
+                    const lastMessageIndex = newConversation.length - 1;
+        
+                    // If the last message is from the assistant, append content to it
+                    if (lastMessageIndex >= 0 && newConversation[lastMessageIndex].role === 'assistant') {
+                        newConversation[lastMessageIndex].content += contentChunk;
+                    } else {
+                        // If the last message is not from the assistant, add a new assistant message
+                        newConversation.push({ role: 'assistant', content: contentChunk });
+                    }
+        
+                    return newConversation;
+                });
+            }
+        };
+        
+
+        eventSource.onerror = (error) => {
+            console.error('EventSource failed:', error);
+            eventSource.close();
+        };
 
         setUserInput('');
     };
@@ -24,7 +46,9 @@ const AIChat = () => {
         <div>
             <div>
                 {conversation.map((msg, index) => (
-                    <p key={index}><b>{msg.role}:</b> {msg.content}</p>
+                    <p key={index} className={msg.role === 'user' ? 'user-message' : 'assistant-message'}>
+                        {msg.content}
+                    </p>
                 ))}
             </div>
             <input 
@@ -35,6 +59,7 @@ const AIChat = () => {
             <button onClick={handleSubmit}>Send</button>
         </div>
     );
+    
 };
 
 export default AIChat;
