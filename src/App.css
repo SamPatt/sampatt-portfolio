@@ -1,29 +1,150 @@
+body {
+  background-color: #121212; /* Dark background for the entire app */
+  color: #cfd2da; /* Light text color for better readability */
+  font-family: 'Arial', sans-serif; /* Optional: Choose a modern font */
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
+h1 {
+  margin-left: 20px;
+}
+
+/* Card Style */
 .card {
+  background-color: #1e1e1e; /* Dark background for cards */
+  color: #cfd2da; /* Light text color */
   padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
 }
 
+/* App Container */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
+/* Main Content Area */
 .content {
   flex: 1;
 }
 
+.content img {
+  max-width: 50%;
+  border-radius: 5px; /* Rounded corners for images */
+}
+
+/* Project Container */
+.project-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2em;
+  background-color: #1e1e1e; /* Dark background */
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Consistent shadow styling */
+}
+
+/* Button Styles */
+button {
+  padding: 10px 15px;
+  margin: 10px; /* Added margin for spacing between buttons */
+  border: none;
+  border-radius: 5px;
+  background-color: #1e481f; /* Developer green color */
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1em; /* Optional: Adjust the font size as needed */
+}
+
+button:hover {
+  background-color: #43A047; /* Slightly darker green on hover */
+}
+
+
+/* Header Styles */
+header {
+  color: #cfd2da;
+  padding: 1rem 0;
+  background-color: #1e1e1e; /* Dark background for header */
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem;
+  margin: auto;
+}
+
+nav a {
+  color: #cfd2da; /* Light color for links */
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #9fdbd3; /* Change color on hover */
+}
+
+/* Footer Styles */
+footer {
+  background-color: #1e1e1e; /* Dark background for footer */
+  color: #cfd2da; /* Light text color */
+  padding: 1rem 0;
+  text-align: center;
+}
+/* General Styles for the AI Section */
+.AISection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2em;
+  padding: 2rem;
+  border: 2px solid #2e3038; /* Subtle border color */
+  border-radius: 15px;
+  background-color: #1e1e1e; /* Dark background color */
+  color: #cfd2da; /* Light text color for better readability */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adding a subtle shadow */
+  max-width: 80%; /* Adjust as necessary */
+  width: 100%;
+}
+
+/* Styles for User and AI Messages */
+.user-message, .assistant-message {
+  padding: 10px 15px;
+  margin: 5px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
 .user-message {
-  color: red;
+  color: #ffe98a; /* Light yellow for user messages */
+  background-color: #2e3038; /* Slightly darker background for messages */
+  align-self: flex-end; /* Align user messages to right */
 }
 
 .assistant-message {
-  color: green;
-  text-align: left;
+  color: #9fdbd3; /* Soft green for AI messages */
+  background-color: #25262d; /* Slightly different background for contrast */
+  align-self: flex-start; /* Align AI messages to left */
+}
+
+/* Input Field and Send Button Styles */
+input[type='text'] {
+  padding: 10px;
+  margin-top: 10px;
+  width: calc(100% - 22px); /* Full width minus padding */
+  border: none;
+  border-radius: 5px;
+  background-color: #2e3038;
+  color: #fff;
 }

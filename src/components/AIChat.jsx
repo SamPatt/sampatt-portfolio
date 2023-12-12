@@ -43,9 +43,14 @@ const AIChat = () => {
     };
 
     return (
-        <div>
+        <div className='AISection'>
+            <h2>
+                Ask my AI
+            </h2>
+            <p>This AI will respond to your questions about my portfolio, which technologies I use, my favorite language, etc. Ask whatever you want!</p>
             <div>
                 {conversation.map((msg, index) => (
+                    
                     <p key={index} className={msg.role === 'user' ? 'user-message' : 'assistant-message'}>
                         {msg.content}
                     </p>

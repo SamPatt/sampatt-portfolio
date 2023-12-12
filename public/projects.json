@@ -1,18 +1,21 @@
 [
     {
       "name": "HaveWords.ai",
+      "description": "HaveWords is a p2p JS browser app I built using WebRTC, which connects users for a live roleplaying session, guided by AI. This open source app was improved upon by the excellent JS devs Steve Dekorte and Rich Collins.",
       "live": "https://havewords.ai/",
       "git": "https://github.com/SamPatt/HaveWords.ai",
       "image": "https://i.imgur.com/FAsLFdN.png"
     },
     {
       "name": "Close Encounters of the Cute Kind",
+      "description": "Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.",
       "live": "http://sampatt.com/close-encounters-of-the-cute-kind/",
       "git": "https://github.com/SamPatt/close-encounters-of-the-cute-kind",
       "image": "https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif"
     },
     {
       "name": "Pawzbe",
+      "description": "Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.",
       "live": "https://pawzbe.com/",
       "git": "https://github.com/SamPatt/pawzbe",
       "image": "https://camo.githubusercontent.com/0eca8aa207366fc386342f309b0cbdbef9c35eb62e977c12e19eb69b93393963/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67"
