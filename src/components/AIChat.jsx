@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const AIChat = () => {
     const [userInput, setUserInput] = useState('');

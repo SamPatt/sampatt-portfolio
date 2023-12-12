@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Projects(props) {
+function Projects() {
   // create state to hold projects
   const [projects, setProjects] = useState(null);
 
