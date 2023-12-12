@@ -10,6 +10,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
+import AIChat from './components/AIChat';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/about" element={<About />} />
         </Routes>
+        <AIChat />
       </main>
       <Footer />
     </div>
