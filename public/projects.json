@@ -1,7 +1,7 @@
 [
     {
       "name": "HaveWords.ai",
-      "description": "HaveWords is a p2p JS browser app I built using WebRTC, which connects users for a live roleplaying session, guided by AI. This open source app was improved upon by the excellent JS devs Steve Dekorte and Rich Collins.",
+      "description": "HaveWords is a p2p JS browser app I built using WebRTC, which connects users for a live roleplaying session, guided by AI. This open source app was rebuilt by the excellent JS devs Steve Dekorte and Rich Collins.",
       "live": "https://havewords.ai/",
       "git": "https://github.com/SamPatt/HaveWords.ai",
       "image": "https://i.imgur.com/FAsLFdN.png"

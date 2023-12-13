@@ -1,17 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap');
+
 body {
   background-color: #121212; /* Dark background for the entire app */
   color: #cfd2da; /* Light text color for better readability */
   font-family: 'Arial', sans-serif; /* Optional: Choose a modern font */
+  font-size: larger;
 }
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
 }
 
 h1 {
+  margin: 0;
   margin-left: 20px;
+}
+
+h4 {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  margin-left: 23px;
+  font-size: 0.8rem;
 }
 
 /* Card Style */
@@ -28,6 +39,8 @@ h1 {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  border: rgb(156, 156, 156) 1px solid;
+  border-radius: 10px;
 }
 
 /* Main Content Area */
@@ -71,28 +84,71 @@ button:hover {
 
 
 /* Header Styles */
+/* This will ensure the header stays at the top of the page and spans full width */
 header {
+  font-family: 'Grandiflora One', cursive;
+  margin-top: 0.4rem;
+  margin-left: 0.8rem;
+  display:flex;
+  width: 30vw;
+  min-width: 250px;
+  flex-direction: column;
   color: #cfd2da;
   padding: 1rem 0;
-  background-color: #1e1e1e; /* Dark background for header */
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  background-color: #121212;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  z-index: 10; /* Ensure the header is above other content */
 }
 
 nav {
+  margin-top: 2rem;
+  font-size: .9rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   padding: 0.5rem;
-  margin: auto;
+  font-weight: 600;
+}
+
+nav div {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer; /* To indicate the divs are clickable */
+  padding: 0.5rem 1rem; /* Add some padding around the links */
+
 }
 
 nav a {
-  color: #cfd2da; /* Light color for links */
   text-decoration: none;
+  width: 30%;
+  min-width: 80px;
 }
 
-nav a:hover {
-  color: #9fdbd3; /* Change color on hover */
+nav div:hover {
+  color: #9fdbd3;
+  text-decoration: underline; /* Optionally add underline on hover */
 }
+
+nav .active div {
+  /* Style for the active link */
+  position: relative;
+}
+
+nav .active div::after {
+  /* The "<" character at the end of the active link */
+  content: "<";
+  position: absolute;
+  right: 20px; /* Adjust as needed */
+  top: 7.5px;
+  color: #ffffff; /* Color of the indicator */
+}
+
+
+/* Optional: Add some spacing to the main content so it doesn't overlap with the fixed header */
+main.content {
+  
+}
+
 
 /* Footer Styles */
 footer {
