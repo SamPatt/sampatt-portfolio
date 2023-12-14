@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import '../App.css';
+import resume from '../assets/DRAFT_SP_PORTFOLIO_RESUME.pdf';
 
 function Header() {
   return (
@@ -20,7 +21,7 @@ function Header() {
           <div>LINKEDIN</div>
         </a>
         {/* Adjust the path to the resume file as necessary */}
-        <a href="/assets/DRAFT_SP_PORTFOLIO_RESUME.pdf" target="_blank" rel="noopener noreferrer">
+        <a href={resume} target="_blank" rel="noopener noreferrer">
           <div>RESUME</div>
         </a>
       </nav>
