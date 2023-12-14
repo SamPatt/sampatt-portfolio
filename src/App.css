@@ -146,7 +146,7 @@ nav .active div::after {
 .project-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   margin: 2em;
   background-color: #1e1e1e; /* Dark background */
   padding: 2em;
