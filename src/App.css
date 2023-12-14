@@ -121,7 +121,7 @@ nav div {
 nav a {
   text-decoration: none;
   width: 30%;
-  min-width: 80px;
+  min-width: 125px;
 }
 
 nav div:hover {
