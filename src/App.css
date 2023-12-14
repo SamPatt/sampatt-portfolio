@@ -143,6 +143,37 @@ nav .active div::after {
   color: #ffffff; /* Color of the indicator */
 }
 
+.project-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 2em;
+  background-color: #1e1e1e; /* Dark background */
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Consistent shadow styling */
+}
+
+.projects-container {
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 2em;
+  padding: 2em;
+}
+
+.projects-container h1 {
+  margin: 1rem;
+  font-family: 'Grandiflora One', cursive;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.projects-container h1:hover {
+  color: #585858;
+  cursor: pointer;
+}
 
 /* Optional: Add some spacing to the main content so it doesn't overlap with the fixed header */
 main.content {

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import '../App.css';
 
 function Footer() {
   // Using a similar style as in the Header

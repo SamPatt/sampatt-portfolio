@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import '../App.css';
 
 function Header() {
   return (
@@ -6,14 +7,14 @@ function Header() {
       <h1>Sam Patterson</h1>
       <h4>FULLSTACK DEVELOPER</h4>
       <nav>
-        <NavLink to="/about" activeClassName="active">
+        <NavLink to="/about" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>ABOUT</div>
         </NavLink>
-        <NavLink to="/projects" activeClassName="active">
-          <div>PROJECTS</div>
+        <NavLink to="/projects" className={({ isActive }) => isActive ? 'active' : ''}>
+        <div>PROJECTS</div>
         </NavLink>
-        <NavLink to="/contact" activeClassName="active">
-          <div>CONTACT</div>
+        <NavLink to="/contact" className={({ isActive }) => isActive ? 'active' : ''}>
+        <div>CONTACT</div>
         </NavLink>
       </nav>
     </header>

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import '../App.css';
+
 
 function About() {
   // create state to hold about data

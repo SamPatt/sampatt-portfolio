@@ -14,9 +14,10 @@ import AIChat from './components/AIChat';
 
 function App() {
   return (
+    <>
     <div className="app-container"> 
-      <Header />
       <main className="content">
+        <Header />
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/projects" element={<Projects />} />
@@ -26,6 +27,7 @@ function App() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
 
