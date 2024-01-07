@@ -148,10 +148,20 @@ nav .active div::after {
   color: #ffffff; /* Color of the indicator */
 }
 
+.primary-container {
+
+
+}
+
+.project {
+  margin: 2em;
+}
+
 .project-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 120px;
   margin: 2em;
   background-color: #1e1e1e; /* Dark background */
   padding: 2em;
@@ -168,23 +178,27 @@ nav .active div::after {
   padding: 2em;
 }
 
-.projects-container h1 {
+.primary-container h1 {
   margin: 1rem;
   font-family: 'Grandiflora One', cursive;
   font-size: 2rem;
   font-weight: 600;
 }
 
-.projects-container h1:hover {
+.primary-container h1:hover {
   color: #585858;
   cursor: pointer;
 }
 
-/* Optional: Add some spacing to the main content so it doesn't overlap with the fixed header */
-main.content {
-  
-}
 
+@media screen and (max-width: 640px) { 
+.project h1 {
+  margin: 0.5rem;
+  font-family: 'Grandiflora One', cursive;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+}
 
 /* Footer Styles */
 footer {

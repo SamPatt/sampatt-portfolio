@@ -41,7 +41,7 @@ const projectsData = [
     type: 'Social Media',
     live: 'https://pawzbe.com/',
     git: 'https://github.com/SamPatt/pawzbe',
-    image: 'https://camo.githubusercontent.com/0eca8aa207366fc386342f309b0cbdbef9c35eb62e977c12e19eb69b93393963/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67'
+    image: 'https://camo.githubusercontent.com/5fa5816de7fe19e20f01e4820c006371c76020981a5d317a08ed01c22e7ebdb6/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67'
   }
 ];
 
@@ -54,9 +54,9 @@ function Projects() {
   };
 
   return (
-    <div className='projects-container'>
+    <div className='primary-container'>
       {projectsData.map(project => (
-        <div key={project.id} onClick={() => handleProjectClick(project.id)}>
+        <div className='project' key={project.id} onClick={() => handleProjectClick(project.id)}>
           <h1>{project.title}</h1>
           {/* If the project is active, display the Project component */}
           {activeProjectId === project.id && <Project project={project} />}
