@@ -1,38 +1,41 @@
-import { useState, useEffect } from "react";
+import React from 'react';
 import '../App.css';
-
+import Skills from "../components/Skills"
 
 function About() {
-  // create state to hold about data
-  const [about, setAbout] = useState(null);
+  const about = {
+    name: "Sam Patterson",
+    email: "Contact me: git@sampatt.com",
+    headshot: "http://sampatt.com/images/sampatt.jpg",
+    bio: `I'm a software engineer with more than 10 of years of previous experience with tech startups and non-profits.
 
-  // create function to make api call
-  const getAboutData = async () => {
+I've always have one foot in the tech world - I launched the technology policy program at a DC think tank, and authored one of the first books written about Bitcoin, but I wanted to be building new things instead of writing about them.
 
-		// make api call and get response
-    const response = await fetch("./about.json");
+After co-founding a tech startup which raised $9m in VC, I decided to finally get the skills I needed, and I went on to graduate from the General Assembly Software Engineering Immersive bootcamp.
 
-		// turn response into javascript object
-    const data = await response.json();
+I'm proud of the fullstack skills I've learned and the projects I've created, especially those integrating OpenAI's API; I love working with this new technology. 
 
-		// set the about state to the data
-    setAbout(data);
+My projects, resume, LinkedIn and Github are all linked above. Feel free to send me an email if you'd like to collaborate, or just to say hello.`
   };
 
-  // make an initial call for the data inside a useEffect, so it only happens once on component load
-  useEffect(() => { getAboutData() } , []);
-
-  // define a function that will return the JSX needed once we get the data
+  // Function to return JSX for about data
   const loaded = () => (
+    <>
     <div className="project-container">
-      <h2>{about.name}</h2>
+      <img className='headshot' src={about.headshot} alt={`${about.name}'s headshot`}></img>
+      <p>{about.bio.split('\n').map((paragraph, index) => (
+        <React.Fragment key={index}>
+          {paragraph}
+          <br />
+        </React.Fragment>
+      ))}</p>
       <h3>{about.email}</h3>
-      <p>{about.bio}</p>
     </div>
+    <Skills />
+    </>
   );
 
-  // if data arrives return the result of loaded, if not, an h1 that says loading
-  return about ? loaded() : <h1>Loading...</h1>;
+  return loaded();
 }
 
 export default About;

@@ -49,8 +49,8 @@ h4 {
 }
 
 .content img {
-  max-width: 50%;
-  border-radius: 5px; /* Rounded corners for images */
+  width: 50%;
+  max-width: 400px;
 }
 
 /* Project Container */
@@ -63,6 +63,11 @@ h4 {
   padding: 2em;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Consistent shadow styling */
+}
+
+.headshot {
+  border-radius: 50%;
+  border: solid 10px #121212;
 }
 
 /* Button Styles */
@@ -235,3 +240,75 @@ input[type='text'] {
   background-color: #2e3038;
   color: #fff;
 }
+
+.video-container {
+  overflow: hidden;
+}
+
+.video-container iframe {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.videoParent {
+    width: 100%;
+    height: auto;
+}
+
+@media screen and (max-width: 640px) {
+  .skillsGrid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    grid-auto-rows: auto;
+    height: auto;
+  }
+.skillsGrid img {
+  height: 75px;
+  width: 75px;
+}
+.skills{
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+}
+
+@media screen and (min-width: 641px) {
+  .skillsGrid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    grid-auto-rows: auto;
+    height: auto;
+  }
+.skillsGrid img {
+  height: 100px;
+  width: 100px;
+}
+.skills{
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+}
+

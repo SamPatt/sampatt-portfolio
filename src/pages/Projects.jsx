@@ -5,13 +5,13 @@ import '../App.css';
 const projectsData = [
   {
     id: 1,
-    title: 'CLOSE ENCOUNTERS OF THE CUTE KIND',
-    description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
+    title: 'AUTO-COMPONENT',
+    description: 'An npm package which uses AI to help React developers build their UI in a live browser session.',
     year: '2023', 
-    type: 'Game',
-    live: 'http://sampatt.com/close-encounters-of-the-cute-kind/',
-    git: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind',
-    image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
+    type: 'Open Source',
+    live: 'https://auto-component.com/',
+    git: 'https://github.com/TimHuitt/auto-component',
+    videoEmbed: '<div class="video-container"><iframe src="https://www.youtube.com/embed/SYhRGkiXS_M?si=mBoCpF_NmSk-djg9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'
   },
   {
     id: 2,
@@ -25,6 +25,16 @@ const projectsData = [
   },
   {
     id: 3,
+    title: 'CLOSE ENCOUNTERS OF THE CUTE KIND',
+    description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
+    year: '2023', 
+    type: 'Game',
+    live: 'http://sampatt.com/close-encounters-of-the-cute-kind/',
+    git: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind',
+    image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
+  },
+  {
+    id: 4,
     title: 'PAWZBE',
     description: 'Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.',
     year: '2023', 

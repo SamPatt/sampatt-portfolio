@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import '../App.css';
-import resume from '../assets/DRAFT_SP_PORTFOLIO_RESUME.pdf';
+import resume from '../assets/Patterson_Resume.pdf';
 
 function Header() {
   return (
