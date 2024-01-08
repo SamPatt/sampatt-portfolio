@@ -49,8 +49,9 @@ h4 {
 }
 
 .content img {
-  width: 50%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 800px;
+  
 }
 
 /* Project Container */
@@ -68,6 +69,10 @@ h4 {
 .headshot {
   border-radius: 50%;
   border: solid 10px #121212;
+}
+
+.bio-container img {
+  max-width: 400px;
 }
 
 /* Button Styles */
@@ -148,13 +153,27 @@ nav .active div::after {
   color: #ffffff; /* Color of the indicator */
 }
 
-.primary-container {
-
-
-}
-
 .project {
   margin: 2em;
+}
+
+.bio-parent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 120px;
+  max-width: 825px;
+  margin: 2em;
+  background-color: #1e1e1e; /* Dark background */
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Consistent shadow styling */
 }
 
 .project-container {
@@ -167,6 +186,11 @@ nav .active div::after {
   padding: 2em;
   border-radius: 10px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3); /* Consistent shadow styling */
+}
+
+.bio-container p {
+  max-width: 800px;
+  padding: 1rem;
 }
 
 .projects-container {
@@ -270,7 +294,49 @@ input[type='text'] {
     height: auto;
 }
 
+.skills-parent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media screen and (max-width: 640px) {
+.content img {
+  width: 100%;
+  max-width: 400px;
+}
+}
+
+@media screen and (max-width: 475px) {
+  .skillsGrid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    grid-auto-rows: auto;
+    height: auto;
+  }
+.skillsGrid img {
+  height: 50px;
+  width: 50px;
+}
+.skills{
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  max-width: 825px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+}
+
+@media screen and (min-width: 476px) {
   .skillsGrid{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -286,6 +352,7 @@ input[type='text'] {
   background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
+  max-width: 825px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -314,6 +381,7 @@ input[type='text'] {
   background-color: #1e1e1e;
   display: flex;
   flex-direction: column;
+  max-width: 825px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;

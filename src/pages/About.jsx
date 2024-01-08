@@ -21,7 +21,8 @@ My projects, resume, LinkedIn and Github are all linked above. Feel free to send
   // Function to return JSX for about data
   const loaded = () => (
     <>
-    <div className="project-container">
+    <div className='bio-parent'>
+    <div className="bio-container">
       <img className='headshot' src={about.headshot} alt={`${about.name}'s headshot`}></img>
       <p>{about.bio.split('\n').map((paragraph, index) => (
         <React.Fragment key={index}>
@@ -30,6 +31,7 @@ My projects, resume, LinkedIn and Github are all linked above. Feel free to send
         </React.Fragment>
       ))}</p>
       <h3>{about.email}</h3>
+    </div>
     </div>
     <Skills />
     </>

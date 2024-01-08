@@ -4,6 +4,8 @@ import * as Icons from '../assets';
 
 function Skills() {
     return (
+        <>
+        <div className='skills-parent'>
         <div className="skills">
             <h2>Technologies I've Used</h2>
             <div className="skillsGrid">
@@ -29,6 +31,8 @@ function Skills() {
                 <Skill source={Icons.Postman} alt="The logo icon for Postman" title="Postman"/>
             </div>            
         </div>
+        </div>
+        </>
     );
 }
 
