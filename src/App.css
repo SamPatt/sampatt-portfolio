@@ -394,3 +394,19 @@ input[type='text'] {
 }
 }
 
+@media screen and (max-width: 640px) {
+
+  .bio-container p {
+    margin: 0
+  }
+
+  .bio-container {
+    margin: 1.5rem;
+    padding: 1rem;
+  }
+
+  .project-container {
+    padding: 1rem;
+    margin: 0;
+  }
+}
