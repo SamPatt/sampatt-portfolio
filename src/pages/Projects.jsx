@@ -29,7 +29,7 @@ const projectsData = [
     description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
     year: '2023', 
     type: 'Game',
-    live: 'http://sampatt.com/close-encounters-of-the-cute-kind/',
+    live: 'http://sampatt.github.io/close-encounters-of-the-cute-kind/',
     git: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind',
     image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
   },
