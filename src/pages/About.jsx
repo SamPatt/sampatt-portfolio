@@ -1,12 +1,13 @@
 import React from 'react';
 import '../App.css';
 import Skills from "../components/Skills"
+import headshot from "../assets/sampatt.jpg"
 
 function About() {
   const about = {
     name: "Sam Patterson",
     email: "Contact me: git@sampatt.com",
-    headshot: "http://sampatt.com/images/sampatt.jpg",
+    headshot: headshot,
     bio: `I'm a software engineer with more than 10 of years of previous experience with tech startups and non-profits.
 
 I've always had one foot in the tech world - I launched the technology policy program at a DC think tank, and authored one of the first books written about Bitcoin, but I wanted to be building new things instead of writing about them.
