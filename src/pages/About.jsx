@@ -9,7 +9,7 @@ function About() {
     headshot: "http://sampatt.com/images/sampatt.jpg",
     bio: `I'm a software engineer with more than 10 of years of previous experience with tech startups and non-profits.
 
-I've always have one foot in the tech world - I launched the technology policy program at a DC think tank, and authored one of the first books written about Bitcoin, but I wanted to be building new things instead of writing about them.
+I've always had one foot in the tech world - I launched the technology policy program at a DC think tank, and authored one of the first books written about Bitcoin, but I wanted to be building new things instead of writing about them.
 
 After co-founding a tech startup which raised $9m in VC, I decided to finally get the skills I needed, and I went on to graduate from the General Assembly Software Engineering Immersive bootcamp.
 
