@@ -25,6 +25,16 @@ const projectsData = [
   },
   {
     id: 3,
+    title: 'Ailoquium: Cyber Psyche Repair',
+    description: 'Ailoquium is a game set in the near future where AIs are considered conscious beings, and you are a doctor treating them. Built with a Django backend using the Django REST Framework, and a React frontend.',
+    year: '2024', 
+    type: 'Game',
+    live: 'https://main--stately-pavlova-72cf0f.netlify.app/',
+    git: 'https://github.com/SamPatt/ailoquium',
+    image: 'https://camo.githubusercontent.com/22dfeec481a4518e8569f0f6cdd1e6fa805dc17175ed1815fcf28875cf63dcb1/68747470733a2f2f692e696d6775722e636f6d2f39676a4f724d662e706e67'
+  },
+  {
+    id: 4,
     title: 'CLOSE ENCOUNTERS OF THE CUTE KIND',
     description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
     year: '2023', 
@@ -34,7 +44,7 @@ const projectsData = [
     image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
   },
   {
-    id: 4,
+    id: 5,
     title: 'PAWZBE',
     description: 'Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.',
     year: '2023', 
