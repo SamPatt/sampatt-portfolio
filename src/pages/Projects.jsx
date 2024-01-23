@@ -25,7 +25,7 @@ const projectsData = [
   },
   {
     id: 3,
-    title: 'Ailoquium: Cyber Psyche Repair',
+    title: 'AILOQUIUM: CYBER PSYCHE REPAIR',
     description: 'Ailoquium is a game set in the near future where AIs are considered conscious beings, and you are a doctor treating them. Built with a Django backend using the Django REST Framework, and a React frontend.',
     year: '2024', 
     type: 'Game',

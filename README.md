@@ -7,7 +7,7 @@ My full bio is [here](https://github.com/SamPatt).
 ### Portfolio
 
 
-[Link](https://tranquil-flan-995788.netlify.app/projects)
+[Link](https://sampatt.com/)
 
 
 
