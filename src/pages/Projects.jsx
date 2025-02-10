@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Project from './Project';
 import '../App.css';
 
@@ -9,7 +9,6 @@ const projectsData = [
     description: 'An npm package which uses AI to help React developers build their UI in a live browser session.',
     year: '2023', 
     type: 'Open Source',
-    live: 'https://auto-component.com/',
     git: 'https://github.com/TimHuitt/auto-component',
     videoEmbed: '<div class="video-container"><iframe src="https://www.youtube.com/embed/SYhRGkiXS_M?si=mBoCpF_NmSk-djg9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'
   },
@@ -19,7 +18,6 @@ const projectsData = [
     description: 'HaveWords is a p2p JS browser app I built using WebRTC, which connects users for a live roleplaying session, guided by AI. This open source app was rebuilt by the excellent JS devs Steve Dekorte and Rich Collins.',
     year: '2023', 
     type: 'Open Source',
-    live: 'https://havewords.ai/',
     git: 'https://github.com/SamPatt/HaveWords.ai',
     image: 'https://i.imgur.com/FAsLFdN.png'
   },
@@ -29,7 +27,6 @@ const projectsData = [
     description: 'Ailoquium is a game set in the near future where AIs are considered conscious beings, and you are a doctor treating them. Built with a Django backend using the Django REST Framework, and a React frontend.',
     year: '2024', 
     type: 'Game',
-    live: 'https://main--stately-pavlova-72cf0f.netlify.app/',
     git: 'https://github.com/SamPatt/ailoquium',
     image: 'https://camo.githubusercontent.com/22dfeec481a4518e8569f0f6cdd1e6fa805dc17175ed1815fcf28875cf63dcb1/68747470733a2f2f692e696d6775722e636f6d2f39676a4f724d662e706e67'
   },
@@ -49,7 +46,6 @@ const projectsData = [
     description: 'Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.',
     year: '2023', 
     type: 'Social Media',
-    live: 'https://pawzbe.com/',
     git: 'https://github.com/SamPatt/pawzbe',
     image: 'https://camo.githubusercontent.com/5fa5816de7fe19e20f01e4820c006371c76020981a5d317a08ed01c22e7ebdb6/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67'
   }

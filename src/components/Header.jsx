@@ -14,6 +14,9 @@ function Header() {
         <NavLink to="/projects" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>PROJECTS</div>
         </NavLink>
+        <NavLink to="/blog" className={({ isActive }) => isActive ? 'active' : ''}>
+          <div>BLOG</div>
+        </NavLink>
         <a href="https://github.com/SamPatt" target="_blank" rel="noopener noreferrer">
           <div>GITHUB</div>
         </a>
