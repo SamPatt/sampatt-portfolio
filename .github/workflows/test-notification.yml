@@ -47,8 +47,8 @@ jobs:
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview (first few paragraphs after frontmatter)
-          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
+          # Get preview and escape newlines
+          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
           
           # Get slug from filename
           slug=$(basename "$file" .md)
@@ -61,7 +61,7 @@ jobs:
             \"from_email\": \"noreply@sampatt.com\",
             \"type\": \"regular\",
             \"content_type\": \"richtext\",
-            \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more →</a></p>\",
+              \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",
             \"status\": \"draft\"
           }"
           
