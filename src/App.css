@@ -319,6 +319,67 @@ button:active {
   text-align: left;
 }
 
+/* Markdown heading styles */
+.blog-post .blog-content h2 {
+  color: #9fdbd3;
+  font-size: 1.8rem;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(to right, #9fdbd3 0%, #9fdbd3 100%);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+}
+
+.blog-post .blog-content h3 {
+  color: #ffe98a;
+  font-size: 1.5rem;
+  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.3rem;
+  background: linear-gradient(to right, #ffe98a 0%, #ffe98a 100%);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+}
+
+/* Code styles */
+.blog-post .blog-content code {
+  background-color: #2a2a2a;
+  border: 1px solid rgba(159, 219, 211, 0.2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
+  color: #9fdbd3;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.blog-post .blog-content code:hover {
+  background-color: #333333;
+}
+
+.blog-post .blog-content code:active {
+  background-color: #2a2a2a;
+}
+
+/* Add a subtle indicator for copy functionality */
+.blog-post .blog-content code::after {
+  content: "📋";
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 12px;
+}
+
+.blog-post .blog-content code:hover::after {
+  opacity: 0.7;
+}
+
 .blog-post .blog-content p {
   margin-bottom: 1rem;
   width: 100%;

@@ -1,6 +1,29 @@
 import { useState, useEffect } from 'react';
 
 function Blog() {
+  // Add copy functionality for code elements
+  useEffect(() => {
+    const handleCodeClick = async (e) => {
+      if (e.target.tagName === 'CODE') {
+        try {
+          await navigator.clipboard.writeText(e.target.textContent);
+          
+          // Visual feedback
+          const originalColor = e.target.style.backgroundColor;
+          e.target.style.backgroundColor = '#3a3a3a';
+          setTimeout(() => {
+            e.target.style.backgroundColor = originalColor;
+          }, 200);
+        } catch (err) {
+          console.error('Failed to copy text:', err);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleCodeClick);
+    return () => document.removeEventListener('click', handleCodeClick);
+  }, []);
+
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
