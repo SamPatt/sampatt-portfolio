@@ -1,0 +1,84 @@
+name: Test Subscriber Notification
+
+# This workflow can be manually triggered
+on:
+  workflow_dispatch:
+    inputs:
+      test_file:
+        description: 'Test file path'
+        required: true
+        default: 'test/test-blog-post.md'
+        type: string
+
+jobs:
+  test-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create test blog post
+        run: |
+          mkdir -p test
+          cat > test/test-blog-post.md << EOF
+          ---
+          title: Test Blog Post
+          date: '2025-02-11'
+          description: This is a test post for the notification system
+          ---
+
+          This is a test blog post to verify the notification system.
+
+          The notification system should create a campaign in Listmonk and send an email
+          to subscribers with a preview of this content.
+          EOF
+
+      - name: Create Test Campaign
+        env:
+          LISTMONK_URL: ${{ secrets.LISTMONK_URL }}
+          LISTMONK_USERNAME: ${{ secrets.LISTMONK_USERNAME }}
+          LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
+        run: |
+          file="${{ inputs.test_file }}"
+          
+          # Read the file content
+          content=$(cat $file)
+          
+          # Extract title and description from frontmatter
+          title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
+          description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
+          
+          # Get preview (first few paragraphs after frontmatter)
+          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
+          
+          # Get slug from filename
+          slug=$(basename "$file" .md)
+          
+          # Create campaign JSON
+          json="{
+            \"name\": \"[TEST] New Post: $title\",
+            \"subject\": \"[TEST] New Blog Post: $title\",
+            \"lists\": [1],
+            \"from_email\": \"noreply@sampatt.com\",
+            \"type\": \"regular\",
+            \"content_type\": \"richtext\",
+            \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more →</a></p>\",
+            \"status\": \"draft\"
+          }"
+          
+          # Create campaign
+          response=$(curl -s -X POST \
+            -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
+            -H "Content-Type: application/json" \
+            "$LISTMONK_URL/api/campaigns" \
+            -d "$json")
+          
+          campaign_id=$(echo "$response" | grep -o '"id":[0-9]*' | cut -d':' -f2)
+          
+          # Start campaign
+          curl -s -X PUT \
+            -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
+            -H "Content-Type: application/json" \
+            "$LISTMONK_URL/api/campaigns/$campaign_id/status" \
+            -d '{"status":"running"}'
+          
+          echo "Created and started test campaign for: $title"
