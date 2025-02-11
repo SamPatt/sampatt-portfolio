@@ -1,6 +1,6 @@
 ---
 title: AI Tools Suck and are Amazing
-date: '2025-02-10'
+date: '2025-02-09'
 description: Love Hate
 ---
 

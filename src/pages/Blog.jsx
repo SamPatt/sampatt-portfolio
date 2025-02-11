@@ -61,7 +61,12 @@ function Blog() {
         <article key={post.slug} className="blog-post">
           <h2>{post.attributes.title}</h2>
           <div className="date">
-            {new Date(post.attributes.date).toLocaleDateString()}
+            {new Date(post.attributes.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              timeZone: 'UTC'
+            })}
           </div>
           {post.attributes.description && (
             <p className="description">{post.attributes.description}</p>
