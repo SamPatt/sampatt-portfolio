@@ -9,5 +9,17 @@ export default defineConfig({
     markdown.plugin({
       mode: ['html', 'toc', 'frontmatter']
     })
-  ]
+  ],
+  server: {
+    proxy: {
+      '/api/subscribers': {
+        target: 'https://camouflaged-axolotl.pikapod.net',
+        changeOrigin: true,
+        secure: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      }
+    }
+  }
 })

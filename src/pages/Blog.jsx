@@ -1,29 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import Newsletter from '../components/Newsletter';
 
 function Blog() {
-  // Add copy functionality for code elements
-  useEffect(() => {
-    const handleCodeClick = async (e) => {
-      if (e.target.tagName === 'CODE') {
-        try {
-          await navigator.clipboard.writeText(e.target.textContent);
-          
-          // Visual feedback
-          const originalColor = e.target.style.backgroundColor;
-          e.target.style.backgroundColor = '#3a3a3a';
-          setTimeout(() => {
-            e.target.style.backgroundColor = originalColor;
-          }, 200);
-        } catch (err) {
-          console.error('Failed to copy text:', err);
-        }
-      }
-    };
-
-    document.addEventListener('click', handleCodeClick);
-    return () => document.removeEventListener('click', handleCodeClick);
-  }, []);
-
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -57,9 +36,12 @@ function Blog() {
 
   return (
     <div className="blog-container">
+      <Newsletter />
       {posts.map((post) => (
         <article key={post.slug} className="blog-post">
-          <h2>{post.attributes.title}</h2>
+          <Link to={`/blog/${post.slug}`}>
+            <h2>{post.attributes.title}</h2>
+          </Link>
           <div className="date">
             {new Date(post.attributes.date).toLocaleDateString('en-US', {
               year: 'numeric',
@@ -71,10 +53,24 @@ function Blog() {
           {post.attributes.description && (
             <p className="description">{post.attributes.description}</p>
           )}
-          <div 
-            className="blog-content"
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
+          <div className="blog-preview">
+            {post.html
+              .replace(/<[^>]+>/g, '') // Remove HTML tags
+              .replace(/&quot;/g, '"') // Replace HTML entities
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .split('\n')
+              .filter(line => line.trim()) // Remove empty lines
+              .slice(0, 2) // Take first two paragraphs
+              .join('\n')
+              .slice(0, 300) // Limit to 300 characters
+            }
+            {post.html.length > 300 ? '...' : ''}
+          </div>
+          <Link to={`/blog/${post.slug}`} className="read-more">
+            Read More →
+          </Link>
         </article>
       ))}
     </div>

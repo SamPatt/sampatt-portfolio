@@ -2,4 +2,6 @@
 /feed.json /feed.json 200
 /atom.xml  /atom.xml  200
 
+/api/subscribers https://camouflaged-axolotl.pikapod.net/api/subscribers 200!
+
 /* /index.html 200
