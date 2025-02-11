@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { subscribeToNewsletter } from '../utils/listmonk';
 
 function Newsletter() {
@@ -6,6 +6,20 @@ function Newsletter() {
   const [status, setStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Check if newsletter was previously closed
+  useEffect(() => {
+    const wasHidden = localStorage.getItem('newsletterHidden');
+    if (wasHidden) {
+      setIsVisible(false);
+    }
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    localStorage.setItem('newsletterHidden', 'true');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,10 +38,14 @@ function Newsletter() {
     }
   };
 
+  if (!isVisible) return null;
+
   return (
     <div className="newsletter-container">
-      <h3>Subscribe to the Newsletter</h3>
-      <p>Get notified when new posts are published</p>
+      <button className="newsletter-close" onClick={handleClose}>×</button>
+      <div className="newsletter-icon">✉️</div>
+      <h3>Stay Updated</h3>
+      <p>Subscribe to receive the latest posts and updates</p>
       
       <form onSubmit={handleSubmit} className="newsletter-form" style={{ opacity: isLoading ? 0.7 : 1 }}>
         <input
