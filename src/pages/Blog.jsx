@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Newsletter from '../components/Newsletter';
+import FeedLinks from '../components/FeedLinks';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -42,6 +43,7 @@ function Blog() {
   return (
     <div className="blog-container">
       <Newsletter />
+      <FeedLinks />
       {posts.map((post) => (
         <article key={post.slug} className="blog-post" style={{ position: 'relative' }}>
           {post.isDraft && (

@@ -15,7 +15,31 @@ function Header() {
           <div>PROJECTS</div>
         </NavLink>
         <NavLink to="/blog" className={({ isActive }) => isActive ? 'active' : ''}>
-          <div>BLOG</div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            BLOG
+            <a 
+              href="/rss.xml" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              onClick={e => e.stopPropagation()}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                padding: '4px',
+                marginLeft: '8px',
+                borderRadius: '4px',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(159, 219, 211, 0.1)'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 11a9 9 0 0 1 9 9" />
+                <path d="M4 4a16 16 0 0 1 16 16" />
+                <circle cx="5" cy="19" r="1" />
+              </svg>
+            </a>
+          </div>
         </NavLink>
         <a href="https://github.com/SamPatt" target="_blank" rel="noopener noreferrer">
           <div>GITHUB</div>

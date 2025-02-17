@@ -761,6 +761,82 @@ input[type='text']:focus {
   transform: scale(1.1);
 }
 
+/* Feed Links Styles */
+.feed-links {
+  background: linear-gradient(145deg, #1e1e1e, #242424);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  position: relative;
+}
+
+.feed-links h3 {
+  color: #9fdbd3;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: none;
+  padding: 0;
+}
+
+.feed-links h3::after {
+  display: none;
+}
+
+.feed-options {
+  display: inline-flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.feed-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(46, 48, 56, 0.8);
+  border: 1px solid rgba(159, 219, 211, 0.2);
+  border-radius: 12px;
+  color: #9fdbd3;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.feed-link:hover {
+  background: rgba(159, 219, 211, 0.1);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.feed-link svg {
+  transition: transform 0.3s ease;
+}
+
+.feed-link:hover svg {
+  transform: scale(1.1);
+}
+
+@media screen and (max-width: 640px) {
+  .feed-links {
+    padding: 1.5rem;
+    margin: 1.5rem 1rem;
+  }
+  
+  .feed-options {
+    flex-wrap: wrap;
+  }
+  
+  .feed-link {
+    flex: 1;
+    justify-content: center;
+    min-width: 100px;
+  }
+}
+
 /* Newsletter Styles */
 .newsletter-container {
   background: linear-gradient(145deg, #1e1e1e, #242424);
@@ -953,6 +1029,12 @@ footer {
 }
 
 /* Mobile Layout */
+@media screen and (min-width: 769px) {
+  nav > div > a:last-child {
+    margin-left: -2.5rem;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .app-container {
     flex-direction: column;
@@ -979,8 +1061,9 @@ footer {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    padding: 0.25rem;
   }
   
   nav a {
@@ -988,8 +1071,43 @@ footer {
   }
   
   nav div {
-    padding: 0.5rem 1rem;
+    padding: 0.35rem 0.75rem;
     margin: 0;
+    font-size: 0.9rem;
+  }
+
+  nav > div {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav > div > a:first-child {
+    margin: 0;
+    padding: 0;
+  }
+
+  nav > div > a:first-child div {
+    padding: 0.35rem 0.75rem;
+  }
+
+  nav > div > a:last-child {
+    padding: 0.35rem;
+    margin-left: 0.25rem;
+  }
+
+  header {
+    padding: 1rem 0.5rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    margin: 1rem 0 0.5rem;
+  }
+
+  header h4 {
+    font-size: 0.9rem;
   }
   
   nav div:hover {

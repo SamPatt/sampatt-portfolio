@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const BLOG_DIR = path.join(__dirname, '../src/content/blog');
-const OUTPUT_DIR = path.join(__dirname, '../dist');
+const OUTPUT_DIR = path.join(__dirname, '../public');
 
 async function generateRSSFeed() {
   const feed = new Feed({
