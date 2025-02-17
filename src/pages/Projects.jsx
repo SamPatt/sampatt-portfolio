@@ -27,8 +27,7 @@ const projectsData = [
     description: 'Ailoquium is a game set in the near future where AIs are considered conscious beings, and you are a doctor treating them. Built with a Django backend using the Django REST Framework, and a React frontend.',
     year: '2024', 
     type: 'Game',
-    git: 'https://github.com/SamPatt/ailoquium',
-    image: 'https://camo.githubusercontent.com/22dfeec481a4518e8569f0f6cdd1e6fa805dc17175ed1815fcf28875cf63dcb1/68747470733a2f2f692e696d6775722e636f6d2f39676a4f724d662e706e67'
+    git: 'https://github.com/SamPatt/ailoquium'
   },
   {
     id: 4,
@@ -46,8 +45,7 @@ const projectsData = [
     description: 'Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.',
     year: '2023', 
     type: 'Social Media',
-    git: 'https://github.com/SamPatt/pawzbe',
-    image: 'https://camo.githubusercontent.com/5fa5816de7fe19e20f01e4820c006371c76020981a5d317a08ed01c22e7ebdb6/68747470733a2f2f692e696d6775722e636f6d2f4b4b34376d7a572e706e67'
+    git: 'https://github.com/SamPatt/pawzbe'
   }
 ];
 

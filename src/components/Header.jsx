@@ -25,7 +25,7 @@ function Header() {
         </a>
         {/* Adjust the path to the resume file as necessary */}
         <a href={resume} target="_blank" rel="noopener noreferrer">
-          <div>RESUME</div>
+          <div>RESUMÉ</div>
         </a>
       </nav>
     </header>

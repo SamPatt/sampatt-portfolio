@@ -10,7 +10,7 @@ function About() {
 
 After co-founding <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helping to build a decentralized marketplace, I decided to finish get the skills I needed, and I went on to graduate from the General Assembly Software Engineering Immersive bootcamp.
 
-I'm proud of the fullstack skills I've learned and the projects I've created, especially my work with self-hosted AI models; I love working with this new technology. 
+My focus is using my fullstack development skills to build projects which focus on decentralization, self-hosting, privacy, and local LLMs. I'm currently working on a project to help people who are hosting local LLMs stream their outputs to consumers via WebRTC.
 
 My projects, resume, LinkedIn and Github are all linked above. Feel free to send me an email if you'd like to collaborate, or just to say hello.`
   };

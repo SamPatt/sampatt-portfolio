@@ -2,7 +2,7 @@
 title: Saving My Table Tennis League’s Hard Drive—and Finding Lost BTC
 date: 2025-02-17
 description: In Which I Repair a Borked Linux Distro and Find Lost Bitcoin
-send_newsletter: "false"
+send_newsletter: false
 ---
 # Table of Contents
 - [Day One](#day-one)
@@ -18,7 +18,6 @@ send_newsletter: "false"
   - [The Discovery](#the-discovery)
   - [The Bitcoin Hunt](#the-bitcoin-hunt)
   - [The Unexpected Reward](#the-unexpected-reward)
-- [Epilogue](#epilogue)
 # Day One
 
 ## The Quest
@@ -75,7 +74,7 @@ According to the stickers, it came with Windows 7, had an Intel i3, but also had
 
 There was no power cord. I walked into the unfinished part of my basement, then sifted through a rack of electronics which sits far too close to my sump pump. I found a cord.
 
-I have a few different unused monitors in various places in my home, but I noticed that this machine would accept HDMI, so I just unplugged my second monitor from my beast and plugged it in. Unfortunately, this meant I was breaking a cardinal rule of cabling: draping a cable in midair in the middle of a walkway, in a home with three children.
+I have a few different unused monitors in various places in my home, but I noticed that this machine would accept HDMI, so I just unplugged my second monitor from my Beast and plugged it in. Unfortunately, this meant I was breaking a cardinal rule of cabling: draping a cable in midair in the middle of a walkway, in a home with three children.
 
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-02-17-table-tennis-hard-drive/image/resized_20250214_014214.jpg)
@@ -154,7 +153,7 @@ I found one with fading sharpie L---X, surely another Live USB if I've ever seen
 
 It's still booting. After a ten minute wait, I get the Ubuntu install screen and click my way through.
 
-Ctrl+Alt+T takes about 20 seconds to display terminal. (funny enough, the screenshot interface appears instantly when I accidentally bumped PrtScr as I'm trying to use the mouse for my beast).
+Ctrl+Alt+T takes about 20 seconds to display terminal. (funny enough, the screenshot interface appears instantly when I accidentally bumped PrtScr as I'm trying to use the mouse for my Beast).
 
 I do all the mounting again, then try copying again. This time it goes further into the process, but hangs while transferring the contents of a "LINUX Files" folder, ironically choking on an .EXE for a network driver.
 
@@ -225,7 +224,7 @@ The new partition with fresh install works great. Now all I need to do it transf
 
 But before I do - this is stock Ubuntu 22, with no updates, since this computer doesn't have the internet. If I handed this back to Joe and he got it online, it could be insecure until it's properly updated. Given he was running Ubuntu 24, he would probably have done that first thing, but since I'm a nice guy I decided to get Ole Dusty online and update everything first.
 
-I have probably a half dozen extra ethernet cables in various places, but unfortunately my beast, my wireless access point, my NAS, and my pi-hole DNS take up all the slots on my Edgerouter X. I knew I should have gotten the bigger one.
+I have probably a half dozen extra ethernet cables in various places, but unfortunately my Beast, my wireless access point, my NAS, and my pi-hole DNS take up all the slots on my Edgerouter X. I knew I should have gotten the bigger one.
 
 My family can live without Plex for an evening, so I borrow the cable from my NAS and plug it into Ole Dusty.
 
@@ -299,7 +298,7 @@ I spent some time diving into the keys in the various databases of various OpenB
 
 But - I found an Electrum wallet. Two, actually. Because this machine is offline (I'm not plugging in my Ubuntu 14 distro with Bitcoin keys on it), it hasn't synced to the blockchain, so I don't know if the balances are accurate. I see one of the wallets has a 2.97 BTC balance. Again, I can't even get excited - that much Bitcoin was something I would certainly have tracked and sent to a newer wallet at some point.
 
-Unfortunately the wallet was password protected, meaning I couldn't just extract the seed and pop it into another Electrum wallet running on my beast. I was paranoid about security back then. I'm paranoid about security today, but I was back then too.
+Unfortunately the wallet was password protected, meaning I couldn't just extract the seed and pop it into another Electrum wallet running on my Beast. I was paranoid about security back then. I'm paranoid about security today, but I was back then too.
 
 I have various KeePass files floating around the filesystem. Oh boy. What a fun game this will be!
 
@@ -319,9 +318,9 @@ I click Next, and the wallet begins to synchronize transactions. This is a SPV w
 
 My mental "don't get excited yet" wall is being torn down as the transaction count builds up. Are these finally the forgotten coins of my crypto daydreams?
 
-It finishes loading. I look at the balance: **0.464 BTC**
+It finishes loading. I look at the balance: **0.0464 BTC**
 
-Electrum automatically displays the dollar amount: **$44,987**.
+Electrum automatically displays the dollar amount: **$4,498**.
 
 !!!
 

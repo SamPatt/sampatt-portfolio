@@ -121,7 +121,7 @@ h3::after {
 
 h4 {
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 700;
   margin: 0 0 0.5rem;
   color: #9fdbd3;
   letter-spacing: 0.5px;
@@ -254,6 +254,12 @@ nav .active div::after {
   transform: translateY(-50%);
   color: #9fdbd3;
   font-weight: 700;
+}
+
+@media screen and (max-width: 768px) {
+  nav .active div::after {
+    right: -10px;
+  }
 }
 
 /* Project Container */
