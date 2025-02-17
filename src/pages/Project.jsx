@@ -10,7 +10,9 @@ function Project({ project }) {
       {project.videoEmbed ? (
         <div className='videoParent' dangerouslySetInnerHTML={{ __html: project.videoEmbed }} />
         ) : (
-          <img src={project.image} alt={project.title} />
+          <>
+            <img src={project.image} alt={project.title} style={{ marginBottom: '2rem' }} />
+          </>
           )}
           <p>{project.description}</p>
 
