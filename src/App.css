@@ -164,7 +164,7 @@ h4 {
 
 .content img {
   width: 100%;
-  max-width: 800px;
+  max-width: min(90vw, 1200px);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   filter: grayscale(0.7) sepia(0.3) hue-rotate(140deg) saturate(0.8);
@@ -273,7 +273,7 @@ nav .active div::after {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.3s ease;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   width: 100%;
 }
 
@@ -309,7 +309,7 @@ button:active {
 
 .project {
   margin: 2rem;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
 }
 
 .bio-parent {
@@ -324,7 +324,7 @@ button:active {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   margin: 2rem auto;
   background-color: #1e1e1e;
   padding: 2rem;
@@ -352,7 +352,7 @@ button:active {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   margin: 2rem auto;
   padding: 2rem;
 }
@@ -376,7 +376,7 @@ button:active {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   margin: 2rem auto;
   padding: 2rem;
 }
@@ -637,7 +637,7 @@ button:active {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   margin: 2rem auto;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -700,7 +700,7 @@ input[type='text']:focus {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   margin: 2rem 0;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
 }
 
 .video-container iframe {
@@ -727,7 +727,7 @@ input[type='text']:focus {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 825px;
+  max-width: min(90vw, 1200px);
   margin: 2rem auto;
   text-align: center;
   justify-content: center;
@@ -1142,7 +1142,7 @@ footer {
 /* Tablet and smaller screens */
 @media screen and (max-width: 640px) {
   .content img {
-    max-width: 400px;
+    max-width: min(90vw, 400px);
   }
   
   .project h1 {

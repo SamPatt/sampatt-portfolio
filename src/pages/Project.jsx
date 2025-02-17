@@ -9,11 +9,9 @@ function Project({ project }) {
       {/* Render video if videoEmbed is present, otherwise render image */}
       {project.videoEmbed ? (
         <div className='videoParent' dangerouslySetInnerHTML={{ __html: project.videoEmbed }} />
-        ) : (
-          <>
-            <img src={project.image} alt={project.title} style={{ marginBottom: '2rem' }} />
-          </>
-          )}
+      ) : project.image ? (
+        <img src={project.image} alt={project.title} style={{ marginBottom: '2rem' }} />
+      ) : null}
           <p>{project.description}</p>
 
       <div>
