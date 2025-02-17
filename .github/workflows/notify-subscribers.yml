@@ -65,7 +65,7 @@ jobs:
                 \"name\": \"New Post: $title\",
                 \"subject\": \"New Blog Post: $title\",
                 \"lists\": [$list_id],
-                \"from_email\": \"noreply@sampatt.com\",
+                \"from_email\": \"newsletter@sampatt.com\",
                 \"type\": \"regular\",
                 \"content_type\": \"richtext\",
                 \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",
