@@ -1,32 +1,27 @@
 name: Notify Subscribers
-
 on:
   push:
     branches:
       - main
     paths:
       - 'src/content/blog/**'
-
 jobs:
   check-and-notify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 2  # Fetch last two commits to detect changes
-
+          fetch-depth: 2
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v39
         with:
           files: src/content/blog/**/*.md
-
       - name: Set up Node.js
         if: steps.changed-files.outputs.added_files != ''
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
       - name: Create Campaign for New Posts
         if: steps.changed-files.outputs.added_files != ''
         env:
@@ -38,66 +33,73 @@ jobs:
             # Read the file content
             content=$(cat $file)
             
-            # Extract title and description from frontmatter
-            title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
-            description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
+            # Check for send_newsletter in frontmatter
+            send_newsletter=$(echo "$content" | sed -n '/^send_newsletter:/s/^send_newsletter: *//p' | tr -d '[:space:]')
             
-            # Get preview and escape newlines
-            preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
-            
-            # Get slug from filename
-            slug=$(basename "$file" .md)
-            
-            # Get available lists
-            echo "Fetching available lists..."
-            lists_response=$(curl -s -X GET \
-              -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
-              -H "Content-Type: application/json" \
-              "$LISTMONK_URL/api/lists")
-            echo "Lists response: $lists_response"
-
-            # Get the first list ID
-            list_id=$(echo "$lists_response" | grep -o '"id":[0-9]*' | head -n1 | cut -d':' -f2)
-            echo "Using list ID: $list_id"
-
-            # Create campaign JSON
-            json="{
-              \"name\": \"New Post: $title\",
-              \"subject\": \"New Blog Post: $title\",
-              \"lists\": [$list_id],
-              \"from_email\": \"noreply@sampatt.com\",
-              \"type\": \"regular\",
-              \"content_type\": \"richtext\",
-              \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",
-              \"status\": \"draft\"
-            }"
-
-            # Create campaign
-            echo "Creating campaign..."
-            response=$(curl -s -X POST \
-              -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
-              -H "Content-Type: application/json" \
-              "$LISTMONK_URL/api/campaigns" \
-              -d "$json")
-            echo "Campaign creation response: $response"
-            
-            # Extract campaign ID and check for errors
-            if [[ $response == *"\"data\""* ]]; then
-              campaign_id=$(echo "$response" | grep -o '"id":[0-9]*' | head -n1 | cut -d':' -f2)
-              echo "Campaign created with ID: $campaign_id"
+            # Only proceed if send_newsletter is true
+            if [ "$send_newsletter" = "true" ]; then
+              # Extract title and description from frontmatter
+              title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
+              description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
               
-              # Start campaign
-              echo "Starting campaign..."
-              start_response=$(curl -s -X PUT \
+              # Get preview and escape newlines
+              preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
+              
+              # Get slug from filename
+              slug=$(basename "$file" .md)
+              
+              # Get available lists
+              echo "Fetching available lists..."
+              lists_response=$(curl -s -X GET \
                 -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
                 -H "Content-Type: application/json" \
-                "$LISTMONK_URL/api/campaigns/$campaign_id/status" \
-                -d '{"status":"running"}')
-              echo "Campaign start response: $start_response"
+                "$LISTMONK_URL/api/lists")
+              echo "Lists response: $lists_response"
               
-              echo "Created and started campaign for: $title"
+              # Get the first list ID
+              list_id=$(echo "$lists_response" | grep -o '"id":[0-9]*' | head -n1 | cut -d':' -f2)
+              echo "Using list ID: $list_id"
+              
+              # Create campaign JSON
+              json="{
+                \"name\": \"New Post: $title\",
+                \"subject\": \"New Blog Post: $title\",
+                \"lists\": [$list_id],
+                \"from_email\": \"noreply@sampatt.com\",
+                \"type\": \"regular\",
+                \"content_type\": \"richtext\",
+                \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",
+                \"status\": \"draft\"
+              }"
+              
+              # Create campaign
+              echo "Creating campaign..."
+              response=$(curl -s -X POST \
+                -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
+                -H "Content-Type: application/json" \
+                "$LISTMONK_URL/api/campaigns" \
+                -d "$json")
+              echo "Campaign creation response: $response"
+              
+              # Extract campaign ID and check for errors
+              if [[ $response == *"\"data\""* ]]; then
+                campaign_id=$(echo "$response" | grep -o '"id":[0-9]*' | head -n1 | cut -d':' -f2)
+                echo "Campaign created with ID: $campaign_id"
+                
+                # Start campaign
+                echo "Starting campaign..."
+                start_response=$(curl -s -X PUT \
+                  -u "$LISTMONK_USERNAME:$LISTMONK_API_KEY" \
+                  -H "Content-Type: application/json" \
+                  "$LISTMONK_URL/api/campaigns/$campaign_id/status" \
+                  -d '{"status":"running"}')
+                echo "Campaign start response: $start_response"
+                echo "Created and started campaign for: $title"
+              else
+                echo "Error creating campaign: $response"
+                exit 1
+              fi
             else
-              echo "Error creating campaign: $response"
-              exit 1
+              echo "Skipping newsletter for $file (send_newsletter not set to true)"
             fi
           done
