@@ -1,5 +1,5 @@
 ---
-title: How I Found $45k Saving my Table Tennis League's Hard Drive
+title: Saving My Table Tennis League’s Hard Drive—and Finding Lost BTC
 date: 2025-02-17
 description: In Which I Repair a Borked Linux Distro and Find Lost Bitcoin
 send_newsletter: "false"
@@ -65,23 +65,22 @@ I didn't know whether to laugh or recoil, but I remember that in addition to pla
 
 I got home, took the drive from my gym bag and brought it to my basement office. I had already decided that I wasn't going to take apart my main desktop machine - my pride and joy. Once every eight years or so I convince myself, then my wife, that I need a new top of the line PC. Last year I built a new machine around a new 4090, because obviously I needed to run LLMs as quickly as possible. (Turns out, that actually did happen!)
 
-The case is massive, it has 6 fans, the 4090 still barely fits, and I don't want to touch it for roughly eight years.
+The Beast has a massive case, 6 fans, the 4090 still barely fits, and I don't want to touch it for roughly eight years.
 
 I glanced around the room, my eyes resting on the other PC in my office: my NAS box. That's another hard no. I use TrueNAS on there and it has mirrored hard drives. I haven't touched it in years, and as long as SSH keeps working I don't plan on it.
 
-Fortunately I didn't stop glancing, and I noticed another PC against the wall. This wasn't the poor guy replaced by my current beast - he was in my living room upstairs, relegated to Fortnite duty for my children. No, this was the machine which was replaced by Fortnite Duty.
+Fortunately I didn't stop glancing, and I noticed another PC against the wall. This wasn't the poor guy replaced by my current Beast - he was in my living room upstairs, relegated to Fortnite Duty for my children. No, this was the machine which was _replaced_ by Fortnite Duty.
 
 According to the stickers, it came with Windows 7, had an Intel i3, but also had the two most important features of all: it was in the same room as me, and the cover was easily removed.
 
-There was no power cord though. So I walked into the unfinished part of my basement, then sifted through a rack of electronics which sits far too close to my sump pump. I found a cord.
+There was no power cord. I walked into the unfinished part of my basement, then sifted through a rack of electronics which sits far too close to my sump pump. I found a cord.
 
 I have a few different unused monitors in various places in my home, but I noticed that this machine would accept HDMI, so I just unplugged my second monitor from my beast and plugged it in. Unfortunately, this meant I was breaking a cardinal rule of cabling: draping a cable in midair in the middle of a walkway, in a home with three children.
 
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-02-17-table-tennis-hard-drive/image/resized_20250214_014214.jpg)
 
-
-YOLO (photo)
+YOLO
 
 My 12 year old son was watching me with curiosity, and when I opened the case he peeked in. 
 
@@ -286,11 +285,11 @@ I've found many screenshots with a string of seed words, and a few sticky notes 
 
 So I have found small bits here and there, but never anything worth writing about. Also, if I did find anything worth writing about, I probably wouldn't tell the world. Although, I guess I'm sorta doing that now (spoilers), but it's not life changing money, so please don't employ the [$5 wrench attack](https://www.explainxkcd.com/wiki/index.php/538:_Security) on me.
 
-(You might be wondering how someone who got into Bitcoin so long ago would even bother with such trifling amounts. That's a long story for another day, but the bottom line is that Bitcoin isn't what it used to be, and after OpenBazaar I lost trust in the cryptocurrency space. I wanted Bitcoin to be used as digital p2p cash, not just be a digital store of value (i.e. speculative asset), so I spent most of my coins. I don't regret it. Well, maybe a smidgen, but I got some good stories out of it. If you want more information on this aspect of Bitcoin's history, my brother co-authored a [book on the subject](https://www.amazon.com/Hijacking-Bitcoin-Hidden-History-BTC/dp/B0CXWBCWDR).)
+(You might be wondering how someone who got into Bitcoin so long ago would even bother with such trifling amounts. That's a long story for another day, but the bottom line is that Bitcoin isn't what it used to be. I wanted Bitcoin to be used as digital p2p cash, not just be a digital store of value (i.e. speculative asset), so I spent most of my coins. I don't regret it. Much. If you want more information on this aspect of Bitcoin's history, my brother co-authored a [book on the subject](https://www.amazon.com/Hijacking-Bitcoin-Hidden-History-BTC/dp/B0CXWBCWDR).)
 
 Here's the cool way that this _could_ have happened:
 
-I dig through the OpenBazaar database files, writing a custom script to extract the private keys then automatically checking them against a blockchain explorer to see if they have balances. My fleet fingers flit across my keyboard, then I slam Enter and watch the terminal in anticipation... the custom ASCII loading bar I built out of my sheer love for coding moves ever farther, as my focus narrows on the terminal output... 
+I dig through the OpenBazaar database files, writing a custom script to extract the private keys then automatically checking them against a blockchain explorer to see if they have balances. My fleet fingers flit across my keyboard, then I slam Enter and watch  - hoodie hood fully deployed - the terminal in anticipation... the custom ASCII loading bar I built out of my sheer love for coding moves ever farther, as my focus narrows on the terminal output... 
 
 50 BTC BALANCE FOUND. TIME TO RETIRE BRO.
 

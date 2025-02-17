@@ -59,7 +59,7 @@ function Blog() {
             </div>
           )}
           <Link to={`/blog/${post.slug}`}>
-            <h2>{post.attributes.title}</h2>
+            <h1>{post.attributes.title}</h1>
           </Link>
           <div className="date">
             {new Date(post.attributes.date).toLocaleDateString('en-US', {
