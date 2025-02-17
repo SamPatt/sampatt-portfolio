@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Newsletter from '../components/Newsletter';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
+  const [searchParams] = useSearchParams();
+  const showDrafts = searchParams.get('draft') === 'true';
 
   useEffect(() => {
     const loadBlogPosts = async () => {
       try {
-        const modules = import.meta.glob('../content/blog/*.md');
+        const publishedModules = import.meta.glob('../content/blog/*.md');
+        const draftModules = import.meta.glob('../content/drafts/*.md');
+        const modules = showDrafts ? { ...publishedModules, ...draftModules } : publishedModules;
         const posts = await Promise.all(
           Object.keys(modules).map(async (path) => {
             const mod = await modules[path]();
             return {
               slug: path.split('/').pop().replace('.md', ''),
+              isDraft: path.includes('/drafts/'),
               html: mod.html,
               attributes: mod.attributes
             };
@@ -38,7 +43,21 @@ function Blog() {
     <div className="blog-container">
       <Newsletter />
       {posts.map((post) => (
-        <article key={post.slug} className="blog-post">
+        <article key={post.slug} className="blog-post" style={{ position: 'relative' }}>
+          {post.isDraft && (
+            <div style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              background: '#ff6b6b',
+              color: 'white',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '14px'
+            }}>
+              Draft
+            </div>
+          )}
           <Link to={`/blog/${post.slug}`}>
             <h2>{post.attributes.title}</h2>
           </Link>

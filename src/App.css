@@ -7,6 +7,10 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background-color: #121212;
   color: #cfd2da;
@@ -85,6 +89,28 @@ h4 {
   max-width: 800px;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  filter: grayscale(0.7) sepia(0.3) hue-rotate(140deg) saturate(0.8);
+  transition: filter 0.3s ease;
+}
+
+.content img:hover {
+  filter: grayscale(0.5) sepia(0.4) hue-rotate(30deg) saturate(1);
+}
+
+/* Link styles */
+a {
+  color: #9fdbd3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:visited {
+  color: #dbd39f;
+}
+
+a:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 /* Header Styles */
@@ -291,22 +317,34 @@ button:active {
   text-decoration: none;
 }
 
-.blog-post h2 {
+.blog-post h1 {
   color: #9fdbd3;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
   font-size: 2rem;
   letter-spacing: -0.5px;
   transition: color 0.2s ease;
 }
 
-.blog-post a:hover h2 {
-  color: #ffe98a;
+.blog-post a:hover h1 {
+  color: #dbd39f;
+}
+
+.blog-post h2 {
+  color: #9fdbd3;
+  font-size: 1.8rem;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(to right, #9fdbd3 0%, #9fdbd3 100%);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
 }
 
 .blog-post .date {
   color: #888;
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+  margin-top: -2rem;
   letter-spacing: 0.5px;
 }
 
@@ -349,12 +387,22 @@ button:active {
 }
 
 .blog-post .read-more:hover {
-  color: #ffe98a;
+  color: #dbd39f;
   transform: translateX(5px);
 }
 
 /* Markdown heading styles */
-.blog-post .blog-content h2 {
+.blog-post .blog-content h1,
+.blog-post .blog-content h2,
+.blog-post .blog-content h3,
+.blog-post .blog-content h4,
+.blog-post .blog-content h5,
+.blog-post .blog-content h6 {
+  scroll-margin-top: 4rem;
+  scroll-behavior: smooth;
+}
+
+.blog-post .blog-content h3 {
   color: #9fdbd3;
   font-size: 1.8rem;
   margin: 2rem 0 1rem;
@@ -365,12 +413,12 @@ button:active {
   background-size: 100% 2px;
 }
 
-.blog-post .blog-content h3 {
-  color: #ffe98a;
+.blog-post .blog-content h2 {
+  color: #dbd39f;
   font-size: 1.5rem;
   margin: 1.5rem 0 1rem;
   padding-bottom: 0.3rem;
-  background: linear-gradient(to right, #ffe98a 0%, #ffe98a 100%);
+  background: linear-gradient(to right, #dbd39f 0%, #dbd39f 100%);
   background-position: 0 100%;
   background-repeat: no-repeat;
   background-size: 100% 1px;
@@ -471,10 +519,10 @@ button:active {
 }
 
 .user-message {
-  color: #ffe98a;
+  color: #dbd39f;
   background-color: rgba(46, 48, 56, 0.8);
   align-self: flex-end;
-  border: 1px solid rgba(255, 233, 138, 0.2);
+  border: 1px solid rgba(219, 211, 159, 0.2);
 }
 
 .assistant-message {
