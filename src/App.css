@@ -631,6 +631,24 @@ button:active {
   width: 100%;
 }
 
+.blog-post .blog-content blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #9fdbd3;
+  background-color: rgba(159, 219, 211, 0.1);
+  border-radius: 0 8px 8px 0;
+}
+
+.blog-post .blog-content blockquote p {
+  margin-bottom: 0;
+  color: #e0e0e0;
+  font-style: italic;
+}
+
+.blog-post .blog-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 /* AI Section Styles */
 .AISection {
   display: flex;
