@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sampatt.com/sitemap.xml
