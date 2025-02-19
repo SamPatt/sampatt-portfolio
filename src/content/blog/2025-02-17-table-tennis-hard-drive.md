@@ -36,7 +36,7 @@ I've heard a lot about Seagates not being dependable, but that little (probably 
 
 "That drive has the records of the league's scores on it. If you're able to get those off that'd be great. I looked up the warranty, but it expired in 2019. "
 
-An unreliable and out-of-warranty hard drive with a Linux distro containing years of the league's records of battles won and lost, and a fullstack dev getting to play data recovery specialist? Sign me up!
+An unreliable and out-of-warranty hard drive with a Linux distro containing years of the league's records of battles won and lost, and an unemployed fullstack dev getting to play data recovery specialist? Sign me up!
 
 I took the hard drive and shoved it into my gym bag (with no covering).
 
