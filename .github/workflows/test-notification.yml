@@ -16,24 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          
-      - name: Install marked
-        run: npm install marked
-
-      - name: Create markdown renderer
-        run: |
-          echo 'const marked = require("marked");
-          let content = "";
-          process.stdin.on("data", data => content += data);
-          process.stdin.on("end", () => {
-            const rendered = marked.parse(content);
-            console.log(rendered.replace(/"/g, "\\"").replace(/\n/g, " "));
-          });' > render-markdown.js
-
       - name: Create test blog post
         run: |
           mkdir -p test
@@ -58,23 +40,21 @@ jobs:
           LISTMONK_URL: ${{ secrets.LISTMONK_URL }}
           LISTMONK_USERNAME: ${{ secrets.LISTMONK_USERNAME }}
           LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
-          TEST_FILE: ${{ inputs.test_file }}
         run: |
+          file="${{ inputs.test_file }}"
+          
           # Read the file content
-          content=$(cat "$TEST_FILE")
+          content=$(cat $file)
           
           # Extract title and description from frontmatter
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview and render markdown
-          preview_content=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
-          echo "Preview content: $preview_content"
-          preview=$(echo "$preview_content" | node render-markdown.js)
-          echo "Rendered preview: $preview"
+          # Get preview and escape newlines
+          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
           
           # Get slug from filename
-          slug=$(basename "$TEST_FILE" .md)
+          slug=$(basename "$file" .md)
           
           # Create campaign JSON
           json="{
