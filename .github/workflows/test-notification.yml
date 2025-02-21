@@ -49,10 +49,8 @@ jobs:
           LISTMONK_USERNAME: ${{ secrets.LISTMONK_USERNAME }}
           LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
         run: |
-          file="${{ inputs.test_file }}"
-          
           # Read the file content
-          content=$(cat $file)
+          content=$(cat "${{ inputs.test_file }}")
           
           # Extract title and description from frontmatter
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
@@ -70,7 +68,7 @@ jobs:
           ")
           
           # Get slug from filename
-          slug=$(basename "$file" .md)
+          slug=$(basename "${{ inputs.test_file }}" .md)
           
           # Create campaign JSON
           json="{
