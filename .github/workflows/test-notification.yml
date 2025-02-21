@@ -48,27 +48,31 @@ jobs:
           LISTMONK_URL: ${{ secrets.LISTMONK_URL }}
           LISTMONK_USERNAME: ${{ secrets.LISTMONK_USERNAME }}
           LISTMONK_API_KEY: ${{ secrets.LISTMONK_API_KEY }}
+          TEST_FILE: ${{ inputs.test_file }}
         run: |
           # Read the file content
-          content=$(cat "${{ inputs.test_file }}")
+          content=$(cat "$TEST_FILE")
           
           # Extract title and description from frontmatter
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview, render markdown, and escape newlines
-          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | node -e "
+          # Get preview content
+          preview_content=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
+          
+          # Render markdown and escape newlines
+          preview=$(echo "$preview_content" | node -e "
             const marked = require('marked');
             let content = '';
             process.stdin.on('data', data => content += data);
             process.stdin.on('end', () => {
               const rendered = marked.parse(content);
-              console.log(rendered.replace(/"/g, '\\"').replace(/\n/g, ' '));
+              console.log(rendered.replace(/\"/g, '\\\\\\"').replace(/\n/g, ' '));
             });
           ")
           
           # Get slug from filename
-          slug=$(basename "${{ inputs.test_file }}" .md)
+          slug=$(basename "$TEST_FILE" .md)
           
           # Create campaign JSON
           json="{
