@@ -3,14 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import process from 'process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const BLOG_DIR = path.join(__dirname, '../src/content/blog');
-const OUTPUT_DIR = path.join(__dirname, '../public');
+const OUTPUT_DIR = path.join(__dirname, '../dist');
+console.log('RSS Generator: Starting feed generation...');
 
 async function generateRSSFeed() {
+  console.log('RSS Generator: Setting up feed configuration...');
   const feed = new Feed({
     title: "Sam Patterson's Blog",
     description: "Thoughts on software development, AI, and technology",
@@ -26,8 +29,10 @@ async function generateRSSFeed() {
   });
 
   // Read all blog posts
+  console.log('RSS Generator: Reading blog posts from:', BLOG_DIR);
   const blogFiles = fs.readdirSync(BLOG_DIR)
     .filter(file => file.endsWith('.md'));
+  console.log('RSS Generator: Found', blogFiles.length, 'blog posts');
 
   for (const file of blogFiles) {
     const content = fs.readFileSync(path.join(BLOG_DIR, file), 'utf8');
@@ -61,14 +66,20 @@ async function generateRSSFeed() {
   }
 
   // Ensure output directory exists
+  console.log('RSS Generator: Ensuring output directory exists:', OUTPUT_DIR);
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }
 
   // Write RSS feed
+  console.log('RSS Generator: Writing feed files...');
   fs.writeFileSync(path.join(OUTPUT_DIR, 'rss.xml'), feed.rss2());
   fs.writeFileSync(path.join(OUTPUT_DIR, 'feed.json'), feed.json1());
   fs.writeFileSync(path.join(OUTPUT_DIR, 'atom.xml'), feed.atom1());
+  console.log('RSS Generator: Feed generation complete!');
 }
 
-generateRSSFeed().catch(console.error);
+generateRSSFeed().catch(error => {
+  console.error('RSS Generator Error:', error);
+  process.exit(1); // Exit with error code to make build fail if RSS generation fails
+});
