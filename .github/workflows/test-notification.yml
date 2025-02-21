@@ -24,6 +24,16 @@ jobs:
       - name: Install marked
         run: npm install marked
 
+      - name: Create markdown renderer
+        run: |
+          echo 'const marked = require("marked");
+          let content = "";
+          process.stdin.on("data", data => content += data);
+          process.stdin.on("end", () => {
+            const rendered = marked.parse(content);
+            console.log(rendered.replace(/"/g, "\\"").replace(/\n/g, " "));
+          });' > render-markdown.js
+
       - name: Create test blog post
         run: |
           mkdir -p test
@@ -57,19 +67,11 @@ jobs:
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview content
+          # Get preview and render markdown
           preview_content=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
-          
-          # Render markdown and escape newlines
-          preview=$(echo "$preview_content" | node -e "
-            const marked = require('marked');
-            let content = '';
-            process.stdin.on('data', data => content += data);
-            process.stdin.on('end', () => {
-              const rendered = marked.parse(content);
-              console.log(rendered.replace(/\"/g, '\\\\\\"').replace(/\n/g, ' '));
-            });
-          ")
+          echo "Preview content: $preview_content"
+          preview=$(echo "$preview_content" | node render-markdown.js)
+          echo "Rendered preview: $preview"
           
           # Get slug from filename
           slug=$(basename "$TEST_FILE" .md)
