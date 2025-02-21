@@ -22,6 +22,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - name: Install marked
+        if: steps.changed-files.outputs.added_files != ''
+        run: npm install marked
       - name: Create Campaign for New Posts
         if: steps.changed-files.outputs.added_files != ''
         env:
@@ -42,8 +45,16 @@ jobs:
               title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
               description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
               
-              # Get preview and escape newlines
-              preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
+              # Get preview, render markdown, and escape newlines
+              preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | node -e "
+                const marked = require('marked');
+                let content = '';
+                process.stdin.on('data', data => content += data);
+                process.stdin.on('end', () => {
+                  const rendered = marked.parse(content);
+                  console.log(rendered.replace(/"/g, '\\"').replace(/\n/g, ' '));
+                });
+              ")
               
               # Get slug from filename
               slug=$(basename "$file" .md)
@@ -65,7 +76,7 @@ jobs:
                 \"name\": \"New Post: $title\",
                 \"subject\": \"New Blog Post: $title\",
                 \"lists\": [$list_id],
-                \"from_email\": \"newsletter@sampatt.com\",
+                \"from_email\": \"Sam Patterson <newsletter@sampatt.com>\",
                 \"type\": \"regular\",
                 \"content_type\": \"richtext\",
                 \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",

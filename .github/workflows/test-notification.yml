@@ -16,6 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install marked
+        run: npm install marked
+
       - name: Create test blog post
         run: |
           mkdir -p test
@@ -26,10 +34,13 @@ jobs:
           description: This is a test post for the notification system
           ---
 
+          # Testing Markdown Rendering
+
           This is a test blog post to verify the notification system.
 
-          The notification system should create a campaign in Listmonk and send an email
-          to subscribers with a preview of this content.
+          ## Key Features Being Tested
+          - Markdown rendering in preview
+          - Proper from name in email
           EOF
 
       - name: Create Test Campaign
@@ -47,8 +58,16 @@ jobs:
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview and escape newlines
-          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
+          # Get preview, render markdown, and escape newlines
+          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | node -e "
+            const marked = require('marked');
+            let content = '';
+            process.stdin.on('data', data => content += data);
+            process.stdin.on('end', () => {
+              const rendered = marked.parse(content);
+              console.log(rendered.replace(/"/g, '\\"').replace(/\n/g, ' '));
+            });
+          ")
           
           # Get slug from filename
           slug=$(basename "$file" .md)
@@ -58,7 +77,7 @@ jobs:
             \"name\": \"[TEST] New Post: $title\",
             \"subject\": \"[TEST] New Blog Post: $title\",
             \"lists\": [1],
-            \"from_email\": \"noreply@sampatt.com\",
+            \"from_email\": \"Sam Patterson <newsletter@sampatt.com>\",
             \"type\": \"regular\",
             \"content_type\": \"richtext\",
               \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more &rarr;</a></p>\",
@@ -82,7 +101,7 @@ jobs:
             \"name\": \"[TEST] New Post: $title\",
             \"subject\": \"[TEST] New Blog Post: $title\",
             \"lists\": [$list_id],
-            \"from_email\": \"noreply@sampatt.com\",
+            \"from_email\": \"Sam Patterson <newsletter@sampatt.com>\",
             \"type\": \"regular\",
             \"content_type\": \"richtext\",
             \"body\": \"<h1>$title</h1><p>$description</p><p>$preview</p><p><a href=\\\"https://sampatt.com/blog/$slug\\\">Read more →</a></p>\",
