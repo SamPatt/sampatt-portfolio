@@ -16,6 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install marked
+        run: |
+          npm install marked
+          echo 'const marked = require("marked");
+          const content = process.argv[1];
+          console.log(marked.parse(content));' > render.js
+
       - name: Create test blog post
         run: |
           mkdir -p test
@@ -50,8 +62,9 @@ jobs:
           title=$(echo "$content" | sed -n '/^title:/s/^title: *//p')
           description=$(echo "$content" | sed -n '/^description:/s/^description: *//p')
           
-          # Get preview and escape newlines
-          preview=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3 | tr '\n' ' ' | sed 's/"/\\"/g')
+          # Get preview and render markdown
+          preview_content=$(echo "$content" | awk '/^---$/{n++;next} n==2{p=p ORS $0} END{print p}' | head -n 3)
+          preview=$(node render.js "$preview_content" | tr '\n' ' ' | sed 's/"/\\"/g')
           
           # Get slug from filename
           slug=$(basename "$file" .md)
