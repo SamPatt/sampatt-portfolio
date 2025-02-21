@@ -1,6 +1,6 @@
 ---
 title: No Ideology Required; AI Customization Makes Open Source Tools the Obvious Choice
-date: ""
+date: 2025-02-21
 description: In Which I Describe how Cracked LLMs are for Customization
 send_newsletter: true
 ---
