@@ -30,7 +30,7 @@ function Header() {
                 borderRadius: '4px',
                 transition: 'background-color 0.2s ease'
               }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(159, 219, 211, 0.1)'}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(93, 139, 244, 0.1)'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -47,11 +47,11 @@ function Header() {
         <a href="https://www.linkedin.com/in/sampatt-dev/" target="_blank" rel="noopener noreferrer">
           <div>LINKEDIN</div>
         </a>
-        {/* Adjust the path to the resume file as necessary */}
         <a href={resume} target="_blank" rel="noopener noreferrer">
           <div>RESUMÉ</div>
         </a>
       </nav>
+      <div className="header-background-effect"></div>
     </header>
   );
 }

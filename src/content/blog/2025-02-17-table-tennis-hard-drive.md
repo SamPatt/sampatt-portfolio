@@ -24,7 +24,7 @@ send_newsletter: false
 
 I had just walked into the church gymnasium and was taking off my boots, still caked in snow, when Joe approached me. He's our table tennis league president, a man who nearly always beats me (and most people in the club) even though he's more than 30 years my senior.
 
-"You have a desktop computer, right? You use Linux?"
+>You have a desktop computer, right? You use Linux?
 
 Joe knows I do; we've talked about our mutual love of PCs and Linux several times.
 
@@ -34,7 +34,7 @@ I examine it, as though perhaps the gaze of a long-time Linux lover might be suf
 
 I've heard a lot about Seagates not being dependable, but that little (probably outdated) chestnut is about the extent of my knowledge of data recovery. I considered telling him this, but first he let me know the stakes.
 
-"That drive has the records of the league's scores on it. If you're able to get those off that'd be great. I looked up the warranty, but it expired in 2019. "
+>"That drive has the records of the league's scores on it. If you're able to get those off that'd be great. I looked up the warranty, but it expired in 2019. "
 
 An unreliable and out-of-warranty hard drive with a Linux distro containing years of the league's records of battles won and lost, and an unemployed fullstack dev getting to play data recovery specialist? Sign me up!
 

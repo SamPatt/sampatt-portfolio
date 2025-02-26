@@ -40,26 +40,33 @@ function About() {
           </p>
 
           <h2>Contact Me</h2>
-          <p onClick={handleCopyEmail} style={{ cursor: 'pointer', fontSize: '1.2rem', textAlign: 'center' }}>
-            {/* Email split into spans to avoid easy scraping */}
-            <span>s</span>
-            <span>a</span>
-            <span>m</span>
-            <span>@</span>
-            <span>s</span>
-            <span>a</span>
-            <span>m</span>
-            <span>p</span>
-            <span>a</span>
-            <span>t</span>
-            <span>t</span>
-            <span>.</span>
-            <span>c</span>
-            <span>o</span>
-            <span>m</span>
-            {' '}
-            <small style={{ color: '#666' }}>({copyText})</small>
-          </p>
+          <div className="contact-button" onClick={handleCopyEmail}>
+            <div className="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+            <div className="contact-info">
+              {/* Email split into spans to avoid easy scraping */}
+              <span>s</span>
+              <span>a</span>
+              <span>m</span>
+              <span>@</span>
+              <span>s</span>
+              <span>a</span>
+              <span>m</span>
+              <span>p</span>
+              <span>a</span>
+              <span>t</span>
+              <span>t</span>
+              <span>.</span>
+              <span>c</span>
+              <span>o</span>
+              <span>m</span>
+              <span className="copy-status">{copyText}</span>
+            </div>
+          </div>
         </div>
       </div>
       <Skills />
