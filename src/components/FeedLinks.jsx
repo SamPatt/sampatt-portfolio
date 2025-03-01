@@ -1,5 +1,5 @@
-import '../App.css';
 import { useState, useEffect } from 'react';
+import './ComponentStyles.css'; // Make sure to create this file
 
 function FeedLinks() {
   const [isVisible, setIsVisible] = useState(true);
@@ -19,15 +19,22 @@ function FeedLinks() {
   if (!isVisible) return null;
 
   return (
-    <div className="feed-links">
+    <div className="subscription-container feed-links-container">
       <button
-        className="newsletter-close"
+        className="subscription-close"
         onClick={handleClose}
         aria-label="Close feed subscription options"
       >
         ×
       </button>
-      <h3>Subscribe via RSS</h3>
+      <div className="subscription-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 11a9 9 0 0 1 9 9" />
+          <path d="M4 4a16 16 0 0 1 16 16" />
+          <circle cx="5" cy="19" r="1" />
+        </svg>
+      </div>
+      <h3 className="subscription-title">Subscribe via RSS</h3>
       <div className="feed-options">
         <a href="/rss.xml" target="_blank" rel="noopener noreferrer" className="feed-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

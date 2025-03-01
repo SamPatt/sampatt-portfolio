@@ -1,0 +1,136 @@
+/* Shared styles for subscription components */
+.subscription-container {
+  background-color: rgba(30, 40, 70, 0.8);
+  border-radius: 10px;
+  padding: 30px;
+  margin: 30px 0;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.subscription-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.subscription-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.subscription-icon svg {
+  width: 40px;
+  height: 40px;
+  color: #4D7CFF;
+}
+
+.subscription-title {
+  color: #FFB800;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.subscription-description {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+/* Newsletter specific styles */
+.newsletter-form {
+  margin-bottom: 20px;
+}
+
+.input-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .input-button-container {
+    flex-direction: row;
+  }
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 12px 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1rem;
+}
+
+.newsletter-button {
+  background-color: #4D7CFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.newsletter-button:hover {
+  background-color: #3A68E0;
+}
+
+.newsletter-status {
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+}
+
+.newsletter-success {
+  background-color: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+}
+
+.newsletter-error {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+/* FeedLinks specific styles */
+.feed-options {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.feed-link {
+  color: #4D7CFF;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.feed-link:hover {
+  color: #FFB800;
+  background-color: rgba(77, 124, 255, 0.1);
+}
+
+.feed-link svg {
+  width: 20px;
+  height: 20px;
+} 
