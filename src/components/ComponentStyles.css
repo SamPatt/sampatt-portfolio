@@ -134,3 +134,110 @@
   width: 20px;
   height: 20px;
 } 
+
+/* Table styling */
+.blog-post table {
+  border-collapse: collapse;
+  width: auto;
+  margin: 1.5rem auto;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+.blog-post th {
+  background-color: var(--card-bg);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: var(--primary-light);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.blog-post td {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.blog-post tr:nth-child(even) {
+  background-color: rgba(93, 139, 244, 0.05);
+}
+
+.blog-post tr:hover {
+  background-color: rgba(93, 139, 244, 0.1);
+}
+
+/* Table of contents styling */
+.toc {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.toc::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transform: scaleX(0.3);
+  transform-origin: left;
+  transition: transform var(--transition-speed) ease;
+}
+
+.toc:hover::before {
+  transform: scaleX(1);
+}
+
+.toc-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--primary-light);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.5px;
+}
+
+.toc ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.toc ul ul {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border-color);
+  margin-left: 0.25rem;
+}
+
+.toc li {
+  margin: 0.5rem 0;
+}
+
+.toc a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  transition: all var(--transition-speed) ease;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.toc a:hover {
+  color: var(--accent);
+  background-color: rgba(93, 139, 244, 0.08);
+  transform: translateX(3px);
+}
+
+.toc a::after {
+  display: none;
+}
