@@ -514,43 +514,37 @@ button:active {
   align-items: center;
   width: 100%;
   max-width: min(90vw, 1200px);
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 1rem auto;
+  padding: 1.5rem;
 }
 
 .blog-post {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 2.5rem;
-  margin-bottom: 2.5rem;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
   width: 100%;
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--card-border);
-  transition: all var(--transition-speed) ease;
   position: relative;
   overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.blog-post::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--transition-speed) ease;
+/* Remove border for the last post on the page */
+.blog-post:last-child {
+  border-bottom: none;
 }
 
-.blog-post:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 50px rgba(0, 9, 34, 0.9);
+/* Special styling for individual blog post viewing */
+article.blog-post:only-child {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 0;
+  border-bottom: none;
 }
 
-.blog-post:hover::before {
-  transform: scaleX(1);
+article.blog-post:only-child::before {
+  display: none;
 }
 
 .blog-post a {
@@ -578,6 +572,12 @@ button:active {
   -webkit-text-fill-color: transparent;
 }
 
+/* Larger title for individual posts */
+article.blog-post:only-child h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
 .blog-post h2 {
   color: var(--primary-light);
   font-size: 1.8rem;
@@ -589,6 +589,12 @@ button:active {
   font-size: 0.95rem;
   margin-top: -2rem;
   letter-spacing: 0.5px;
+}
+
+/* Better date positioning for individual posts */
+article.blog-post:only-child .date {
+  margin-top: -0.5rem;
+  margin-bottom: 2rem;
 }
 
 .blog-post .description {
@@ -613,11 +619,16 @@ button:active {
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.8;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   width: 100%;
   display: block;
   padding: 0;
   text-align: left;
+}
+
+/* Better spacing for blog post in clean view */
+article.blog-post:only-child .blog-content {
+  margin-top: 2.5rem;
 }
 
 .blog-post .read-more {
@@ -944,15 +955,32 @@ footer {
 
   .bio-container,
   .project-container,
-  .skills,
-  .blog-post {
+  .skills {
     margin: 1.5rem 0;
-    padding: 1.8rem;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Blog post specific mobile styling */
+  .blog-post {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Clean styling for individual blog post view on mobile */
+  article.blog-post:only-child {
+    padding: 0;
+    margin-top: 0;
   }
 
   .blog-container {
     margin: 1rem 0;
     padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
   }
 
   .bio-container p {

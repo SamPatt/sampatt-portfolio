@@ -3,7 +3,7 @@
   background-color: rgba(30, 40, 70, 0.8);
   border-radius: 10px;
   padding: 30px;
-  margin: 30px 0;
+  margin: 40px 0;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -262,6 +262,51 @@
   flex: 1;
 }
 
+/* Mobile styles for notes layout */
+@media screen and (max-width: 768px) {
+  .notes-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+  
+  .notes-layout {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .notes-sidebar {
+    flex: none;
+    width: 100%;
+  }
+  
+  .notes-list {
+    width: 100%;
+  }
+  
+  .note-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+  
+  .note {
+    padding: 5px 0;
+  }
+  
+  .embedded-note {
+    padding: 12px;
+    margin: 15px 0;
+  }
+  
+  .embedded-note-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .embedded-note-header .tags {
+    margin-top: 5px;
+  }
+}
+
 .tags-container {
   background-color: var(--card-bg);
   border-radius: var(--border-radius);
@@ -351,11 +396,8 @@
 }
 
 .note {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 25px;
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--border-color);
+  /* Remove background styling for a cleaner look */
+  padding: 5px 0;
 }
 
 .note h1 {
