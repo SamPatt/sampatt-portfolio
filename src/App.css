@@ -285,6 +285,8 @@ nav {
   font-weight: 500;
 }
 
+/* Removed nav-item-container styling as we're not using it anymore */
+
 nav div {
   color: var(--text-secondary);
   text-decoration: none;
