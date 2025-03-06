@@ -1,7 +1,12 @@
 ---
-title: "More from Less by Andrew McAfee"
-date: "2025-03-06"
-tags: ["books", "economics", "environment", "progress", "resources"]
+title: More from Less by Andrew McAfee
+date: '2025-03-06'
+tags:
+  - books
+  - economics
+  - environment
+  - progress
+  - resources
 rating: 5
 ---
 

@@ -1,7 +1,11 @@
 ---
-title: "Stubborn Attachments by Tyler Cowen"
-date: "2025-03-06"
-tags: ["books", "economics", "ethics", "progress"]
+title: Stubborn Attachments by Tyler Cowen
+date: '2025-03-06'
+tags:
+  - books
+  - economics
+  - ethics
+  - progress
 rating: 4
 ---
 

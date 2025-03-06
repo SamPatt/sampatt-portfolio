@@ -1,11 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import '../components/ComponentStyles.css';
 
 function Notes() {
   const [notes, setNotes] = useState([]);
   const [tags, setTags] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAllTags, setShowAllTags] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [tagListVisible, setTagListVisible] = useState(!isMobile);
+  
+  // Handler for search input changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    // If search is not empty, ensure tags are visible
+    if (e.target.value.trim() !== '') {
+      setTagListVisible(true);
+    }
+  };
   const { tag } = useParams();
+
+  const tagThreshold = 10; // Only show tags with more than this number by default
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile && !tagListVisible) {
+        setTagListVisible(true);
+      } else if (mobile && tagListVisible && !showAllTags) {
+        setTagListVisible(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [tagListVisible, showAllTags]);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -52,6 +82,19 @@ function Notes() {
     loadNotes();
   }, [tag]);
 
+  // Sort tags by count (descending)
+  const sortedTags = Object.entries(tags).sort((a, b) => b[1] - a[1]);
+  
+  // Filter tags based on search
+  const filteredTags = sortedTags.filter(([tagName]) => 
+    tagName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Determine which tags to show
+  const tagsToShow = showAllTags || searchTerm.trim() !== ''
+    ? filteredTags
+    : filteredTags.filter(([_, count]) => count >= tagThreshold);
+
   return (
     <div className="notes-container">
       <h1>{tag ? `Notes tagged with #${tag}` : 'All Notes'}</h1>
@@ -59,18 +102,59 @@ function Notes() {
       <div className="notes-layout">
         <div className="notes-sidebar">
           <div className="tags-container">
-            <h3>Tags</h3>
-            <div className="tags-list">
-              {Object.entries(tags).map(([tagName, count]) => (
-                <Link 
-                  key={tagName} 
-                  to={`/notes/tags/${tagName}`}
-                  className={`tag ${tag === tagName ? 'active' : ''}`}
-                >
-                  #{tagName} <span className="tag-count">({count})</span>
-                </Link>
-              ))}
+            <div className="tags-header">
+              <h3>Tags</h3>
+              <button 
+                className="tags-toggle-button"
+                onClick={() => setTagListVisible(!tagListVisible)}
+              >
+                {tagListVisible ? 'Hide' : 'Show'}
+              </button>
             </div>
+
+            {tagListVisible && (
+              <>
+                <div className="tags-search">
+                  <input
+                    type="text"
+                    placeholder="Search tags..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="tags-search-input"
+                  />
+                </div>
+                
+                <div className="tags-list">
+                  {tagsToShow.map(([tagName, count]) => (
+                    <Link 
+                      key={tagName} 
+                      to={`/notes/tags/${tagName}`}
+                      className={`tag ${tag === tagName ? 'active' : ''}`}
+                    >
+                      #{tagName} <span className="tag-count">({count})</span>
+                    </Link>
+                  ))}
+                </div>
+                
+                {!showAllTags && searchTerm.trim() === '' && filteredTags.length > tagsToShow.length && (
+                  <button 
+                    className="show-more-tags"
+                    onClick={() => setShowAllTags(true)}
+                  >
+                    Show {filteredTags.length - tagsToShow.length} more tags
+                  </button>
+                )}
+                
+                {showAllTags && searchTerm.trim() === '' && (
+                  <button 
+                    className="show-less-tags"
+                    onClick={() => setShowAllTags(false)}
+                  >
+                    Show fewer tags
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
         

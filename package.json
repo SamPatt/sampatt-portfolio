@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "vite build && node scripts/generate-rss.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync-notes": "node scripts/sync-obsidian.js",
+    "prebuild-with-sync": "node scripts/sync-obsidian.js",
+    "build-with-sync": "vite build && node scripts/generate-rss.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
     "feed": "^4.2.2",
+    "gray-matter": "^4.0.3",
     "markdown-it-anchor": "^9.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

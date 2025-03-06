@@ -315,10 +315,70 @@
   border: 1px solid var(--border-color);
 }
 
+.tags-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.tags-toggle-button {
+  background-color: rgba(93, 139, 244, 0.1);
+  color: var(--primary);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.tags-toggle-button:hover {
+  background-color: rgba(93, 139, 244, 0.2);
+}
+
+.tags-search {
+  margin-bottom: 15px;
+}
+
+.tags-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.tags-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
 .tags-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 15px;
+}
+
+.show-more-tags,
+.show-less-tags {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 5px 0;
+  text-decoration: underline;
+  width: 100%;
+  text-align: center;
+}
+
+.show-more-tags:hover,
+.show-less-tags:hover {
+  color: var(--accent);
 }
 
 .tag {

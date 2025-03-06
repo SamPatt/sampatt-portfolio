@@ -1,7 +1,11 @@
 ---
-title: "Enlightenment Now by Steven Pinker"
-date: "2025-03-06"
-tags: ["books", "progress", "enlightenment", "optimization"]
+title: Enlightenment Now by Steven Pinker
+date: '2025-03-06'
+tags:
+  - books
+  - progress
+  - enlightenment
+  - optimization
 rating: 5
 ---
 
