@@ -5,7 +5,6 @@ tags:
   - good-thinkers
   - spaced-repetition
 date: '2025-03-10'
-rating: 0
 ---
 
 Clever independent researcher who writes about and creates tools for thought.

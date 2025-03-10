@@ -242,6 +242,126 @@
   display: none;
 }
 
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-button {
+  background-color: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-size: 0.85rem;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: rgba(93, 139, 244, 0.08);
+  color: var(--primary);
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-number {
+  background-color: transparent;
+  border: none;
+  color: var(--text-secondary);
+  min-width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  font-size: 0.85rem;
+}
+
+.pagination-number:hover:not(.active) {
+  background-color: rgba(93, 139, 244, 0.08);
+  color: var(--primary);
+}
+
+.pagination-number.active {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 2px 6px rgba(93, 139, 244, 0.2);
+}
+
+.pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+}
+
+/* Mobile pagination adjustments */
+@media screen and (max-width: 480px) {
+  .pagination {
+    gap: 4px;
+    margin-top: 30px;
+  }
+  
+  .pagination-numbers {
+    gap: 3px;
+  }
+  
+  .pagination-button {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    min-width: 30px;
+  }
+  
+  .pagination-number {
+    min-width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Super narrow mobile view */
+@media screen and (max-width: 360px) {
+  .pagination {
+    gap: 2px;
+  }
+  
+  .pagination-numbers {
+    gap: 2px;
+  }
+  
+  .pagination-button {
+    padding: 4px 6px;
+    min-width: 26px;
+    font-size: 0.75rem;
+  }
+  
+  .pagination-number {
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+}
+
 /* Notes styles */
 .notes-container {
   max-width: 900px;

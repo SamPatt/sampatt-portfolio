@@ -4,7 +4,6 @@ tags:
   - biology
   - exercise
 date: '2025-03-10'
-rating: 0
 ---
 
 

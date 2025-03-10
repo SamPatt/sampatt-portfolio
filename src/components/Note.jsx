@@ -187,7 +187,7 @@ function Note() {
           </div>
         )}
         
-        {note.attributes.rating && (
+        {note.attributes.rating !== undefined && (
           <div className="rating">
             Rating: {note.attributes.rating}/5
           </div>

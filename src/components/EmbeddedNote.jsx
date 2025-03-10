@@ -75,7 +75,7 @@ function EmbeddedNote({ slug }) {
             </Link>
           </h3>
           
-          {note.attributes.rating && (
+          {note.attributes.rating !== undefined && (
             <div className="rating">
               Rating: {note.attributes.rating}/5
             </div>
