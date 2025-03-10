@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import './ComponentStyles.css';
 
 function Note() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [note, setNote] = useState(null);
-  const [relatedNotes, setRelatedNotes] = useState([]);
 
   useEffect(() => {
     const loadNote = async () => {
@@ -25,48 +25,53 @@ function Note() {
           const linkedSlugs = [];
           let match;
           
-          // Create a processed HTML with proper links
+          // Process all wiki links in the markdown content
           let processedHtml = mod.html;
+          const markdownLinks = [...mod.html.matchAll(wikiLinkRegex)];
+
+          // First, load all the linked note titles
+          const linkedNotesInfo = {};
           
-          // Remove the "Related Notes" section that's in the markdown content
-          const relatedNotesRegex = /<h2[^>]*>[\s]*Related Notes[\s]*<\/h2>/i;
-          const relatedNotesMatch = processedHtml.match(relatedNotesRegex);
-          
-          if (relatedNotesMatch) {
-            const relatedNotesHeadingIndex = relatedNotesMatch.index;
-            
-            // Find the end of the section (next h2 or end of content)
-            const nextHeadingIndex = processedHtml.indexOf('<h2', relatedNotesHeadingIndex + relatedNotesMatch[0].length);
-            if (nextHeadingIndex !== -1) {
-              processedHtml = processedHtml.substring(0, relatedNotesHeadingIndex) + 
-                             processedHtml.substring(nextHeadingIndex);
-            } else {
-              processedHtml = processedHtml.substring(0, relatedNotesHeadingIndex);
+          // Collect all note slugs from the wiki links
+          for (const link of markdownLinks) {
+            const linkedSlug = link[1];
+            if (!linkedSlugs.includes(linkedSlug)) {
+              linkedSlugs.push(linkedSlug);
+              
+              // Try to find this note to get its title
+              try {
+                const notePath = Object.keys(noteModules).find(path => 
+                  path.split('/').pop().replace('.md', '') === linkedSlug
+                );
+                
+                if (notePath) {
+                  const linkedMod = await noteModules[notePath]();
+                  linkedNotesInfo[linkedSlug] = {
+                    title: linkedMod.attributes?.title || linkedSlug
+                  };
+                }
+              } catch (error) {
+                console.error(`Error loading title for ${linkedSlug}:`, error);
+                linkedNotesInfo[linkedSlug] = { title: linkedSlug };
+              }
             }
           }
           
-          // Process wiki links
-          while ((match = wikiLinkRegex.exec(mod.html)) !== null) {
-            const linkedSlug = match[1];
-            linkedSlugs.push(linkedSlug);
-            
-            // Replace wiki links with proper React Router links
-            processedHtml = processedHtml.replace(
-              `[[${linkedSlug}]]`,
-              `<a href="/notes/${linkedSlug}" class="note-link">${linkedSlug}</a>`
-            );
-          }
+          // Now replace wiki links with proper HTML links that show the note title
+          processedHtml = processedHtml.replace(wikiLinkRegex, (match, slug) => {
+            const noteInfo = linkedNotesInfo[slug] || { title: slug };
+            return `<a href="/notes/${slug}" class="note-link">${noteInfo.title}</a>`;
+          });
+          
+          // This approach will simply NOT show the Related Notes section
+          // Instead of trying to extract it from the HTML, just leave it in the content
+          // The client-side navigation will handle clicks on all internal links
           
           setNote({
             slug,
             html: processedHtml,
             attributes: mod.attributes
           });
-          
-          // Load related notes info if there are any
-          if (linkedSlugs.length > 0) {
-            loadRelatedNotes(linkedSlugs);
-          }
         }
       } catch (error) {
         console.error('Error loading note:', error);
@@ -76,32 +81,9 @@ function Note() {
     loadNote();
   }, [slug]);
 
-  const loadRelatedNotes = async (linkedSlugs) => {
-    try {
-      const noteModules = import.meta.glob('../content/notes/*.md');
-      
-      const notesData = await Promise.all(
-        Object.keys(noteModules)
-          .filter(path => {
-            const noteSlug = path.split('/').pop().replace('.md', '');
-            return linkedSlugs.includes(noteSlug);
-          })
-          .map(async (path) => {
-            const mod = await noteModules[path]();
-            return {
-              slug: path.split('/').pop().replace('.md', ''),
-              title: mod.attributes?.title || path.split('/').pop().replace('.md', '')
-            };
-          })
-      );
-      
-      setRelatedNotes(notesData);
-    } catch (error) {
-      console.error('Error loading related notes:', error);
-    }
-  };
+  // We no longer need this function as we're handling links directly in the content
 
-  // Add IDs to headings and handle anchor links
+  // Handle note links and headings
   useEffect(() => {
     if (note) {
       const content = document.querySelector('.note-content');
@@ -133,12 +115,14 @@ function Note() {
         }
       });
 
-      // Handle clicks on anchor links
-      const handleAnchorClick = (e) => {
+      // Handle clicks on all links
+      const handleLinkClick = (e) => {
         const link = e.target.closest('a');
         if (!link) return;
         
         const href = link.getAttribute('href');
+        
+        // Handle anchor links
         if (href && href.startsWith('#')) {
           e.preventDefault();
           const targetId = href.slice(1);
@@ -148,13 +132,30 @@ function Note() {
             // Update URL without triggering a scroll
             window.history.pushState(null, '', href);
           }
+        } 
+        // Handle note links (internal navigation)
+        else if (href && href.startsWith('/notes/')) {
+          e.preventDefault();
+          
+          // Extract the slug from the URL
+          const noteSlug = href.replace('/notes/', '');
+          
+          // Use window.history to navigate without a page reload
+          window.history.pushState(null, '', href);
+          
+          // Instead of a reload, load the new note
+          // This will trigger the useEffect that depends on [slug]
+          // We need to update the slug param from the router
+          if (navigate) {
+            navigate(href);
+          }
         }
       };
 
-      content.addEventListener('click', handleAnchorClick);
-      return () => content.removeEventListener('click', handleAnchorClick);
+      content.addEventListener('click', handleLinkClick);
+      return () => content.removeEventListener('click', handleLinkClick);
     }
-  }, [note]);
+  }, [note, navigate]);
 
   if (!note) {
     return <div>Loading...</div>;
@@ -197,20 +198,7 @@ function Note() {
           dangerouslySetInnerHTML={{ __html: note.html }}
         />
         
-        {relatedNotes.length > 0 && (
-          <div className="related-notes">
-            <h3>Related Notes</h3>
-            <ul>
-              {relatedNotes.map(relatedNote => (
-                <li key={relatedNote.slug}>
-                  <Link to={`/notes/${relatedNote.slug}`}>
-                    {relatedNote.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* No longer showing separate related notes section */}
       </article>
     </div>
   );

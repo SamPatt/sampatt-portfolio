@@ -13,3 +13,9 @@ tags:
 rating: 5
 ---
 Probably the best of the history of computing books I've read so far. If you're interested in the subject you need to read it.
+
+## Related Notes
+- [[hackers]] - Early programming and hacker culture
+- [[dealers-of-lightning]] - Innovations at Xerox PARC
+- [[sandworm]] - Modern internet security threats
+- [[permanent-record]] - The surveillance state built on the internet

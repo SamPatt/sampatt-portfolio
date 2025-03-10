@@ -13,3 +13,9 @@ tags:
 rating: 4
 ---
 Went fairly deeply into the world of cybersecurity and how these firms actually work, very interesting stuff.
+
+## Related Notes
+- [[permanent-record]] - Surveillance and cyber intelligence
+- [[chip-war]] - Geopolitics of technology infrastructure
+- [[where-wizards-stay-up-late]] - The internet's origins
+- [[prisoners-of-geography]] - Geopolitical contexts

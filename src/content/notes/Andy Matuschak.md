@@ -18,4 +18,8 @@ I read his essay [How to write good prompts](https://andymatuschak.org/prompts/)
 
 #people #good-thinkers #spaced-repetition
 
+## Related Notes
+- [[Spaced Repetition Learning]] - Learning technique he researches
+- [[make-it-stick]] - Scientific approaches to learning
+- [[a-mind-for-numbers]] - Effective learning methods
 

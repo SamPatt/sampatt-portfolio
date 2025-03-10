@@ -22,3 +22,8 @@ https://andymatuschak.org/prompts/
 https://gwern.net/spaced-repetition#fnref1
 
 #learning
+
+## Related Notes
+- [[Andy Matuschak]] - Researcher who specializes in tools for thought
+- [[make-it-stick]] - Scientific approach to effective learning
+- [[a-mind-for-numbers]] - Techniques for learning difficult subjects

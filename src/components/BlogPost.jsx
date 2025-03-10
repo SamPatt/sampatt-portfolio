@@ -140,6 +140,26 @@ function BlogPost() {
                       });
                     }
                     
+                    // Add the title to its container
+                    if (titleElement && mod.attributes.title) {
+                      const titleContainer = document.createElement('div');
+                      titleContainer.className = 'title-container';
+                      
+                      // Move the title into the container
+                      const headerElement = container.querySelector('.embedded-note-header');
+                      const titleParent = titleElement.parentNode;
+                      titleContainer.appendChild(titleElement);
+                      titleParent.appendChild(titleContainer);
+                      
+                      // Add rating if available
+                      if (mod.attributes.rating) {
+                        const ratingElement = document.createElement('div');
+                        ratingElement.className = 'rating';
+                        ratingElement.textContent = `Rating: ${mod.attributes.rating}/5`;
+                        titleContainer.appendChild(ratingElement);
+                      }
+                    }
+                    
                     // Add tags if available
                     if (mod.attributes.tags && mod.attributes.tags.length > 0) {
                       const headerElement = container.querySelector('.embedded-note-header');

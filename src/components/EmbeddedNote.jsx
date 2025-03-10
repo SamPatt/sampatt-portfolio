@@ -68,11 +68,19 @@ function EmbeddedNote({ slug }) {
   return (
     <div className="embedded-note">
       <div className="embedded-note-header">
-        <h3>
-          <Link to={`/notes/${note.slug}`}>
-            {note.attributes.title}
-          </Link>
-        </h3>
+        <div>
+          <h3>
+            <Link to={`/notes/${note.slug}`}>
+              {note.attributes.title}
+            </Link>
+          </h3>
+          
+          {note.attributes.rating && (
+            <div className="rating">
+              Rating: {note.attributes.rating}/5
+            </div>
+          )}
+        </div>
         
         {note.attributes.tags && note.attributes.tags.length > 0 && (
           <div className="tags">

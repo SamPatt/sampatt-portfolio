@@ -475,6 +475,19 @@
   margin-bottom: 20px;
 }
 
+.note .rating,
+.embedded-note-header .rating {
+  background-color: #FFB800;
+  color: #1e2846;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
 .note-content {
   line-height: 1.7;
   color: var(--text-primary);
@@ -581,6 +594,12 @@
   margin-bottom: 8px;
 }
 
+.note-relation-comment {
+  color: var(--text-secondary);
+  margin-left: 6px;
+  font-size: 0.9em;
+}
+
 .note-link {
   color: var(--primary);
   text-decoration: none;
@@ -607,7 +626,7 @@
 .embedded-note-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 12px;
 }
 
@@ -615,6 +634,12 @@
   margin: 0;
   font-size: 1.2rem;
   color: var(--primary-light);
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .embedded-note-content {

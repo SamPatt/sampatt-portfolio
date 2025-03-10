@@ -16,3 +16,9 @@ rating: 5
 This book has an agenda, but it's so full of historical information about chip manufacturing - and its geopolitical implications - that you must read it if you're interested in the topic.
 
 The book is as much about the current situation as it is how we got here. With AI the situation has only worsened.
+
+## Related Notes
+- [[dealers-of-lightning]] - Early computing innovations
+- [[sandworm]] - Modern cyber threats and geopolitics
+- [[prisoners-of-geography]] - How geography shapes national interests
+- [[superintelligence]] - The potential future of computing technology

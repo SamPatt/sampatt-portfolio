@@ -10,3 +10,8 @@ tags:
 rating: 4
 ---
 It isn't the best of the group of computing history books I've read, but it is worth the time if you're deep into the subject.
+
+## Related Notes
+- [[dealers-of-lightning]] - The story of Xerox PARC innovations
+- [[where-wizards-stay-up-late]] - Origins of the internet
+- [[turings-cathedral]] - Early computing development
