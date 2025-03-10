@@ -1,6 +1,6 @@
 ---
 title: O-ring theory of economic development
-date: '2025-03-06'
+date: '2025-03-10'
 tags:
   - uncategorized
 rating: 0
