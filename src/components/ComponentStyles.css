@@ -1,3 +1,29 @@
+/* Blog post date display styles */
+.date-container {
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.date {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.date.modified {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.date-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.time {
+  font-style: italic;
+}
+
 /* Shared styles for subscription components */
 .subscription-container {
   background-color: rgba(30, 40, 70, 0.8);

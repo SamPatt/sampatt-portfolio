@@ -294,6 +294,13 @@ function processFile(filePath) {
     // Clone the data for site version
     const siteData = { ...data };
     
+    // Handle created and modified dates for the site version
+    // If "created" exists in frontmatter, keep it for the site
+    // If "last_edited" exists, use it for internal tracking but convert to "modified" for the site
+    if (data.last_edited) {
+      siteData.modified = data.last_edited;
+    }
+    
     // Remove fields we don't want in the site version
     delete siteData.publish;
     

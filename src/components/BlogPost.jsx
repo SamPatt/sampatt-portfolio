@@ -275,13 +275,37 @@ function BlogPost() {
           </div>
         )}
         <h1>{post.attributes.title}</h1>
-        <div className="date">
-          {new Date(post.attributes.date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-            timeZone: 'UTC'
-          })}
+        <div className="date-container">
+          <div className="date">
+            <span className="date-label">Published: </span>
+            {new Date(post.attributes.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              timeZone: 'UTC'
+            })}
+          </div>
+          {post.attributes.modified && (
+            <div className="date modified">
+              <span className="date-label">Last updated: </span>
+              {new Date(post.attributes.modified).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })}
+              {post.attributes.modified.includes(':') && (
+                <span className="time">
+                  {" at "}
+                  {new Date(post.attributes.modified).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC'
+                  })}
+                </span>
+              )}
+            </div>
+          )}
         </div>
         {post.attributes.last_edited && (
           <div className="last-updated">
