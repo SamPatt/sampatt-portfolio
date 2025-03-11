@@ -26,10 +26,12 @@ function Blog() {
           })
         );
 
-        // Sort posts by date
-        posts.sort((a, b) => 
-          new Date(b.attributes.date) - new Date(a.attributes.date)
-        );
+        // Sort posts by date (falling back to created if date is not available)
+        posts.sort((a, b) => {
+          const dateA = a.attributes.date || a.attributes.created;
+          const dateB = b.attributes.date || b.attributes.created;
+          return new Date(dateB) - new Date(dateA);
+        });
 
         setPosts(posts);
       } catch (error) {
@@ -64,7 +66,7 @@ function Blog() {
             <h1>{post.attributes.title}</h1>
           </Link>
           <div className="date">
-            {new Date(post.attributes.date).toLocaleDateString('en-US', {
+            {new Date(post.attributes.date || post.attributes.created).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'numeric',
               day: 'numeric',

@@ -278,26 +278,26 @@ function BlogPost() {
         <div className="date-container">
           <div className="date">
             <span className="date-label">Published: </span>
-            {new Date(post.attributes.date).toLocaleDateString('en-US', {
+            {new Date(post.attributes.date || post.attributes.created).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
               timeZone: 'UTC'
             })}
           </div>
-          {post.attributes.modified && (
+          {post.attributes.last_edited && (
             <div className="date modified">
               <span className="date-label">Last updated: </span>
-              {new Date(post.attributes.modified).toLocaleDateString('en-US', {
+              {new Date(post.attributes.last_edited).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
                 timeZone: 'UTC'
               })}
-              {post.attributes.modified.includes(':') && (
+              {post.attributes.last_edited.includes(':') && (
                 <span className="time">
                   {" at "}
-                  {new Date(post.attributes.modified).toLocaleTimeString('en-US', {
+                  {new Date(post.attributes.last_edited).toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                     timeZone: 'UTC'
@@ -307,21 +307,6 @@ function BlogPost() {
             </div>
           )}
         </div>
-        {post.attributes.last_edited && (
-          <div className="last-updated">
-            Last updated: {new Date(post.attributes.last_edited).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              timeZone: 'UTC'
-            })}{' '}
-            {new Date(post.attributes.last_edited).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'UTC'
-            })}
-          </div>
-        )}
         {post.attributes.description && (
           <p className="description">{post.attributes.description}</p>
         )}

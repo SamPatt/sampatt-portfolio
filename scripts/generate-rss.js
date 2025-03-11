@@ -42,6 +42,7 @@ async function generateRSSFeed() {
       const frontmatter = frontmatterMatch[1];
       const title = frontmatter.match(/title:\s*(.+)/)?.[1];
       const date = frontmatter.match(/date:\s*['"](.+)['"]/)?.[1];
+      const created = frontmatter.match(/created:\s*['"](.+)['"]/)?.[1];
       const description = frontmatter.match(/description:\s*(.+)/)?.[1];
       
       // Remove frontmatter to get actual content
@@ -56,7 +57,7 @@ async function generateRSSFeed() {
         link: url,
         description: description?.trim(),
         content: postContent,
-        date: date ? new Date(date) : new Date(),
+        date: date ? new Date(date) : (created ? new Date(created) : new Date()),
         author: [{
           name: "Sam Patterson",
           link: "https://sampatt.com"

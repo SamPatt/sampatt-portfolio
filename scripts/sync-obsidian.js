@@ -241,10 +241,8 @@ function processFile(filePath) {
     
     // Ensure the frontmatter has all required fields based on content type
     
-    // Common fields for all content types
-    if (!data.date) {
-      data.date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    }
+    // We no longer automatically add the date field
+    // Instead, we'll use Obsidian's created field
     
     // Tags are now required for all content types
     if (!data.tags || !Array.isArray(data.tags) || data.tags.length === 0) {
@@ -294,11 +292,14 @@ function processFile(filePath) {
     // Clone the data for site version
     const siteData = { ...data };
     
-    // Handle created and modified dates for the site version
-    // If "created" exists in frontmatter, keep it for the site
-    // If "last_edited" exists, use it for internal tracking but convert to "modified" for the site
+    // Handle created and last_edited dates from Obsidian
+    // Use Obsidian's native timestamps directly without modification
+    // These should be in the format YYYY-MM-DD-HH:mm:ss
+    if (data.created) {
+      siteData.created = data.created;
+    }
     if (data.last_edited) {
-      siteData.modified = data.last_edited;
+      siteData.last_edited = data.last_edited;
     }
     
     // Remove fields we don't want in the site version
