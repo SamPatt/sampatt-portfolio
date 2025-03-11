@@ -8,7 +8,7 @@ description: >-
   An evidence-based analysis of Satoshi Nakamoto's writings showing Bitcoin was
   not built primarily as a store of value.
 send_newsletter: true
-last_edited: 2025-03-11T23:38:51.000Z
+last_edited: 2025-03-11T23:47:41.000Z
 tags:
   - uncategorized
 ---

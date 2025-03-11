@@ -1,7 +1,7 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-03-11T23:38:48.000Z
+last_edited: 2025-03-11T23:47:38.000Z
 tags:
   - personal
   - update

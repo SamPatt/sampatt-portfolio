@@ -4,7 +4,7 @@ title: Saving My Table Tennis League’s Hard Drive—and Finding Lost BTC
 date: 2025-02-17T00:00:00.000Z
 description: In Which I Repair a Borked Linux Distro and Find Lost Bitcoin
 send_newsletter: false
-last_edited: 2025-03-11T23:38:51.000Z
+last_edited: 2025-03-11T23:47:41.000Z
 tags:
   - uncategorized
 ---

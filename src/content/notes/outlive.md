@@ -9,6 +9,6 @@ tags:
   - nutrition
   - exercise
 rating: 4
-last_edited: 2025-03-11T23:38:54.000Z
+last_edited: 2025-03-11T23:47:44.000Z
 ---
 This felt like less of a stretch than [[lifespan]], Attia is more focused on practical methods and lessons. Definitely worth a read for fitness people.

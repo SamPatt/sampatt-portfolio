@@ -4,7 +4,7 @@ title: Claude Code Redesigned my Website in 3 Mins for $0.61
 date: 2025-02-26T00:00:00.000Z
 description: In Which I Recognize How Inferior I am at Design
 send_newsletter: false
-last_edited: 2025-03-11T23:38:53.000Z
+last_edited: 2025-03-11T23:47:43.000Z
 tags:
   - uncategorized
 ---

@@ -4,7 +4,7 @@ title: Testing Claude Code
 date: 2025-02-24T00:00:00.000Z
 description: In Which I Test the New Claude Code Release
 send_newsletter: false
-last_edited: 2025-03-11T23:38:56.000Z
+last_edited: 2025-03-11T23:47:36.000Z
 tags:
   - uncategorized
 ---
