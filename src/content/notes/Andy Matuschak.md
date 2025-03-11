@@ -4,7 +4,7 @@ tags:
   - people
   - good-thinkers
   - spaced-repetition
-last_edited: 2025-03-09T15:33:51.000Z
+last_edited: 2025-03-11T00:44:28.000Z
 date: '2025-03-11'
 ---
 

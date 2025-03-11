@@ -160,6 +160,20 @@ function processFile(filePath) {
       // Remove publish field from source (it's always removed from dest)
       delete sourceDataClone.publish;
       
+      // If source doesn't have a date but dest does, remove date from dest for comparison
+      // This handles auto-added dates that shouldn't trigger updates
+      if (!sourceDataClone.date && destDataClone.date) {
+        delete destDataClone.date;
+      }
+      
+      // Normalize title field (remove quotes if present)
+      if (sourceDataClone.title && typeof sourceDataClone.title === 'string') {
+        sourceDataClone.title = sourceDataClone.title.replace(/^"(.*)"$/, '$1');
+      }
+      if (destDataClone.title && typeof destDataClone.title === 'string') {
+        destDataClone.title = destDataClone.title.replace(/^"(.*)"$/, '$1');
+      }
+      
       // Handle tags consistently - if source doesn't have tags but dest has uncategorized,
       // add uncategorized to source for comparison
       if (!sourceDataClone.tags && destDataClone.tags && 
@@ -184,6 +198,16 @@ function processFile(filePath) {
       }
       
       // At this point, we know content or data is different
+      
+      // Add debug info to help identify content differences for specific files
+      if (["Andy Matuschak.md", "DNA Methylation and Aging.md", "There is Little Evidence for the Placebo Effect.md", 
+           "O-ring theory of economic development.md", "Spaced Repetition Learning.md"].includes(fileName)) {
+        console.log(`DEBUG ${fileName}:`);
+        console.log(`- Content match: ${contentMatches}`);
+        console.log(`- Data match: ${dataMatches}`);
+        console.log(`- Source data: ${sourceDataStr}`);
+        console.log(`- Dest data: ${destDataStr}`);
+      }
       
       if (data.last_edited) {
         // If source has last_edited timestamp
