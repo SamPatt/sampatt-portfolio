@@ -1,9 +1,16 @@
 ---
-title: No Ideology Required; AI Customization Makes Open Source Tools the Obvious Choice
-date: 2025-02-21
+type: blog
+title: >-
+  No Ideology Required; AI Customization Makes Open Source Tools the Obvious
+  Choice
+date: 2025-02-21T00:00:00.000Z
 description: In Which I Describe how Cracked LLMs are for Customization
-send_newsletter: true
+send_newsletter: false
+last_edited: 2025-03-11T23:38:51.000Z
+tags:
+  - uncategorized
 ---
+
 # Background
 
 AI will dramatically increase the popularity of open source systems, and this has absolutely nothing to do with ideology.

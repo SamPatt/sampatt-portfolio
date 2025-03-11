@@ -1,9 +1,14 @@
 ---
+type: blog
 title: Testing Claude Code
-date: 2025-02-24
+date: 2025-02-24T00:00:00.000Z
 description: In Which I Test the New Claude Code Release
-send_newsletter: true
+send_newsletter: false
+last_edited: 2025-03-11T23:38:56.000Z
+tags:
+  - uncategorized
 ---
+
 This afternoon my feed exploded with news of Claude Code. Per the norm, the hype is significant - will it live up to the claims? Claude 3.5 Sonnet is my favorite model for coding, as I've [discussed previously](https://sampatt.com/blog/2025-02-09-AI), so I have high hopes.
 
 # Installation

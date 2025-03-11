@@ -1,9 +1,14 @@
 ---
+type: blog
 title: Claude Code Redesigned my Website in 3 Mins for $0.61
-date: 2025-02-26
+date: 2025-02-26T00:00:00.000Z
 description: In Which I Recognize How Inferior I am at Design
-send_newsletter: "true"
+send_newsletter: false
+last_edited: 2025-03-11T23:38:53.000Z
+tags:
+  - uncategorized
 ---
+I've never been a designer. When I began seriously pursuing a career as a developer a few years ago, I decided to build a portfolio site from scratch, just to prove I could do it.
 I've never been a designer. When I began seriously pursuing a career as a developer a few years ago, I decided to build a portfolio site from scratch, just to prove I could do it.
 
 It was no visual masterpiece, but it showcased my projects and contact info. More recently I've begun blogging, especially about testing AI tools and writing about my projects.

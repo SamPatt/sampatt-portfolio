@@ -1,7 +1,7 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-03-11T22:58:12.000Z
+last_edited: 2025-03-11T23:38:48.000Z
 tags:
   - personal
   - update
@@ -14,7 +14,7 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 
 - Living in West Michigan.
 - Homeschooling two of my children.
-- Looking for work as a fullstack developer.
+- Looking for work as a fullstack developer / technical writer / developer relations
 - Reading as [much as I can](/notes) and [writing as much as I can](/blog).
 - Learning Geoguessr meta.
 - Building a [bunch of fun stuff](/projects), particularly focused on self-hosted LLMs.

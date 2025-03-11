@@ -1,12 +1,19 @@
 ---
+type: blog
 title: Unc's Unlearning Outfit for 2024
-date: 2025-03-03
+date: 2025-03-03T00:00:00.000Z
 description: In Which I Write a Short Fiction
-send_newsletter: true
+send_newsletter: false
+last_edited: 2025-03-11T23:38:48.000Z
+tags:
+  - uncategorized
 ---
+
 _This post won runner up in the 2024 Interintellect Essay contest._
 
 ---
+publish: true
+type: "blog"
 
 _I learned a lot this year, but I've decided to share two well-known concepts which I've unlearned this year._
 

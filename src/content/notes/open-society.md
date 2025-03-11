@@ -8,6 +8,6 @@ tags:
   - democracy
   - totalitarianism
 rating: 3
-last_edited: 2025-03-11T22:58:14.000Z
+last_edited: 2025-03-11T23:38:54.000Z
 ---
 Hard read! Not something you can approach lightly. When I took the time, I found it rewarding. Very thought provoking.

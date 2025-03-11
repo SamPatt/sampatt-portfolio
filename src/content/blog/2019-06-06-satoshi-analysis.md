@@ -1,9 +1,18 @@
 ---
-title: Breakdown of all Satoshi's Writings Proves Bitcoin not Built Primarily as Store of Value
-date: 2025-03-04
-description: An evidence-based analysis of Satoshi Nakamoto's writings showing Bitcoin was not built primarily as a store of value.
+type: blog
+title: >-
+  Breakdown of all Satoshi's Writings Proves Bitcoin not Built Primarily as
+  Store of Value
+date: 2025-03-04T00:00:00.000Z
+description: >-
+  An evidence-based analysis of Satoshi Nakamoto's writings showing Bitcoin was
+  not built primarily as a store of value.
 send_newsletter: true
+last_edited: 2025-03-11T23:38:51.000Z
+tags:
+  - uncategorized
 ---
+
 
 _TL;DR_
 

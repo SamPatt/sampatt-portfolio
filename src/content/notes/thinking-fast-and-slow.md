@@ -9,6 +9,6 @@ tags:
   - cognitive-science
   - rationality
 rating: 3
-last_edited: 2025-03-11T22:58:14.000Z
+last_edited: 2025-03-11T23:38:54.000Z
 ---
 I read it, mostly because so many people recommend it. It seems like a useful framework, but the author is reaching in some places. I'd read it only if you specifically want to understand this popular idea.

@@ -1,8 +1,15 @@
 ---
+type: blog
 title: Introducing My Notes System
-date: 2025-03-06
-description: I've added a new notes system to my personal site to share book reviews, thoughts, and other content that doesn't necessarily fit the blog format.
+date: 2025-03-06T00:00:00.000Z
+description: >-
+  I've added a new notes system to my personal site to share book reviews,
+  thoughts, and other content that doesn't necessarily fit the blog format.
+last_edited: 2025-03-11T23:38:51.000Z
+tags:
+  - uncategorized
 ---
+
 
 _Claude Code wrote this post for me - without even being asked! It built this entire note system. Publishing it as is to show what it comes up with._
 

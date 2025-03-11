@@ -11,6 +11,6 @@ tags:
   - networking
   - innovation
 rating: 5
-last_edited: 2025-03-11T22:58:14.000Z
+last_edited: 2025-03-11T23:38:54.000Z
 ---
 Probably the best of the history of computing books I've read so far. If you're interested in the subject you need to read it.
