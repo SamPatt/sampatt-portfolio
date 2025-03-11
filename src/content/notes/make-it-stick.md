@@ -11,6 +11,7 @@ tags:
   - memory
   - productivity
 rating: 4
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 Our individual and societal beliefs and habits about learning are often wrong. The [[illusion of competence]] is commonplace. Reading without trying to recall is the default practice, even though it's extremely inefficient. Almost no one even knows about [[Spaced Repetition Learning]].
 

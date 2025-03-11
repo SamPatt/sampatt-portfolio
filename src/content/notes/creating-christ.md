@@ -10,6 +10,7 @@ tags:
   - christianity
   - roman-empire
 rating: 2
+last_edited: 2025-03-08T22:35:32.000Z
 ---
 
 This is an interesting book. Is it compelling? Not really.

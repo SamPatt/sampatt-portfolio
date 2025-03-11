@@ -283,6 +283,21 @@ function BlogPost() {
             timeZone: 'UTC'
           })}
         </div>
+        {post.attributes.last_edited && (
+          <div className="last-updated">
+            Last updated: {new Date(post.attributes.last_edited).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              timeZone: 'UTC'
+            })}{' '}
+            {new Date(post.attributes.last_edited).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZone: 'UTC'
+            })}
+          </div>
+        )}
         {post.attributes.description && (
           <p className="description">{post.attributes.description}</p>
         )}

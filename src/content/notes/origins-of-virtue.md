@@ -11,11 +11,6 @@ tags:
   - morality
   - human-nature
 rating: 4
+last_edited: 2025-03-11T22:58:14.000Z
 ---
 Not as good as [[the-moral-animal]] but it's still an interesting book.
-
-## Related Notes
-- [[the-moral-animal]] - Evolutionary psychology foundations
-- [[the-red-queen]] - Another Matt Ridley book on evolution
-- [[humankind]] - Different perspective on human cooperation
-- [[enlightenment-now]] - The progress of human cooperation

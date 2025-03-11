@@ -9,6 +9,7 @@ tags:
   - civilization
   - collapse
 rating: 5
+last_edited: 2025-03-08T22:35:30.000Z
 ---
 
 This is an academic book and is occasionally dry, but Tainter's coverage of the topic is excellent and he put forward a compelling argument.

@@ -4,7 +4,9 @@ tags:
   - learning
   - spaced-repetition
   - memory
-date: '2025-03-10'
+last_edited: 2025-03-09T15:33:52.000Z
+date: '2025-03-11'
+rating: 0
 ---
 
 The most common mechanism of change for spaced repetition learning tasks is called _retrieval practice._ In brief: when you attempt to recall some knowledge from memory, the act of retrieval tends to reinforce those memories. [^1]
@@ -21,8 +23,3 @@ https://andymatuschak.org/prompts/
 https://gwern.net/spaced-repetition#fnref1
 
 #learning
-
-## Related Notes
-- [[Andy Matuschak]] - Researcher who specializes in tools for thought
-- [[make-it-stick]] - Scientific approach to effective learning
-- [[a-mind-for-numbers]] - Techniques for learning difficult subjects

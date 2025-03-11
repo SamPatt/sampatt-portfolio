@@ -28,3 +28,6 @@ notes.md
 .env
 .env.local
 .env.*.local
+
+# Local documentation
+SAM_READ_THIS.md

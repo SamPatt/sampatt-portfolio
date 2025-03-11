@@ -10,5 +10,6 @@ tags:
   - architecture
   - chicago
 rating: 5
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 This was highly recommended by other history buffs, and it didn't disappoint. Horrifying details mixed with much historical information about Chicago, and the US, during this period.

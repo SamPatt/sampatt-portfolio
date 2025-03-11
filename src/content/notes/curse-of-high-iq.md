@@ -8,6 +8,7 @@ tags:
   - society
   - education
 rating: 2
+last_edited: 2025-03-08T22:35:37.000Z
 ---
 
 Discussing high intelligence is difficult, for many reasons. 

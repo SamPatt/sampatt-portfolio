@@ -141,7 +141,6 @@ function processFile(filePath) {
     
     // Remove fields we don't want in the site version
     delete siteData.publish;
-    delete siteData.last_edited;
     
     // Reconstruct the content with modified frontmatter
     const updatedContent = matter.stringify(markdownContent, siteData);

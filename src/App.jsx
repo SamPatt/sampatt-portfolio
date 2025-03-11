@@ -7,6 +7,7 @@ import Blog from "./pages/Blog";
 import BlogPost from "./components/BlogPost";
 import Notes from "./pages/Notes";
 import Note from "./components/Note";
+import Now from "./pages/Now";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/tags/:tag" element={<Notes />} />
           <Route path="/notes/:slug" element={<Note />} />
+          <Route path="/now" element={<Now />} />
         </Routes>
       </main>
     </div>

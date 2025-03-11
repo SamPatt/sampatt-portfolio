@@ -9,6 +9,7 @@ tags:
   - evolution
   - human-nature
 rating: 3
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 Ridley has published several excellent books. [[the-red-queen]], [[the-rational-optimist]] are some of my favorites.
 

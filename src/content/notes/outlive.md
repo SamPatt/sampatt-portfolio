@@ -9,10 +9,6 @@ tags:
   - nutrition
   - exercise
 rating: 4
+last_edited: 2025-03-11T22:58:14.000Z
 ---
 This felt like less of a stretch than [[lifespan]], Attia is more focused on practical methods and lessons. Definitely worth a read for fitness people.
-
-## Related Notes
-- [[lifespan]] - David Sinclair's perspective on aging as a disease
-- [[DNA Methylation and Aging]] - Epigenetic mechanisms that influence aging
-- [[how-the-world-really-works]] - Broader context on human health systems

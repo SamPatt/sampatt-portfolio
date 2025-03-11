@@ -51,6 +51,9 @@ function Header() {
         <NavLink to="/notes" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>NOTES</div>
         </NavLink>
+        <NavLink to="/now" className={({ isActive }) => isActive ? 'active' : ''}>
+          <div>NOW</div>
+        </NavLink>
         <a href="https://github.com/SamPatt" target="_blank" rel="noopener noreferrer">
           <div>GITHUB</div>
         </a>

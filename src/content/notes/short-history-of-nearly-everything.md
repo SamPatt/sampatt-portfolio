@@ -11,13 +11,8 @@ tags:
   - chemistry
   - biology
 rating: 4
+last_edited: 2025-03-11T22:58:14.000Z
 ---
 I like books like this, where they try to give you an overview of various fields but from their own personal framework of beliefs.
 
 I enjoyed it.
-
-## Related Notes
-- [[existential-physics]] - A deeper dive into physics questions
-- [[how-the-world-really-works]] - Practical science of energy and materials
-- [[genome]] - The natural history of our genetic code
-- [[what-if]] - Fun exploration of scientific questions

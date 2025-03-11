@@ -9,5 +9,6 @@ tags:
   - literature
   - classics
 rating: 4
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 Listen to the audiobook, Fry's voice is worth it alone. They are classic myths, and Fry is unabashed about trying to present them in a compelling way.

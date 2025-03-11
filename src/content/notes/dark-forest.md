@@ -9,12 +9,7 @@ tags:
   - first-contact
   - chinese-literature
 rating: 2
+last_edited: 2025-03-08T22:35:37.000Z
 ---
 
 I loved the first book but didn't get far into this one. I should give it another try but I got Alien fatigue.
-
-## Related Notes
-- [[the-three-body-problem]] - First book in the trilogy
-- [[seveneves]] - Another epic-scale science fiction novel
-- [[fall-or-dodge-in-hell]] - Expansive sci-fi with philosophical elements
-- [[existential-physics]] - Real physics that informs sci-fi concepts

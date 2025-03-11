@@ -9,6 +9,7 @@ tags:
   - style
   - reference
 rating: 3
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 I bought this more out of respect for my mother than anything else; she considered this the last word on the subject.
 

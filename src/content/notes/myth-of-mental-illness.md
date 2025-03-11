@@ -9,6 +9,7 @@ tags:
   - philosophy
   - mental-health
 rating: 4
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 This may be one of the most controversial books that I've never heard anyone else mention before.
 

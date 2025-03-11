@@ -5,7 +5,9 @@ tags:
   - science
   - research-methods
   - challenges-mainstream-knowledge
-date: '2025-03-10'
+last_edited: 2025-03-08T22:35:31.000Z
+date: '2025-03-11'
+rating: 0
 ---
 
 

@@ -4,7 +4,9 @@ tags:
   - people
   - good-thinkers
   - spaced-repetition
-date: '2025-03-10'
+last_edited: 2025-03-09T15:33:51.000Z
+date: '2025-03-11'
+rating: 0
 ---
 
 Clever independent researcher who writes about and creates tools for thought.
@@ -17,8 +19,4 @@ I read his essay [How to write good prompts](https://andymatuschak.org/prompts/)
 
 #people #good-thinkers #spaced-repetition
 
-## Related Notes
-- [[Spaced Repetition Learning]] - Learning technique he researches
-- [[make-it-stick]] - Scientific approaches to learning
-- [[a-mind-for-numbers]] - Effective learning methods
 

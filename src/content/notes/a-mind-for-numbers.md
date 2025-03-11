@@ -8,6 +8,7 @@ tags:
   - mathematics
   - productivity
 rating: 5
+last_edited: 2025-03-08T22:35:30.000Z
 ---
 
 # A Mind for Numbers

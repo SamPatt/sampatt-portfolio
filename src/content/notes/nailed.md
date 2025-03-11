@@ -10,6 +10,7 @@ tags:
   - christianity
   - mythology
 rating: 3
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 
 As is typical of these authors, there's a clear bias throughout. You can see where some quotations and arguments aren't presented charitably.

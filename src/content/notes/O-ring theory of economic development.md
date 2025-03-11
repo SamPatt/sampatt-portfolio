@@ -1,11 +1,10 @@
 ---
 title: O-ring theory of economic development
-date: '2025-03-10'
+last_edited: 2025-03-08T22:35:28.000Z
+date: '2025-03-11'
 tags:
-  - economics
-  - development
-  - productivity
-  - poverty
+  - uncategorized
+rating: 0
 ---
 
 

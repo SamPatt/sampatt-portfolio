@@ -177,6 +177,22 @@ function Note() {
           </div>
         )}
         
+        {note.attributes.last_edited && (
+          <div className="last-updated">
+            Last updated: {new Date(note.attributes.last_edited).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              timeZone: 'UTC'
+            })}{' '}
+            {new Date(note.attributes.last_edited).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZone: 'UTC'
+            })}
+          </div>
+        )}
+        
         {note.attributes.tags && note.attributes.tags.length > 0 && (
           <div className="tags">
             {note.attributes.tags.map(tag => (

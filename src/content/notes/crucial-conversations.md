@@ -11,5 +11,6 @@ tags:
   - relationships
   - leadership
 rating: 3
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 If you're unfamiliar with some of the strategies for having difficult conversations, it's worth listening to. I found it eventually got a bit slow and I stopped.

@@ -8,6 +8,7 @@ tags:
   - maritime-disaster
   - naval-warfare
 rating: 5
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 
 Sad story, well written.

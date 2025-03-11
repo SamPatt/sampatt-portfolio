@@ -11,14 +11,9 @@ tags:
   - submarines
   - naval-warfare
 rating: 5
+last_edited: 2025-03-08T22:35:28.000Z
 ---
 
 Fascinating stories spanning decades. I felt a mixture of awe at the bravery and daring of these men, as well as a sense of anger and confusion at their arrogance and foolish decision making.
 
 Required reading if you're interested in naval or intelligence history.
-
-## Related Notes
-- [[sandworm]] - Modern cyber espionage
-- [[permanent-record]] - Intelligence and surveillance
-- [[dead-wake]] - Naval history
-- [[prisoners-of-geography]] - Geopolitical context for these operations

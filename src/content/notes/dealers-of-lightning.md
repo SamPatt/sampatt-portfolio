@@ -11,11 +11,6 @@ tags:
   - business
   - silicon-valley
 rating: 5
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 The early computer age is fascinating, and this is a well-written book detailing many of the people and institutions involved.
-
-## Related Notes
-- [[hackers]] - Early programming culture and innovations
-- [[where-wizards-stay-up-late]] - Origins of the internet
-- [[turings-cathedral]] - Early computing history
-- [[more-from-less]] - How innovation drives efficiency

@@ -3,7 +3,9 @@ title: DNA Methylation and Aging
 tags:
   - biology
   - exercise
-date: '2025-03-10'
+last_edited: 2025-03-08T22:35:34.000Z
+date: '2025-03-11'
+rating: 0
 ---
 
 
@@ -18,8 +20,3 @@ Our epigenome essentially functions as our body's diary, with tiny molecular doo
 Aging affects methylation more than anything else. Methylation patterns differ distinctly between infancy, childhood, adulthood, and old age. Many longevity researchers believe these methylation changes don't just record aging but actually drive it, suggesting our evolving epigenome may be responsible for aging itself.
 
 #biology #exercise 
-
-## Related Notes
-- [[outlive]] - Peter Attia's practical approach to longevity
-- [[lifespan]] - David Sinclair's research on aging mechanisms
-- [[genome]] - Broader context on genetics and DNA

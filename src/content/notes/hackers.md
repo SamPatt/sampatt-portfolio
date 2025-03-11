@@ -8,10 +8,6 @@ tags:
   - programming
   - hacker-culture
 rating: 4
+last_edited: 2025-03-09T15:33:51.000Z
 ---
 It isn't the best of the group of computing history books I've read, but it is worth the time if you're deep into the subject.
-
-## Related Notes
-- [[dealers-of-lightning]] - The story of Xerox PARC innovations
-- [[where-wizards-stay-up-late]] - Origins of the internet
-- [[turings-cathedral]] - Early computing development

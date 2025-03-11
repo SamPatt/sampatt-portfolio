@@ -11,11 +11,6 @@ tags:
   - warfare
   - espionage
 rating: 4
+last_edited: 2025-03-11T22:58:14.000Z
 ---
 Went fairly deeply into the world of cybersecurity and how these firms actually work, very interesting stuff.
-
-## Related Notes
-- [[permanent-record]] - Surveillance and cyber intelligence
-- [[chip-war]] - Geopolitics of technology infrastructure
-- [[where-wizards-stay-up-late]] - The internet's origins
-- [[prisoners-of-geography]] - Geopolitical contexts
