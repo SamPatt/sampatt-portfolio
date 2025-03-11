@@ -11,6 +11,6 @@ tags:
   - morality
   - human-nature
 rating: 4
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 Not as good as [[the-moral-animal]] but it's still an interesting book.

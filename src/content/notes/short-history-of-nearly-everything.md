@@ -11,7 +11,7 @@ tags:
   - chemistry
   - biology
 rating: 4
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 I like books like this, where they try to give you an overview of various fields but from their own personal framework of beliefs.
 

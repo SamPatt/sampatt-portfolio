@@ -5,7 +5,7 @@ date: 2025-03-06T00:00:00.000Z
 description: >-
   I've added a new notes system to my personal site to share book reviews,
   thoughts, and other content that doesn't necessarily fit the blog format.
-last_edited: 2025-03-11T23:47:41.000Z
+last_edited: 2025-03-11T23:58:51.000Z
 tags:
   - uncategorized
 ---

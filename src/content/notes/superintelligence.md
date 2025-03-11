@@ -9,7 +9,7 @@ tags:
   - philosophy
   - existential-risk
 rating: 3
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 Bostrom is considered one of the best researchers on this subject, and it's clear he's spent a lot of time thinking about this.
 

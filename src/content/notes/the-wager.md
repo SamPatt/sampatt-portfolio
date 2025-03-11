@@ -9,6 +9,6 @@ tags:
   - exploration
   - adventure
 rating: 5
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 Those poor men! What a story. Well told, one of the best survival stories I'd read.

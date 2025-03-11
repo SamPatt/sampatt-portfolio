@@ -22,13 +22,12 @@ This memoir reveals the deeply human process behind scientific breakthroughs. Wa
 
 The book serves as a time capsule of the post-war scientific world, capturing the social and institutional environment in which this revolutionary discovery took place. Watson provides insights into the academic culture, funding structures, and interdisciplinary connections that enabled their work.
 
+## Scientific Detective Story
+
+While brief, the book provides enough technical detail to appreciate the scientific challenge of determining DNA's structure. Watson describes how they pieced together various forms of evidence—X-ray crystallography, chemical properties, model building—creating a compelling scientific detective story.
+
 ## Related Notes
 
 - [[surely-youre-joking]]
 - [[the-alchemy-of-the-air]]
 - [[professor-maxwells-duplicitous-demon]]
-
-## Scientific Detective Story
-
-While brief, the book provides enough technical detail to appreciate the scientific challenge of determining DNA's structure. Watson describes how they pieced together various forms of evidence—X-ray crystallography, chemical properties, model building—creating a compelling scientific detective story.
-

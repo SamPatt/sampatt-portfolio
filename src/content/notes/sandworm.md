@@ -11,6 +11,6 @@ tags:
   - warfare
   - espionage
 rating: 4
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 Went fairly deeply into the world of cybersecurity and how these firms actually work, very interesting stuff.

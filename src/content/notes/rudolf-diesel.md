@@ -11,6 +11,6 @@ tags:
   - world-war-i
   - industry
 rating: 5
-last_edited: 2025-03-11T23:47:44.000Z
+last_edited: 2025-03-11T23:58:44.000Z
 ---
 Sad story, but if you're interested in this era, a must read. I learned a lot.

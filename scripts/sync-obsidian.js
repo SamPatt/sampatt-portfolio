@@ -141,24 +141,36 @@ function processFile(filePath) {
       const destContent = fs.readFileSync(destFilePath, 'utf8');
       const destData = matter(destContent).data;
       
+      // Get the content for comparison
+      const sourceContent = matter(content).content;
+      const destContentBody = matter(destContent).content;
+      const sourceDataStr = JSON.stringify(data);
+      const destDataStr = JSON.stringify(destData);
+      
       if (data.last_edited) {
-        // If source has last_edited timestamp, compare with dest
+        // If source has last_edited timestamp, first compare timestamps
         if (!destData.last_edited || data.last_edited > destData.last_edited) {
-          console.log(`Update needed for ${fileName}: newer edit timestamp`);
+          // Timestamp indicates update needed, but verify content actually changed
+          if (sourceContent === destContentBody && sourceDataStr === destDataStr) {
+            // Content is identical despite timestamp change, skip update
+            needsUpdate = false;
+            stats.unchanged++;
+            return;
+          }
+          console.log(`Update needed for ${fileName}: content changed with newer timestamp`);
         } else {
           needsUpdate = false;
           stats.unchanged++;
           return;
         }
       } else {
-        // Fallback to checking file modification time
-        const sourceTime = fs.statSync(filePath).mtimeMs;
-        const destTime = fs.statSync(destFilePath).mtimeMs;
-        
-        if (sourceTime <= destTime) {
+        // No last_edited field, compare content directly
+        if (sourceContent === destContentBody && sourceDataStr === destDataStr) {
           needsUpdate = false;
           stats.unchanged++;
           return;
+        } else {
+          console.log(`Update needed for ${fileName}: content changed (no timestamp)`)
         }
       }
     }

@@ -8,7 +8,7 @@ tags:
   - exercise
   - obesity
   - weight-loss
-last_edited: 2025-03-11T23:47:31.000Z
+last_edited: 2025-03-11T23:58:48.000Z
 ---
 I used to be 300 lbs. Well, maybe - I was too afraid to weigh myself at my heaviest, and the first time after I began losing weight I was 292 lbs. Here I am at my college graduation.
 I used to be 300 lbs. Well, maybe - I was too afraid to weigh myself at my heaviest, and the first time after I began losing weight I was 292 lbs. Here I am at my college graduation.
