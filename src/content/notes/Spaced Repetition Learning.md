@@ -6,7 +6,6 @@ tags:
   - memory
 last_edited: 2025-03-09T15:33:52.000Z
 date: '2025-03-11'
-rating: 0
 ---
 
 The most common mechanism of change for spaced repetition learning tasks is called _retrieval practice._ In brief: when you attempt to recall some knowledge from memory, the act of retrieval tends to reinforce those memories. [^1]

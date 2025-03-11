@@ -6,7 +6,6 @@ tags:
   - spaced-repetition
 last_edited: 2025-03-09T15:33:51.000Z
 date: '2025-03-11'
-rating: 0
 ---
 
 Clever independent researcher who writes about and creates tools for thought.

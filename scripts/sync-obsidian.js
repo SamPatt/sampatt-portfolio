@@ -139,39 +139,68 @@ function processFile(filePath) {
     if (fs.existsSync(destFilePath)) {
       // Check if target file has been modified less recently than source
       const destContent = fs.readFileSync(destFilePath, 'utf8');
-      const destData = matter(destContent).data;
+      const destMatter = matter(destContent);
+      const destData = destMatter.data;
       
       // Get the content for comparison
-      const sourceContent = matter(content).content;
-      const destContentBody = matter(destContent).content;
-      const sourceDataStr = JSON.stringify(data);
-      const destDataStr = JSON.stringify(destData);
+      const sourceMatter = matter(content);
+      const sourceContent = sourceMatter.content.trim();
+      const destContentBody = destMatter.content.trim();
+      
+      // For comparing data, filter out fields we don't want to compare
+      // Clone the data objects to avoid modifying the originals
+      const sourceDataClone = JSON.parse(JSON.stringify(data));
+      const destDataClone = JSON.parse(JSON.stringify(destData));
+      
+      // Strip out fields we don't care about for comparison
+      // Remove fields that should not affect change detection
+      delete sourceDataClone.last_edited;
+      delete destDataClone.last_edited;
+      
+      // Remove publish field from source (it's always removed from dest)
+      delete sourceDataClone.publish;
+      
+      // Handle tags consistently - if source doesn't have tags but dest has uncategorized,
+      // add uncategorized to source for comparison
+      if (!sourceDataClone.tags && destDataClone.tags && 
+          Array.isArray(destDataClone.tags) && 
+          destDataClone.tags.length === 1 && 
+          destDataClone.tags[0] === 'uncategorized') {
+        sourceDataClone.tags = ['uncategorized'];
+      }
+      
+      const sourceDataStr = JSON.stringify(sourceDataClone);
+      const destDataStr = JSON.stringify(destDataClone);
+      
+      // First compare content and data regardless of timestamp
+      const contentMatches = sourceContent === destContentBody;
+      const dataMatches = sourceDataStr === destDataStr;
+      
+      // If content and data match exactly, there's no need to update
+      if (contentMatches && dataMatches) {
+        needsUpdate = false;
+        stats.unchanged++;
+        return;
+      }
+      
+      // At this point, we know content or data is different
       
       if (data.last_edited) {
-        // If source has last_edited timestamp, first compare timestamps
-        if (!destData.last_edited || data.last_edited > destData.last_edited) {
-          // Timestamp indicates update needed, but verify content actually changed
-          if (sourceContent === destContentBody && sourceDataStr === destDataStr) {
-            // Content is identical despite timestamp change, skip update
-            needsUpdate = false;
-            stats.unchanged++;
-            return;
-          }
-          console.log(`Update needed for ${fileName}: content changed with newer timestamp`);
+        // If source has last_edited timestamp
+        if (!destData.last_edited) {
+          // Destination has no timestamp, so source is newer
+          console.log(`Update needed for ${fileName}: content differs and source has timestamp`);
+        } else if (data.last_edited > destData.last_edited) {
+          // Source is newer than destination
+          console.log(`Update needed for ${fileName}: content differs with newer timestamp`);
         } else {
-          needsUpdate = false;
-          stats.unchanged++;
-          return;
+          // Destination timestamp is newer or equal, but content differs
+          // This is an unusual case that might indicate concurrent edits
+          console.log(`Update needed for ${fileName}: content differs despite older timestamp`);
         }
       } else {
-        // No last_edited field, compare content directly
-        if (sourceContent === destContentBody && sourceDataStr === destDataStr) {
-          needsUpdate = false;
-          stats.unchanged++;
-          return;
-        } else {
-          console.log(`Update needed for ${fileName}: content changed (no timestamp)`)
-        }
+        // No timestamp, just report content difference
+        console.log(`Update needed for ${fileName}: content differs`);
       }
     }
     
@@ -195,9 +224,29 @@ function processFile(filePath) {
     
     // Tags are now required for all content types
     if (!data.tags || !Array.isArray(data.tags) || data.tags.length === 0) {
+      // Get destination data if it exists
+      let existingDestData = null;
+      if (fs.existsSync(destFilePath)) {
+        try {
+          const existingContent = fs.readFileSync(destFilePath, 'utf8');
+          existingDestData = matter(existingContent).data;
+        } catch (err) {
+          console.log(`Warning: Could not read existing file ${destFilePath}`);
+        }
+      }
+      
+      // Default tags
       data.tags = ['uncategorized'];
-      console.warn(`Warning: Content at ${filePath} has no tags. Adding default.`);
-      stats.warnings++;
+      
+      // Only warn if this is the first time
+      if (!(existingDestData && 
+           existingDestData.tags && 
+           Array.isArray(existingDestData.tags) && 
+           existingDestData.tags.length === 1 && 
+           existingDestData.tags[0] === 'uncategorized')) {
+        console.warn(`Warning: Content at ${filePath} has no tags. Adding default.`);
+        stats.warnings++;
+      }
     }
     
     // Type-specific requirements
@@ -209,10 +258,13 @@ function processFile(filePath) {
         stats.warnings++;
       }
     } else {
-      // Note-specific validation
-      if (!data.rating && data.rating !== 0) {
-        data.rating = 0;
+      // Note-specific validation - only add rating for book notes
+      if (data.tags && Array.isArray(data.tags) && data.tags.includes('books')) {
+        if (!data.rating && data.rating !== 0) {
+          data.rating = 0;
+        }
       }
+      // Don't add rating field to non-book notes
     }
     
     // Clone the data for site version

@@ -1,11 +1,10 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-03-11T23:58:48.000Z
+last_edited: 2025-03-11T00:07:28.000Z
 tags:
   - personal
   - update
-rating: 0
 ---
 
 This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](https://sive.rs/).

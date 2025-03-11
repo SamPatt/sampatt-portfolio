@@ -5,7 +5,6 @@ tags:
   - exercise
 last_edited: 2025-03-08T22:35:34.000Z
 date: '2025-03-11'
-rating: 0
 ---
 
 
