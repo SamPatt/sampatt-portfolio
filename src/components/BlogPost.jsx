@@ -45,18 +45,36 @@ function BlogPost() {
           
           // Process footNote references - convert [^1] to clickable links
           const footnoteRefRegex = /\[(\^[0-9]+)\]/g;
+          let footnoteRefCount = 0;
+          
           processedHtml = processedHtml.replace(
             footnoteRefRegex,
             (match, footnoteId) => {
               const num = footnoteId.replace('^', '');
+              footnoteRefCount++;
+              console.log(`Processing footnote reference [^${num}]`);
               return `<sup><a href="#fn${num}" id="fnref${num}" class="footnote-ref">${num}</a></sup>`;
             }
           );
           
+          console.log(`Processed ${footnoteRefCount} footnote references`);
+          
+          // Debug: Make sure our processing isn't missing any references
+          if (processedHtml.includes('[^')) {
+            console.warn("Found unprocessed footnote references, checking pattern...");
+            const unprocessedRefs = processedHtml.match(/\[\^[0-9]+\]/g);
+            if (unprocessedRefs) {
+              console.warn(`Unprocessed footnote refs: ${unprocessedRefs.join(', ')}`);
+            }
+          }
+          
           // Process footnote definitions at the end of content
           // First check if the raw footnote definitions are visible in the HTML
-          const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+(.*?)<\/p>/g;
-          const footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
+          // The pattern matches both [^1]: Some text and also multiline footnotes
+          const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+([\s\S]*?)(<\/p>|$)/g;
+          let footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
+          
+          console.log(`Found ${footnoteMatches.length} raw footnote definitions`);
           
           if (footnoteMatches.length > 0) {
             // Create a properly formatted footnotes section
@@ -65,7 +83,14 @@ function BlogPost() {
             // Process each footnote and add it to the section
             for (const match of footnoteMatches) {
               const num = match[1];
-              const content = match[2];
+              // Get the content but make sure we don't include the closing </p> tag if present
+              let content = match[2];
+              if (content.endsWith('</p>')) {
+                content = content.slice(0, -4);
+              }
+              
+              console.log(`Processing footnote [^${num}]: ${content.substring(0, 30)}...`);
+              
               footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
               
               // Remove the original footnote definition from the content
@@ -76,6 +101,53 @@ function BlogPost() {
             
             // Add the footnotes section to the end of the content
             processedHtml += footnotesHtml;
+            
+            console.log('Added footnotes section to the content');
+          } else {
+            console.log('No footnote definitions found in the content');
+            
+            // Try another approach with a more lenient regex (this handles different possible HTML structures)
+            const altFootnoteRegex = /\[\^([0-9]+)\]:\s+([\s\S]*?)(?=\[\^[0-9]+\]:|$)/g;
+            const rawContent = mod.html;
+            let altMatches = [...rawContent.matchAll(altFootnoteRegex)];
+            
+            if (altMatches.length > 0) {
+              console.log(`Found ${altMatches.length} footnotes with alternative approach`);
+              
+              // Create a properly formatted footnotes section
+              let footnotesHtml = '<div class="footnotes"><h2>References</h2><ol>';
+              
+              // Keep track of which footnotes we've processed
+              const processedFootnotes = new Set();
+              
+              // Process each footnote and add it to the section
+              for (const match of altMatches) {
+                const num = match[1];
+                
+                // Skip if we've already processed this footnote
+                if (processedFootnotes.has(num)) continue;
+                processedFootnotes.add(num);
+                
+                // Get the content
+                let content = match[2].trim();
+                
+                // Remove HTML tags if present
+                content = content.replace(/<\/?p>/g, '');
+                
+                console.log(`Processing alternative footnote [^${num}]: ${content.substring(0, 30)}...`);
+                
+                footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
+              }
+              
+              footnotesHtml += '</ol></div>';
+              
+              // Add the footnotes section to the end of the content
+              processedHtml += footnotesHtml;
+              
+              console.log('Added footnotes section using alternative approach');
+            } else {
+              console.log('No footnotes found with alternative approach either');
+            }
           }
           
           setPost({
@@ -277,6 +349,9 @@ function BlogPost() {
       const content = document.querySelector('.blog-content');
       if (!content) return;
 
+      // DEBUG: Log to check what content is available
+      console.log("Blog content loaded, looking for headings and footnotes");
+
       // First pass: collect all heading texts to handle duplicates
       const headingCounts = {};
       content.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
@@ -303,6 +378,11 @@ function BlogPost() {
         }
       });
 
+      // Debug: Check for footnote elements
+      const footnoteRefs = content.querySelectorAll('.footnote-ref');
+      const footnoteItems = content.querySelectorAll('.footnotes li');
+      console.log(`Found ${footnoteRefs.length} footnote references and ${footnoteItems.length} footnote items`);
+
       // Handle clicks on anchor links with special handling for footnotes
       const handleAnchorClick = (e) => {
         const link = e.target.closest('a');
@@ -312,12 +392,19 @@ function BlogPost() {
         if (href && href.startsWith('#')) {
           e.preventDefault();
           const targetId = href.slice(1);
+          console.log(`Clicked anchor link to #${targetId}`);
+          
+          // Try to find the target element
           const targetElement = document.getElementById(targetId);
           
           if (targetElement) {
+            console.log(`Found target element for #${targetId}`);
+            
             // Add visual highlighting effect for footnotes
             const isFootnote = targetId.startsWith('fn') || targetId.startsWith('fnref');
             if (isFootnote) {
+              console.log(`Processing footnote link: ${targetId}`);
+              
               // Create highlight effect
               const originalBg = targetElement.style.backgroundColor;
               targetElement.style.backgroundColor = 'rgba(93, 139, 244, 0.2)';
@@ -343,6 +430,8 @@ function BlogPost() {
             
             // Update URL without triggering another scroll
             window.history.pushState(null, '', href);
+          } else {
+            console.error(`Element with id "${targetId}" not found in the document`);
           }
         }
       };
