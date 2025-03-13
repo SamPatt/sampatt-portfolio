@@ -14,6 +14,9 @@ function Header() {
         <NavLink to="/projects" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>PROJECTS</div>
         </NavLink>
+        <NavLink to="/portfolio" className={({ isActive }) => isActive ? 'active' : ''}>
+          <div>PORTFOLIO</div>
+        </NavLink>
         <NavLink to="/blog" className={({ isActive }) => isActive ? 'active' : ''}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             BLOG

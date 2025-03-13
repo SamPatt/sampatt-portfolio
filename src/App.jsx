@@ -8,6 +8,7 @@ import BlogPost from "./components/BlogPost";
 import Notes from "./pages/Notes";
 import Note from "./components/Note";
 import Now from "./pages/Now";
+import Portfolio from "./pages/Portfolio";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<About />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
