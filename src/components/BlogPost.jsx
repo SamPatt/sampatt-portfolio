@@ -69,32 +69,65 @@ function BlogPost() {
           }
           
           // Process footnote definitions at the end of content
-          // First check if the raw footnote definitions are visible in the HTML
-          // The pattern matches both [^1]: Some text and also multiline footnotes
+          
+          // Create a collection of footnote content we'll use to build the formatted footnotes section
+          const footnotes = [];
+          
+          // First try to find footnotes in HTML-wrapped format (first approach)
           const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+([\s\S]*?)(<\/p>|$)/g;
           let footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
           
-          console.log(`Found ${footnoteMatches.length} raw footnote definitions`);
+          console.log(`Found ${footnoteMatches.length} raw footnote definitions with HTML tags`);
           
-          if (footnoteMatches.length > 0) {
+          // Process any HTML-wrapped footnotes
+          for (const match of footnoteMatches) {
+            const num = match[1];
+            // Get the content but make sure we don't include the closing </p> tag if present
+            let content = match[2];
+            if (content.endsWith('</p>')) {
+              content = content.slice(0, -4);
+            }
+            
+            console.log(`Processing HTML-wrapped footnote [^${num}]: ${content.substring(0, 30)}...`);
+            
+            // Add to our collection
+            footnotes.push({ num, content });
+            
+            // Remove the original footnote definition from the content
+            processedHtml = processedHtml.replace(match[0], '');
+          }
+          
+          // Then try to find footnotes in raw text format (second approach)
+          // This regex looks for "[^n]: content" pattern at line starts or after newlines
+          const rawFootnoteRegex = /(?:^|\n)\[\^([0-9]+)\]:\s+(.*?)(?=$|\n\[\^|\n\n)/gs;
+          let rawMatches = [...processedHtml.matchAll(rawFootnoteRegex)];
+          
+          console.log(`Found ${rawMatches.length} raw footnote definitions as plain text`);
+          
+          // Process any plain text footnotes
+          for (const match of rawMatches) {
+            const num = match[1];
+            let content = match[2].trim();
+            
+            console.log(`Processing raw footnote [^${num}]: ${content.substring(0, 30)}...`);
+            
+            // Only add if we haven't processed this footnote number already
+            if (!footnotes.some(fn => fn.num === num)) {
+              footnotes.push({ num, content });
+            }
+            
+            // Remove the original footnote definition from the content
+            processedHtml = processedHtml.replace(match[0], '');
+          }
+          
+          // If we found footnotes with the first two approaches, create the footnotes section
+          if (footnotes.length > 0) {
             // Create a properly formatted footnotes section
             let footnotesHtml = '<div class="footnotes"><h2>References</h2><ol>';
             
-            // Process each footnote and add it to the section
-            for (const match of footnoteMatches) {
-              const num = match[1];
-              // Get the content but make sure we don't include the closing </p> tag if present
-              let content = match[2];
-              if (content.endsWith('</p>')) {
-                content = content.slice(0, -4);
-              }
-              
-              console.log(`Processing footnote [^${num}]: ${content.substring(0, 30)}...`);
-              
+            // Add each footnote to the HTML
+            for (const { num, content } of footnotes) {
               footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
-              
-              // Remove the original footnote definition from the content
-              processedHtml = processedHtml.replace(match[0], '');
             }
             
             footnotesHtml += '</ol></div>';
@@ -102,11 +135,11 @@ function BlogPost() {
             // Add the footnotes section to the end of the content
             processedHtml += footnotesHtml;
             
-            console.log('Added footnotes section to the content');
+            console.log(`Added footnotes section with ${footnotes.length} footnotes`);
           } else {
-            console.log('No footnote definitions found in the content');
+            console.log('No footnote definitions found with standard approaches');
             
-            // Try another approach with a more lenient regex (this handles different possible HTML structures)
+            // Final attempt - try a more aggressive approach using the original markdown
             const altFootnoteRegex = /\[\^([0-9]+)\]:\s+([\s\S]*?)(?=\[\^[0-9]+\]:|$)/g;
             const rawContent = mod.html;
             let altMatches = [...rawContent.matchAll(altFootnoteRegex)];
@@ -137,6 +170,19 @@ function BlogPost() {
                 console.log(`Processing alternative footnote [^${num}]: ${content.substring(0, 30)}...`);
                 
                 footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
+                
+                // Remove this specific footnote from the content
+                // Create patterns to match different ways this footnote might appear in the HTML
+                const patterns = [
+                  new RegExp(`<p>\\[\\^${num}\\]:.*?<\\/p>`, 'g'),
+                  new RegExp(`\\[\\^${num}\\]:.*?(\\n|$)`, 'g'),
+                  new RegExp(`\\[\\^${num}\\]:.*?(<br>|<\\/p>)`, 'g')
+                ];
+                
+                // Apply each pattern to remove the footnotes
+                patterns.forEach(pattern => {
+                  processedHtml = processedHtml.replace(pattern, '');
+                });
               }
               
               footnotesHtml += '</ol></div>';
@@ -145,8 +191,92 @@ function BlogPost() {
               processedHtml += footnotesHtml;
               
               console.log('Added footnotes section using alternative approach');
+              
+              // Find where the raw footnotes section might begin
+              // This looks for the first footnote definition after the main content
+              const firstFootnoteDefIndex = processedHtml.search(/\[\^[0-9]+\]:/);
+              
+              if (firstFootnoteDefIndex > -1) {
+                console.log(`Found raw footnotes section starting at position ${firstFootnoteDefIndex}`);
+                
+                // Try to find a clean cutoff point - like the end of a paragraph before footnotes start
+                const lastParagraphEndIndex = processedHtml.lastIndexOf('</p>', firstFootnoteDefIndex);
+                
+                if (lastParagraphEndIndex > -1 && lastParagraphEndIndex < firstFootnoteDefIndex) {
+                  // Keep everything up to the end of the last paragraph before footnotes
+                  console.log(`Truncating content at position ${lastParagraphEndIndex + 4}`);
+                  processedHtml = processedHtml.substring(0, lastParagraphEndIndex + 4) + 
+                                  processedHtml.substring(processedHtml.indexOf('<div class="footnotes">'));
+                }
+              }
+              
+              // Final cleanup - remove any raw footnote definitions that might remain
+              const finalCleanupRegex = /(?:^|\n)\[\^[0-9]+\]:\s+.*?(?=$|\n\[\^|\n\n)/gs;
+              processedHtml = processedHtml.replace(finalCleanupRegex, '');
             } else {
-              console.log('No footnotes found with alternative approach either');
+              console.log('No footnotes found with any approach');
+            }
+          }
+          
+          // Final safety check - clean up any remaining raw footnote definitions
+          // that might appear in unexpected formats or weren't caught by our regexes
+          const finalCleanupRegex = /(?:<p>)?\[\^([0-9]+)\]:(?:\s|&nbsp;)+.*?(?:<\/p>)?/g;
+          processedHtml = processedHtml.replace(finalCleanupRegex, '');
+          
+          // Also remove any paragraphs that start with [^n]: (common raw footnote format)
+          const rawFootnoteParaRegex = /<p>\[\^[0-9]+\]:.*?<\/p>/g;
+          processedHtml = processedHtml.replace(rawFootnoteParaRegex, '');
+          
+          // Try to identify and remove the entire section of raw footnotes at the end
+          // This looks for a series of footnote references at the end of the document
+          const rawFootnoteBlockRegex = /(<p>\[\^[0-9]+\]:.*?<\/p>\s*){2,}$/g;
+          processedHtml = processedHtml.replace(rawFootnoteBlockRegex, '');
+          
+          // Find and remove lines with just footnote references
+          const standaloneFootnoteRegex = /\[\^[0-9]+\]:.*?(?=<\/p>|$)/g;
+          processedHtml = processedHtml.replace(standaloneFootnoteRegex, '');
+          
+          // Most aggressive approach: if we find a nicely formatted footnotes section,
+          // look for any content that appears to be raw footnote references after the main content
+          // and before the formatted footnotes section
+          const formattedFootnotesIndex = processedHtml.indexOf('<div class="footnotes">');
+          if (formattedFootnotesIndex > -1) {
+            // Find the last main content paragraph (before any footnotes might start)
+            // Look for a clear ending like "Now, quit reading" which is the last paragraph in this post
+            const possibleEndMarkers = [
+              'Now, quit reading',
+              'In Conclusion',
+              'To summarize',
+              'In summary'
+            ];
+            
+            // Try to find one of these markers
+            let lastContentIndex = -1;
+            for (const marker of possibleEndMarkers) {
+              const idx = processedHtml.indexOf(marker);
+              if (idx > -1 && idx < formattedFootnotesIndex) {
+                // Find the end of this paragraph
+                const paraEndIndex = processedHtml.indexOf('</p>', idx);
+                if (paraEndIndex > -1 && paraEndIndex > lastContentIndex) {
+                  lastContentIndex = paraEndIndex + 4; // +4 to include the </p> tag
+                }
+              }
+            }
+            
+            // If we found a clear end to the main content
+            if (lastContentIndex > -1) {
+              console.log(`Found clear end of main content at position ${lastContentIndex}`);
+              
+              // Remove everything between the last content paragraph and the formatted footnotes
+              const cleanedHtml = 
+                processedHtml.substring(0, lastContentIndex) + 
+                processedHtml.substring(formattedFootnotesIndex);
+                
+              // Only use this if it doesn't remove too much content (safety check)
+              if (formattedFootnotesIndex - lastContentIndex < 5000) { // if less than ~5KB was removed
+                processedHtml = cleanedHtml;
+                console.log('Applied aggressive cleanup between content end and footnotes section');
+              }
             }
           }
           

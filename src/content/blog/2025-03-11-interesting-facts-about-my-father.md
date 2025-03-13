@@ -1,6 +1,5 @@
 ---
 title: Interesting Facts About my Father
-date: 2025-03-11T00:00:00.000Z
 description: In Which I Share Stories about my Father
 tags:
   - family
@@ -9,7 +8,6 @@ send_newsletter: 'false'
 type: blog
 last_edited: 2025-03-11T17:28:50.000Z
 created: 2025-03-11T17:26:50.000Z
-modified: 2025-03-11T17:28:50.000Z
 ---
 _I originally posted this in Jun 2015, a month or so after my father passed away far too young at 55._
   

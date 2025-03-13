@@ -137,8 +137,9 @@ sup .footnote-ref {
   border-radius: 4px;
   border: 1px solid var(--border-color, #ddd);
   background-color: #fff;
-  color: var(--text-primary, #333);
+  color: #000;
   font-size: 1rem;
+  font-weight: 500;
   width: 70%;
 }
 
@@ -147,8 +148,9 @@ sup .footnote-ref {
   border-radius: 4px;
   border: 1px solid var(--border-color, #ddd);
   background-color: #fff;
-  color: var(--text-primary, #333);
+  color: #000;
   font-size: 1rem;
+  font-weight: 500;
   width: 30%;
   cursor: pointer;
 }
