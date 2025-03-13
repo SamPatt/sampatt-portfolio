@@ -7,8 +7,8 @@ tags:
   - fitness
 send_newsletter: 'true'
 type: blog
-last_edited: '2025-03-13-11:44:39'
-created: '2025-03-12-23:51:37'
+last_edited: 2025-03-13T12:06:50.000Z
+created: 2025-03-13T12:04:19.000Z
 ---
 
   
