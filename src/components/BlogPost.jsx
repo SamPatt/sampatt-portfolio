@@ -52,21 +52,9 @@ function BlogPost() {
             (match, footnoteId) => {
               const num = footnoteId.replace('^', '');
               footnoteRefCount++;
-              console.log(`Processing footnote reference [^${num}]`);
               return `<sup><a href="#fn${num}" id="fnref${num}" class="footnote-ref">${num}</a></sup>`;
             }
           );
-          
-          console.log(`Processed ${footnoteRefCount} footnote references`);
-          
-          // Debug: Make sure our processing isn't missing any references
-          if (processedHtml.includes('[^')) {
-            console.warn("Found unprocessed footnote references, checking pattern...");
-            const unprocessedRefs = processedHtml.match(/\[\^[0-9]+\]/g);
-            if (unprocessedRefs) {
-              console.warn(`Unprocessed footnote refs: ${unprocessedRefs.join(', ')}`);
-            }
-          }
           
           // Process footnote definitions at the end of content
           
@@ -77,8 +65,6 @@ function BlogPost() {
           const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+([\s\S]*?)(<\/p>|$)/g;
           let footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
           
-          console.log(`Found ${footnoteMatches.length} raw footnote definitions with HTML tags`);
-          
           // Process any HTML-wrapped footnotes
           for (const match of footnoteMatches) {
             const num = match[1];
@@ -87,8 +73,6 @@ function BlogPost() {
             if (content.endsWith('</p>')) {
               content = content.slice(0, -4);
             }
-            
-            console.log(`Processing HTML-wrapped footnote [^${num}]: ${content.substring(0, 30)}...`);
             
             // Add to our collection
             footnotes.push({ num, content });
@@ -102,14 +86,10 @@ function BlogPost() {
           const rawFootnoteRegex = /(?:^|\n)\[\^([0-9]+)\]:\s+(.*?)(?=$|\n\[\^|\n\n)/gs;
           let rawMatches = [...processedHtml.matchAll(rawFootnoteRegex)];
           
-          console.log(`Found ${rawMatches.length} raw footnote definitions as plain text`);
-          
           // Process any plain text footnotes
           for (const match of rawMatches) {
             const num = match[1];
             let content = match[2].trim();
-            
-            console.log(`Processing raw footnote [^${num}]: ${content.substring(0, 30)}...`);
             
             // Only add if we haven't processed this footnote number already
             if (!footnotes.some(fn => fn.num === num)) {
@@ -134,19 +114,13 @@ function BlogPost() {
             
             // Add the footnotes section to the end of the content
             processedHtml += footnotesHtml;
-            
-            console.log(`Added footnotes section with ${footnotes.length} footnotes`);
           } else {
-            console.log('No footnote definitions found with standard approaches');
-            
             // Final attempt - try a more aggressive approach using the original markdown
             const altFootnoteRegex = /\[\^([0-9]+)\]:\s+([\s\S]*?)(?=\[\^[0-9]+\]:|$)/g;
             const rawContent = mod.html;
             let altMatches = [...rawContent.matchAll(altFootnoteRegex)];
             
             if (altMatches.length > 0) {
-              console.log(`Found ${altMatches.length} footnotes with alternative approach`);
-              
               // Create a properly formatted footnotes section
               let footnotesHtml = '<div class="footnotes"><h2>References</h2><ol>';
               
@@ -166,8 +140,6 @@ function BlogPost() {
                 
                 // Remove HTML tags if present
                 content = content.replace(/<\/?p>/g, '');
-                
-                console.log(`Processing alternative footnote [^${num}]: ${content.substring(0, 30)}...`);
                 
                 footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
                 
@@ -190,21 +162,16 @@ function BlogPost() {
               // Add the footnotes section to the end of the content
               processedHtml += footnotesHtml;
               
-              console.log('Added footnotes section using alternative approach');
-              
               // Find where the raw footnotes section might begin
               // This looks for the first footnote definition after the main content
               const firstFootnoteDefIndex = processedHtml.search(/\[\^[0-9]+\]:/);
               
               if (firstFootnoteDefIndex > -1) {
-                console.log(`Found raw footnotes section starting at position ${firstFootnoteDefIndex}`);
-                
                 // Try to find a clean cutoff point - like the end of a paragraph before footnotes start
                 const lastParagraphEndIndex = processedHtml.lastIndexOf('</p>', firstFootnoteDefIndex);
                 
                 if (lastParagraphEndIndex > -1 && lastParagraphEndIndex < firstFootnoteDefIndex) {
                   // Keep everything up to the end of the last paragraph before footnotes
-                  console.log(`Truncating content at position ${lastParagraphEndIndex + 4}`);
                   processedHtml = processedHtml.substring(0, lastParagraphEndIndex + 4) + 
                                   processedHtml.substring(processedHtml.indexOf('<div class="footnotes">'));
                 }
@@ -213,8 +180,6 @@ function BlogPost() {
               // Final cleanup - remove any raw footnote definitions that might remain
               const finalCleanupRegex = /(?:^|\n)\[\^[0-9]+\]:\s+.*?(?=$|\n\[\^|\n\n)/gs;
               processedHtml = processedHtml.replace(finalCleanupRegex, '');
-            } else {
-              console.log('No footnotes found with any approach');
             }
           }
           
@@ -265,8 +230,6 @@ function BlogPost() {
             
             // If we found a clear end to the main content
             if (lastContentIndex > -1) {
-              console.log(`Found clear end of main content at position ${lastContentIndex}`);
-              
               // Remove everything between the last content paragraph and the formatted footnotes
               const cleanedHtml = 
                 processedHtml.substring(0, lastContentIndex) + 
@@ -275,7 +238,6 @@ function BlogPost() {
               // Only use this if it doesn't remove too much content (safety check)
               if (formattedFootnotesIndex - lastContentIndex < 5000) { // if less than ~5KB was removed
                 processedHtml = cleanedHtml;
-                console.log('Applied aggressive cleanup between content end and footnotes section');
               }
             }
           }
@@ -479,9 +441,6 @@ function BlogPost() {
       const content = document.querySelector('.blog-content');
       if (!content) return;
 
-      // DEBUG: Log to check what content is available
-      console.log("Blog content loaded, looking for headings and footnotes");
-
       // First pass: collect all heading texts to handle duplicates
       const headingCounts = {};
       content.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
@@ -508,11 +467,6 @@ function BlogPost() {
         }
       });
 
-      // Debug: Check for footnote elements
-      const footnoteRefs = content.querySelectorAll('.footnote-ref');
-      const footnoteItems = content.querySelectorAll('.footnotes li');
-      console.log(`Found ${footnoteRefs.length} footnote references and ${footnoteItems.length} footnote items`);
-
       // Handle clicks on anchor links with special handling for footnotes
       const handleAnchorClick = (e) => {
         const link = e.target.closest('a');
@@ -522,18 +476,13 @@ function BlogPost() {
         if (href && href.startsWith('#')) {
           e.preventDefault();
           const targetId = href.slice(1);
-          console.log(`Clicked anchor link to #${targetId}`);
-          
           // Try to find the target element
           const targetElement = document.getElementById(targetId);
           
           if (targetElement) {
-            console.log(`Found target element for #${targetId}`);
-            
             // Add visual highlighting effect for footnotes
             const isFootnote = targetId.startsWith('fn') || targetId.startsWith('fnref');
             if (isFootnote) {
-              console.log(`Processing footnote link: ${targetId}`);
               
               // Create highlight effect
               const originalBg = targetElement.style.backgroundColor;
