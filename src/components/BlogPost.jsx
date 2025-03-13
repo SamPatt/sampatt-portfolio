@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Newsletter from './Newsletter';
+import WalkingCalculator from './WalkingCalculator';
 
 function BlogPost() {
   const { slug } = useParams();
@@ -32,10 +33,56 @@ function BlogPost() {
             processedHtml = processedHtml.replace(match[0], placeholder);
           });
           
+          // Handle walking calculator embed
+          const calculatorRegex = /\{\{walking-calculator\}\}/g;
+          let calculatorMatches = [...processedHtml.matchAll(calculatorRegex)];
+          
+          // Replace calculator tags with placeholders
+          calculatorMatches.forEach((match, index) => {
+            const placeholder = `<div id="walking-calculator-${index}"></div>`;
+            processedHtml = processedHtml.replace(match[0], placeholder);
+          });
+          
+          // Process footNote references - convert [^1] to clickable links
+          const footnoteRefRegex = /\[(\^[0-9]+)\]/g;
+          processedHtml = processedHtml.replace(
+            footnoteRefRegex,
+            (match, footnoteId) => {
+              const num = footnoteId.replace('^', '');
+              return `<sup><a href="#fn${num}" id="fnref${num}" class="footnote-ref">${num}</a></sup>`;
+            }
+          );
+          
+          // Process footnote definitions at the end of content
+          // First check if the raw footnote definitions are visible in the HTML
+          const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+(.*?)<\/p>/g;
+          const footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
+          
+          if (footnoteMatches.length > 0) {
+            // Create a properly formatted footnotes section
+            let footnotesHtml = '<div class="footnotes"><h2>References</h2><ol>';
+            
+            // Process each footnote and add it to the section
+            for (const match of footnoteMatches) {
+              const num = match[1];
+              const content = match[2];
+              footnotesHtml += `<li id="fn${num}">${content} <a href="#fnref${num}" class="footnote-backref">↩</a></li>`;
+              
+              // Remove the original footnote definition from the content
+              processedHtml = processedHtml.replace(match[0], '');
+            }
+            
+            footnotesHtml += '</ol></div>';
+            
+            // Add the footnotes section to the end of the content
+            processedHtml += footnotesHtml;
+          }
+          
           setPost({
             slug,
             html: processedHtml,
             embedMatches: embedMatches.map(match => match[1]),
+            calculatorMatches: calculatorMatches.length > 0,
             attributes: mod.attributes,
             isDraft: matchingPath.includes('/drafts/')
           });
@@ -70,6 +117,32 @@ function BlogPost() {
     document.addEventListener('click', handleCodeClick);
     return () => document.removeEventListener('click', handleCodeClick);
   }, []);
+
+  // Handle walking calculator
+  useEffect(() => {
+    if (post && post.calculatorMatches) {
+      // Render the calculator in the placeholder
+      setTimeout(() => {
+        const calculatorPlaceholders = document.querySelectorAll('[id^="walking-calculator-"]');
+        calculatorPlaceholders.forEach(placeholder => {
+          if (placeholder && !placeholder.hasChildNodes()) {
+            // Create a div for React to render into
+            const container = document.createElement('div');
+            placeholder.appendChild(container);
+            
+            // Use ReactDOM to render the calculator
+            import('react-dom/client').then(({ createRoot }) => {
+              const root = createRoot(container);
+              root.render(<WalkingCalculator />);
+            }).catch(error => {
+              console.error('Error rendering calculator:', error);
+              placeholder.innerHTML = '<p>Error loading calculator.</p>';
+            });
+          }
+        });
+      }, 100);
+    }
+  }, [post]);
 
   // Handle embedded notes
   useEffect(() => {
@@ -230,7 +303,7 @@ function BlogPost() {
         }
       });
 
-      // Handle clicks on anchor links
+      // Handle clicks on anchor links with special handling for footnotes
       const handleAnchorClick = (e) => {
         const link = e.target.closest('a');
         if (!link) return;
@@ -240,9 +313,35 @@ function BlogPost() {
           e.preventDefault();
           const targetId = href.slice(1);
           const targetElement = document.getElementById(targetId);
+          
           if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth' });
-            // Update URL without triggering a scroll
+            // Add visual highlighting effect for footnotes
+            const isFootnote = targetId.startsWith('fn') || targetId.startsWith('fnref');
+            if (isFootnote) {
+              // Create highlight effect
+              const originalBg = targetElement.style.backgroundColor;
+              targetElement.style.backgroundColor = 'rgba(93, 139, 244, 0.2)';
+              targetElement.style.transition = 'background-color 0.5s ease';
+              
+              // Reset after a delay
+              setTimeout(() => {
+                targetElement.style.backgroundColor = originalBg;
+              }, 1500);
+              
+              // Scroll with offset for better positioning
+              const offset = 80;
+              const y = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
+              
+              window.scrollTo({
+                top: y,
+                behavior: 'smooth'
+              });
+            } else {
+              // Standard anchor link behavior for non-footnotes
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Update URL without triggering another scroll
             window.history.pushState(null, '', href);
           }
         }
