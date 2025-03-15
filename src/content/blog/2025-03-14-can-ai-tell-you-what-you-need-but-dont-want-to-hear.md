@@ -1,6 +1,6 @@
 ---
 title: Can AI Tell You What You Need (But Don't Want) To Hear?
-description: A blog post
+description: In Which I Question Whether AI Will Help Us Stay Grounded
 tags:
   - artificial-intelligence
   - psychology
