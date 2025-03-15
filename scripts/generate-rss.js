@@ -45,13 +45,17 @@ async function generateRSSFeed() {
       const created = frontmatter.match(/created:\s*['"](.+)['"]/)?.[1];
       const description = frontmatter.match(/description:\s*(.+)/)?.[1];
       
+      // Extract image if available
+      const imageMatch = frontmatter.match(/image:\s*['"]?(.+?)['"]?(\s|$)/);
+      const image = imageMatch ? imageMatch[1].trim() : null;
+      
       // Remove frontmatter to get actual content
       const postContent = content.replace(/^---\n[\s\S]*?\n---\n/, '');
       
       const slug = file.replace('.md', '');
       const url = `https://sampatt.com/blog/${slug}`;
 
-      feed.addItem({
+      const feedItem = {
         title: title?.trim() || 'Untitled',
         id: url,
         link: url,
@@ -62,7 +66,15 @@ async function generateRSSFeed() {
           name: "Sam Patterson",
           link: "https://sampatt.com"
         }]
-      });
+      };
+      
+      // Only add image if it's a valid URL
+      if (image && image.startsWith('http')) {
+        // For RSS, we need to use the image property differently to avoid errors
+        feedItem.image = image;
+      }
+      
+      feed.addItem(feedItem);
     }
   }
 
@@ -77,7 +89,40 @@ async function generateRSSFeed() {
   fs.writeFileSync(path.join(OUTPUT_DIR, 'rss.xml'), feed.rss2());
   fs.writeFileSync(path.join(OUTPUT_DIR, 'feed.json'), feed.json1());
   fs.writeFileSync(path.join(OUTPUT_DIR, 'atom.xml'), feed.atom1());
-  console.log('RSS Generator: Feed generation complete!');
+  
+  // Generate blog post metadata to inject during build
+  console.log('RSS Generator: Generating metadata for blog posts...');
+  const indexHtml = fs.readFileSync(path.join(OUTPUT_DIR, 'index.html'), 'utf8');
+  let blogsData = {};
+  
+  // Store metadata for each blog post
+  for (const file of blogFiles) {
+    const content = fs.readFileSync(path.join(BLOG_DIR, file), 'utf8');
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    
+    if (frontmatterMatch) {
+      const frontmatter = frontmatterMatch[1];
+      const title = frontmatter.match(/title:\s*(.+)/)?.[1]?.trim() || 'Untitled';
+      const description = frontmatter.match(/description:\s*(.+)/)?.[1]?.trim() || '';
+      
+      // Extract image if available
+      const imageMatch = frontmatter.match(/image:\s*['"]?(.+?)['"]?(\s|$)/);
+      const image = imageMatch ? imageMatch[1].trim() : null;
+      
+      const slug = file.replace('.md', '');
+      blogsData[slug] = { title, description, image };
+    }
+  }
+  
+  console.log(`RSS Generator: Processed metadata for ${Object.keys(blogsData).length} blog posts`);
+  
+  // Write the metadata file that will be used by the client
+  fs.writeFileSync(
+    path.join(OUTPUT_DIR, 'blog-metadata.js'), 
+    `window.BLOG_METADATA = ${JSON.stringify(blogsData)};`
+  );
+  
+  console.log('RSS Generator: Feed and metadata generation complete!');
 }
 
 generateRSSFeed().catch(error => {

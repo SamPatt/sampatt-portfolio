@@ -12,15 +12,54 @@
     <meta property="og:title" content="Sam Patterson - Fullstack Developer" />
     <meta property="og:description" content="Fullstack Developer specializing in decentralization, self-hosting, privacy, and local LLMs" />
     <meta property="og:url" content="https://sampatt.com" />
+    <meta property="og:image" content="" id="og-image" />
     
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sam Patterson - Fullstack Developer" />
     <meta name="twitter:description" content="Fullstack Developer specializing in decentralization, self-hosting, privacy, and local LLMs" />
+    <meta name="twitter:image" content="" id="twitter-image" />
     <link rel="alternate" type="application/rss+xml" title="Sam Patterson's Blog RSS Feed" href="/rss.xml" />
     <link rel="alternate" type="application/json" title="Sam Patterson's Blog JSON Feed" href="/feed.json" />
     <link rel="alternate" type="application/atom+xml" title="Sam Patterson's Blog Atom Feed" href="/atom.xml" />
     <script defer src="https://ruddy-mule.pikapod.net/script.js" data-website-id="c389884c-5b65-47bc-b8b8-b54670d8eef9"></script>
+    <script src="/blog-metadata.js"></script>
+    <script>
+      // Update meta tags based on the current URL
+      function updateMetaTags() {
+        // Only run this for blog posts
+        if (window.location.pathname.startsWith('/blog/')) {
+          const slug = window.location.pathname.split('/')[2];
+          
+          // If we have metadata for this blog post
+          if (window.BLOG_METADATA && window.BLOG_METADATA[slug]) {
+            const post = window.BLOG_METADATA[slug];
+            
+            // Update title and description meta tags
+            document.querySelector('meta[property="og:title"]').setAttribute('content', post.title);
+            document.querySelector('meta[name="twitter:title"]').setAttribute('content', post.title);
+            
+            if (post.description) {
+              document.querySelector('meta[property="og:description"]').setAttribute('content', post.description);
+              document.querySelector('meta[name="twitter:description"]').setAttribute('content', post.description);
+            }
+            
+            // Update image meta tags if available
+            if (post.image) {
+              document.querySelector('meta[property="og:image"]').setAttribute('content', post.image);
+              document.querySelector('meta[name="twitter:image"]').setAttribute('content', post.image);
+            }
+            
+            // Update page URL
+            document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
+          }
+        }
+      }
+      
+      // Run when the page loads and when navigation happens
+      document.addEventListener('DOMContentLoaded', updateMetaTags);
+      window.addEventListener('popstate', updateMetaTags);
+    </script>
   </head>
   <body>
     <div id="root"></div>
