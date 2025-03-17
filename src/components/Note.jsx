@@ -166,32 +166,41 @@ function Note() {
       <article className="note">
         <h1>{note.attributes.title}</h1>
         
-        {note.attributes.date && (
-          <div className="date">
-            {new Date(note.attributes.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              timeZone: 'UTC'
-            })}
-          </div>
-        )}
-        
-        {note.attributes.last_edited && (
-          <div className="last-updated">
-            Last updated: {new Date(note.attributes.last_edited).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              timeZone: 'UTC'
-            })}{' '}
-            {new Date(note.attributes.last_edited).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'UTC'
-            })}
-          </div>
-        )}
+        <div className="date-container">
+          {note.attributes.date && (
+            <div className="date">
+              <span className="date-label">Published: </span>
+              {new Date(note.attributes.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })}
+            </div>
+          )}
+          
+          {note.attributes.last_edited && (
+            <div className="date modified">
+              <span className="date-label">Last updated: </span>
+              {new Date(note.attributes.last_edited).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })}
+              {note.attributes.last_edited.includes(':') && (
+                <span className="time">
+                  {" at "}
+                  {new Date(note.attributes.last_edited).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC'
+                  })}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
         
         {note.attributes.tags && note.attributes.tags.length > 0 && (
           <div className="tags">

@@ -28,7 +28,3 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 ## What's Next
 
 - I'll be competing in the South Bend table tennis tournament in late March 2025.
-
----
-
-*This is my personal "now page" - a snapshot of my current focus and activities. It helps me clarify my priorities and lets friends know what I'm up to without having to ask.*

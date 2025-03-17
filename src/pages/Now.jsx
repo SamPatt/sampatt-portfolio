@@ -147,32 +147,41 @@ function Now() {
       <article className="note">
         <h1>{nowPage.attributes.title || 'Now'}</h1>
         
-        {nowPage.attributes.date && (
-          <div className="date">
-            Created: {new Date(nowPage.attributes.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              timeZone: 'UTC'
-            })}
-          </div>
-        )}
-        
-        {nowPage.attributes.last_edited && (
-          <div className="last-updated">
-            Last updated: {new Date(nowPage.attributes.last_edited).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
-              timeZone: 'UTC'
-            })}{' '}
-            {new Date(nowPage.attributes.last_edited).toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZone: 'UTC'
-            })}
-          </div>
-        )}
+        <div className="date-container">
+          {nowPage.attributes.date && (
+            <div className="date">
+              <span className="date-label">Published: </span>
+              {new Date(nowPage.attributes.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })}
+            </div>
+          )}
+          
+          {nowPage.attributes.last_edited && (
+            <div className="date modified">
+              <span className="date-label">Last updated: </span>
+              {new Date(nowPage.attributes.last_edited).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'UTC'
+              })}
+              {nowPage.attributes.last_edited.includes(':') && (
+                <span className="time">
+                  {" at "}
+                  {new Date(nowPage.attributes.last_edited).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC'
+                  })}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
         
         {nowPage.attributes.tags && nowPage.attributes.tags.length > 0 && (
           <div className="tags">
@@ -188,14 +197,6 @@ function Now() {
           className="now-content note-content"
           dangerouslySetInnerHTML={{ __html: nowPage.html }}
         />
-        
-        <div className="now-footer">
-          <p>
-            <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">
-              What is a now page?
-            </a>
-          </p>
-        </div>
       </article>
     </div>
   );
