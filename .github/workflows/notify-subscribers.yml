@@ -14,9 +14,10 @@ jobs:
           fetch-depth: 2
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v39
-        with:
-          files: src/content/blog/**/*.md
+        run: |
+          # Safer approach to get changed files
+          git diff --name-only --diff-filter=A HEAD~1 HEAD | grep -E 'src/content/blog/.*\.md$' | tr '\n' ' ' > changed_files.txt
+          echo "added_files=$(cat changed_files.txt)" >> $GITHUB_OUTPUT
       - name: Set up Node.js
         if: steps.changed-files.outputs.added_files != ''
         uses: actions/setup-node@v3
