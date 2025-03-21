@@ -16,7 +16,7 @@ image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-03-14-can-ai-tell/image/2025-03-14-23-35.png)
 send_newsletter: false
 type: blog
-last_edited: 2025-03-14T23:52:39.000Z
+last_edited: 2025-03-15T00:33:25.000Z
 created: 2025-03-14T12:59:21.000Z
 ---
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-03-14-can-ai-tell/image/2025-03-14-23-35.png)
