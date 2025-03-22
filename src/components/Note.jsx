@@ -167,10 +167,10 @@ function Note() {
         <h1>{note.attributes.title}</h1>
         
         <div className="date-container">
-          {note.attributes.date && (
+          {(note.attributes.created || note.attributes.date) && (
             <div className="date">
               <span className="date-label">Published: </span>
-              {new Date(note.attributes.date).toLocaleDateString('en-US', {
+              {new Date(note.attributes.created || note.attributes.date).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',

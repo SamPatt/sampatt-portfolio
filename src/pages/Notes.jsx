@@ -66,9 +66,12 @@ function Notes() {
         );
 
         // Sort notes by date (newest first)
-        notesData.sort((a, b) => 
-          new Date(b.attributes.date) - new Date(a.attributes.date)
-        );
+        notesData.sort((a, b) => {
+          // Use created date (if available) or date field for sorting in reverse chronological order
+          const dateA = a.attributes.created || a.attributes.date;
+          const dateB = b.attributes.created || b.attributes.date;
+          return new Date(dateB) - new Date(dateA);
+        });
 
         // Filter by tag if provided
         const filteredNotes = tag 
@@ -288,9 +291,9 @@ function Notes() {
                   </Link>
                   
                   <div className="note-meta">
-                    {note.attributes.date && (
+                    {(note.attributes.created || note.attributes.date) && (
                       <span className="date">
-                        {new Date(note.attributes.date).toLocaleDateString('en-US', {
+                        {new Date(note.attributes.created || note.attributes.date).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'numeric',
                           day: 'numeric',
