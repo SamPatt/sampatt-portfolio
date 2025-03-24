@@ -47,6 +47,20 @@ function BlogPost() {
           const footnoteRefRegex = /\[(\^[0-9]+)\]/g;
           let footnoteRefCount = 0;
           
+          // First, extract all footnotes at the end and save them for later
+          const allFootnotes = [];
+          const extractFootnoteRegex = /\[\^([0-9]+)\]:\s+([\s\S]*?)(?=\[\^[0-9]+\]:|$)/g;
+          let footnoteMatch;
+          while ((footnoteMatch = extractFootnoteRegex.exec(processedHtml)) !== null) {
+            const num = footnoteMatch[1];
+            const content = footnoteMatch[2].trim();
+            allFootnotes.push({ num, content });
+          }
+          
+          // Now remove all footnote definitions from the HTML
+          processedHtml = processedHtml.replace(/\[\^[0-9]+\]:\s+[\s\S]*?(?=\[\^[0-9]+\]:|$)/g, '');
+          
+          // Convert footnote references to clickable links
           processedHtml = processedHtml.replace(
             footnoteRefRegex,
             (match, footnoteId) => {
@@ -58,46 +72,49 @@ function BlogPost() {
           
           // Process footnote definitions at the end of content
           
-          // Create a collection of footnote content we'll use to build the formatted footnotes section
-          const footnotes = [];
+          // Use our pre-extracted footnotes collection (if available) or create a new one
+          const footnotes = allFootnotes.length > 0 ? allFootnotes : [];
           
-          // First try to find footnotes in HTML-wrapped format (first approach)
-          const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+([\s\S]*?)(<\/p>|$)/g;
-          let footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
-          
-          // Process any HTML-wrapped footnotes
-          for (const match of footnoteMatches) {
-            const num = match[1];
-            // Get the content but make sure we don't include the closing </p> tag if present
-            let content = match[2];
-            if (content.endsWith('</p>')) {
-              content = content.slice(0, -4);
-            }
+          // If no footnotes were extracted earlier, try the original methods
+          if (footnotes.length === 0) {
+            // First try to find footnotes in HTML-wrapped format (first approach)
+            const footnoteDefRegex = /<p>\[\^([0-9]+)\]:\s+([\s\S]*?)(<\/p>|$)/g;
+            let footnoteMatches = [...processedHtml.matchAll(footnoteDefRegex)];
             
-            // Add to our collection
-            footnotes.push({ num, content });
-            
-            // Remove the original footnote definition from the content
-            processedHtml = processedHtml.replace(match[0], '');
-          }
-          
-          // Then try to find footnotes in raw text format (second approach)
-          // This regex looks for "[^n]: content" pattern at line starts or after newlines
-          const rawFootnoteRegex = /(?:^|\n)\[\^([0-9]+)\]:\s+(.*?)(?=$|\n\[\^|\n\n)/gs;
-          let rawMatches = [...processedHtml.matchAll(rawFootnoteRegex)];
-          
-          // Process any plain text footnotes
-          for (const match of rawMatches) {
-            const num = match[1];
-            let content = match[2].trim();
-            
-            // Only add if we haven't processed this footnote number already
-            if (!footnotes.some(fn => fn.num === num)) {
+            // Process any HTML-wrapped footnotes
+            for (const match of footnoteMatches) {
+              const num = match[1];
+              // Get the content but make sure we don't include the closing </p> tag if present
+              let content = match[2];
+              if (content.endsWith('</p>')) {
+                content = content.slice(0, -4);
+              }
+              
+              // Add to our collection
               footnotes.push({ num, content });
+              
+              // Remove the original footnote definition from the content
+              processedHtml = processedHtml.replace(match[0], '');
             }
             
-            // Remove the original footnote definition from the content
-            processedHtml = processedHtml.replace(match[0], '');
+            // Then try to find footnotes in raw text format (second approach)
+            // This regex looks for "[^n]: content" pattern at line starts or after newlines
+            const rawFootnoteRegex = /(?:^|\n)\[\^([0-9]+)\]:\s+(.*?)(?=$|\n\[\^|\n\n)/gs;
+            let rawMatches = [...processedHtml.matchAll(rawFootnoteRegex)];
+            
+            // Process any plain text footnotes
+            for (const match of rawMatches) {
+              const num = match[1];
+              let content = match[2].trim();
+              
+              // Only add if we haven't processed this footnote number already
+              if (!footnotes.some(fn => fn.num === num)) {
+                footnotes.push({ num, content });
+              }
+              
+              // Remove the original footnote definition from the content
+              processedHtml = processedHtml.replace(match[0], '');
+            }
           }
           
           // If we found footnotes with the first two approaches, create the footnotes section
@@ -200,6 +217,25 @@ function BlogPost() {
           // Find and remove lines with just footnote references
           const standaloneFootnoteRegex = /\[\^[0-9]+\]:.*?(?=<\/p>|$)/g;
           processedHtml = processedHtml.replace(standaloneFootnoteRegex, '');
+          
+          // Additional clean-up for standalone footnote lines (not in paragraphs)
+          // This handles the format used in newer blog posts - much more aggressive pattern
+          const standaloneLineFootnoteRegex = /\[\^[0-9]+\]:[\s\S]*?(?=\[\^[0-9]+\]:|$)/g;
+          processedHtml = processedHtml.replace(standaloneLineFootnoteRegex, '');
+          
+          // Even more aggressive approach - find all raw footnote definitions anywhere
+          const anyFootnoteRegex = /\[\^[0-9]+\]:[\s\S]*?(?=\n\n|\n\[\^|$)/g;
+          processedHtml = processedHtml.replace(anyFootnoteRegex, '');
+          
+          // Handle consecutive footnotes with single newlines between them
+          // This matches blocks of footnotes like in the body temperature post
+          const blockFootnoteRegex = /\[\^[0-9]+\][^\n]*(?:\n\[\^[0-9]+\][^\n]*)+/g;
+          processedHtml = processedHtml.replace(blockFootnoteRegex, '');
+          
+          // Handle specific markdown footnote format with links 
+          // This targets common patterns from AI-generated content with links in footnotes
+          const markdownFootnoteRegex = /\[\^[0-9]+\]:[\s\S]*?(?:\[[^\]]+\]\([^)]+\)|\w+:\/\/[^\s]+)/g;
+          processedHtml = processedHtml.replace(markdownFootnoteRegex, '');
           
           // Most aggressive approach: if we find a nicely formatted footnotes section,
           // look for any content that appears to be raw footnote references after the main content

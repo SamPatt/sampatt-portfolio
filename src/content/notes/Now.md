@@ -1,7 +1,7 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-03-11T00:07:28.000Z
+last_edited: 2025-03-24T10:47:26.000Z
 tags:
   - personal
   - update
@@ -22,9 +22,9 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 
 ## Recent Updates
 
-- I benched 225 lbs -  this took me about 18 months to achieve so I was glad to reach it
+- I benched 225 lbs - this took me about 18 months to achieve so I was glad to reach it
 - I got [runner-up](/blog/2025-03-03-unc-unclearning) in the 2024 Interintellect essay writing contest
-
+- I competed in my first table tennis tournament in late March (South Bend), winning 5 out of 6 matches - I'll now receive an official rating
 ## What's Next
-
-- I'll be competing in the South Bend table tennis tournament in late March 2025.
+  
+- Training to improve for next table tennis tournament in June
