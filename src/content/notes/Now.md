@@ -15,7 +15,7 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 - Homeschooling two of my children.
 - Looking for work as a fullstack developer / technical writer / developer relations
 - Reading as [much as I can](/notes) and [writing as much as I can](/blog).
-- Learning Geoguessr meta.
+- Training to reach Champion division in Geoguessr
 - Building a [bunch of fun stuff](/projects), particularly focused on self-hosted LLMs.
 - [Staying fit](/blog/2025-02-20-fitness-nerd) and improving my lifts.
 - Playing table tennis in my local league.
@@ -24,7 +24,8 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 
 - I benched 225 lbs - this took me about 18 months to achieve so I was glad to reach it
 - I got [runner-up](/blog/2025-03-03-unc-unclearning) in the 2024 Interintellect essay writing contest
-- I competed in my first table tennis tournament in late March (South Bend), winning 5 out of 6 matches - I'll now receive an official rating
+- I competed in my first table tennis tournament in late March (South Bend), winning 5 out of 6 matches - I got my first official rating at 1123
+- Reached Master I level in Geoguessr (only one division left!)
 ## What's Next
   
 - Training to improve for next table tennis tournament in June
