@@ -17,6 +17,7 @@
     "feed": "^4.2.2",
     "gray-matter": "^4.0.3",
     "grey-matter": "^0.0.0",
+    "markdown-it": "^14.1.0",
     "markdown-it-anchor": "^9.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

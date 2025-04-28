@@ -397,10 +397,21 @@ function BlogPost() {
                     
                     if (contentElement) {
                       // Process HTML to remove headings but keep links working
-                      const processedHtml = mod.html
+                      // Also extract just the first paragraph for a preview
+                      let processedHtml = mod.html
                         .replace(/<h1[^>]*>.*?<\/h1>/gi, '') // Remove h1
                         // Keep external links functioning, but replace wiki links with spans
                         .replace(/\[\[(.*?)\]\]/g, '<span class="wiki-link">$1</span>');
+                      
+                      // Extract just the first paragraph for preview
+                      const firstParagraphMatch = processedHtml.match(/<p>(.*?)<\/p>/s);
+                      if (firstParagraphMatch) {
+                        processedHtml = `<p>${firstParagraphMatch[1]}</p>`;
+                      } else {
+                        // If no paragraph found, limit to first ~150 characters
+                        const textContent = processedHtml.replace(/<[^>]*>/g, '');
+                        processedHtml = `<p>${textContent.substring(0, 150)}...</p>`;
+                      }
                       
                       contentElement.innerHTML = processedHtml;
                       

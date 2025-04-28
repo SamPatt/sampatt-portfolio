@@ -93,13 +93,24 @@ function EmbeddedNote({ slug }) {
         )}
       </div>
       
-      {/* Process HTML to prevent nested links */}
+      {/* Process HTML to show only a preview */}
       <div 
         className="embedded-note-content"
         dangerouslySetInnerHTML={{ 
-          __html: note.html
-            // Remove any a tags but keep their content
-            .replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1') 
+          __html: (() => {
+            // First remove any a tags but keep their content
+            let processedHtml = note.html.replace(/<a\b[^>]*>(.*?)<\/a>/gi, '$1');
+            
+            // Extract just the first paragraph for preview
+            const firstParagraphMatch = processedHtml.match(/<p>(.*?)<\/p>/s);
+            if (firstParagraphMatch) {
+              return `<p>${firstParagraphMatch[1]}</p>`;
+            } else {
+              // If no paragraph found, limit to first ~150 characters
+              const textContent = processedHtml.replace(/<[^>]*>/g, '');
+              return `<p>${textContent.substring(0, 150)}...</p>`;
+            }
+          })()
         }}
       />
       

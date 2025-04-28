@@ -4,9 +4,18 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import process from 'process';
+import MarkdownIt from 'markdown-it';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Initialize markdown parser with similar config to what's used in the website
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true,
+  breaks: true
+});
 
 const BLOG_DIR = path.join(__dirname, '../src/content/blog');
 const OUTPUT_DIR = path.join(__dirname, '../dist');
@@ -52,6 +61,9 @@ async function generateRSSFeed() {
       // Remove frontmatter to get actual content
       const postContent = content.replace(/^---\n[\s\S]*?\n---\n/, '');
       
+      // Convert Markdown content to HTML for RSS feed
+      const htmlContent = md.render(postContent);
+      
       const slug = file.replace('.md', '');
       const url = `https://sampatt.com/blog/${slug}`;
 
@@ -60,7 +72,7 @@ async function generateRSSFeed() {
         id: url,
         link: url,
         description: description?.trim(),
-        content: postContent,
+        content: htmlContent, // Use HTML content instead of Markdown
         date: date ? new Date(date) : (created ? new Date(created) : new Date()),
         author: [{
           name: "Sam Patterson",
