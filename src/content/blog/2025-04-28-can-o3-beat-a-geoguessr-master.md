@@ -10,9 +10,14 @@ image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-27-19-41.png
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-04-28T09:15:03.000Z
+last_edited: 2025-04-29T16:21:10.000Z
 created: 2025-04-28T08:34:44.000Z
 ---
+*Update: Hello HN folks! Two quick updates:*
+
+1. *Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. To see if this mattered, I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify yourself - I added the new rounds into the post.*
+2. *I'm unemployed and would love to not be unemployed. If you have a project involving map data - or frankly just anything interesting - send me an email.*
+
 # TL;DR
 
 In a head-to-head Geoguessr match, OpenAI’s o3 model out-scored me—a Master I–ranked human—23,179 to 22,054, correctly identifying all five countries and twice landing within a few hundred metres. Even when I embedded fake GPS coordinates in the image EXIF, the model ignored the spoof and still pinpointed the real locations, showing its performance comes from visual reasoning and on-the-fly web sleuthing—not hidden metadata.
@@ -137,7 +142,7 @@ Region guessing Austria is difficult for me, basically I just look to see if I'm
 Oh no! It's as far west in Austria as you can get. There's a flatter section there near the Swiss and German borders. I'm 381 km away, giving o3 an opportunity - will it capitalize on it?
 
 
-### o3
+### o3 - with search
 
 _[I forgot to copy the CoT from this round, and it's a Temporary Chat so it's gone, oops.]_
 
@@ -165,7 +170,34 @@ Uh oh.... it nailed it. It would have gotten the 5k too, since it said only a fe
 
 It also visited the domain in order to get more information. Using Google during rounds is technically cheating - I'm unsure about visiting domains you find during the rounds though. It certainly violates the spirit of the game, but it also shows the models are smart enough to use whatever information they can to win.
 
+_Update: When I ran it again without search, it used the mountain outline to find the town anyway, see the image below. Search wasn't needed at all!_
+
 Now o3 has a 800 point lead on me. I need a good round!
+
+### o3 - without search
+
+{{note:o3-geoguessr-battle-austria-without-search}}
+
+[Author - this image says it all:]
+
+![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-29-16-08.png)
+
+
+I’m putting us in **Dornbirn, Vorarlberg, Austria – about 47.41 ° N, 9.74 ° E, just east of the town centre**.
+
+**Why Dornbirn?**
+
+|Clue|What it suggests|
+|---|---|
+|**“.at” web address on the driving-school VW**|Austria|
+|**German on the delivery van (“Fach-/Fahrmontage …”)**|German-speaking region|
+|**Vertical-board timber houses with deep, carved balconies**|Classic Bregenzerwald / Vorarlberg style rather than Tyrolean stucco or Swiss Appenzell paintwork|
+|**Red–white no-stopping signs, metric road markings**|Continental Europe, EU standard signage|
+|**Triangular peak with a lower shoulder just to the right**|Looks like the Staufen–Karren duo that rises immediately east of Dornbirn in the Rhine Valley|
+|**Flat valley floor but high mountains only a couple of km away**|Matches the Dornbirn basin, not Innsbruck or Salzburg which have broader valley floors|
+|**Mix of modern infill and turn-of-the-century villas**|Typical of the residential belts (e.g., Hatlerdorf/Haselstauden) around central Dornbirn|
+
+Put together, the architectural dialect, the Austrian domain, and that very recognizable mountain profile make Dornbirn the best fit.
 
 ## Round 3 - Ireland
 
@@ -179,7 +211,7 @@ Open ocean to the west, but distant land across the water to the NW and maybe an
 
 I line up the road angle and check the map, looking on the west coast of Ireland for some islands that make sense.  I spend several minutes scanning, because this is a lot of information, I might be able to get a 5k on this round. 
 
-### o3
+### o3 - with search
 
 {{note:o3-geoguessr-battle-round-3}}
 
@@ -187,6 +219,28 @@ That​ stark grey limestone, the endless low dry-stone walls, and the yellow da
 More precisely, the view is from the **R477 “Coast Road” between Fanore and Ballyvaughan, just south-east of Black Head**, looking across Galway Bay toward the hills of Connemara.
 
 Approximate pin: **53.120 °N, -9.285 °W**.
+
+### o3 - without search
+
+{{note:o3-geoguessr-ireland-without-search}}
+
+**Short answer –** the viewpoint is on the R 477 “coast road” that skirts the limestone karst of **the Burren, County Clare, Ireland – roughly the Black Head/Fanore stretch on the edge of Galway Bay (about 53.13 N, –9.30 W).**
+
+---
+
+### How I got there
+
+|Clue|What it tells us|Why it fits the Burren coast|
+|---|---|---|
+|**Road markings** – a single white centre-line, with a broken **yellow** line at the road edge.|Yellow edge lines are distinctive to the Republic of Ireland (left-hand traffic).|UK edge lines are white; continental Europe rarely uses yellow in this pattern.|
+|**Left-hand‐side parking** and vehicles facing both ways.|Confirms left-hand traffic but Google car happens to be travelling the opposing lane (so the yellow edge line appears on its right).|Consistent with Ireland; Street View often records one direction only.|
+|**Drystone walls made of flat, grey limestone slabs**; low, terraced, almost pavement-like outcrops on the hillside.|Classic Burren karst geology.|You see identical walls and limestone pavements between Ballyvaughan and Fanore.|
+|**Barren, stepped limestone hillside on one side, open sea on the other.**|Narrow shelf road on a coastal plateau.|The R477 is literally wedged between Galway Bay and the Burren escarpment.|
+|**Sparse vegetation – mostly grykes filled with grass and a few low shrubs.**|Karst environment with thin soils.|The Burren’s ecology is famous for exactly this mix.|
+|**No hard shoulder, occasional gravel lay-bys where tourists stop.**|Popular scenic route but still a regional road (an “R” road).|The R477 is marketed as part of the Wild Atlantic Way; these gravel pull-offs exist every kilometre or so.|
+|**Vehicles & plates** – EU-style, but not yellow (so not UK), and a bright yellow Post/parcel van that isn’t Royal Mail.|Republic of Ireland uses white plates and has several yellow courier fleets.|Again points to ROI rather than NI.|
+
+Put all that together and the only coastal road in Ireland that matches the stone-walled, treeless limestone landscape right down to the water is the Burren coast. The specific curve, with the sea to the north-west and the hillside to the south-east, matches the section just west of Black Head lighthouse, before Fanore beach.
 
 ### Result
 
@@ -199,6 +253,8 @@ The chain of thought is insanely thorough, looking at the road lines, cars, lice
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-27-19-10.png)
 
 More web search! It's cheating, but it's also prospering. I don't want to overstate the web search though - it only knew to search those particular terms first because it properly identified everything in the CoT first. It appears to have used search more to confirm its guess than to generate it.
+
+_Update: As I suspected, search was irrelevant here. It guessed almost identically._
 
 ## Round 4 - Colombia
 
@@ -322,7 +378,7 @@ I got 22,054 points out of a possible 25k. For a completely random seed, this is
 
 o3 scored 23,179, beating me by just over 1,100 points. A truly impressive performance.
 
-I won rounds 1 and 5, but only by small margins, and it got two ~5k guesses. On both of those rounds, it did use search. However it still beat me in round 4 without search.
+I won rounds 1 and 5, but only by small margins, and it got two ~5k guesses. On both of those rounds, it did use search. [_Update: Search ended up not mattering in those rounds, see the round details above._] However it still beat me in round 4 without search.
 
 One major difference is time spent. I would typically guess within a minute or two, and in many rounds I will guess within 10 seconds. The model would nearly always take more than 2 minutes, and the longest was over 6 minutes! So humans still have the edge when it comes to speed, at the moment.
 
@@ -387,7 +443,7 @@ I notice that it often does a lot of unnecessary and repetitive cropping, and wi
 
 However, most of what it says about things like signs and road lines appears to be accurate, or at least close enough to truth that they meaningfully add up. Given the end result of these excellent guesses, it seems to arrive at the guesses from that information. 
 
-If it's using other information to arrive at the guess, then it's not metadata from the files, but instead web search. It seems likely that in the Austria round, the web search was meaningful, since it mentioned the website named the town itself. It appeared less meaningful in the Ireland round. It was still very capable in the rounds without search.
+If it's using other information to arrive at the guess, then it's not metadata from the files, but instead web search. It seems likely that in the Austria round, the web search was meaningful, since it mentioned the website named the town itself. It appeared less meaningful in the Ireland round. It was still very capable in the rounds without search. [_Update: Search didn't matter in those rounds after all, see rounds above._]
 
 So to put a bow on this:
 
