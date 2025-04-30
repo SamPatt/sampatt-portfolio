@@ -18,7 +18,7 @@ created: 2025-04-28T08:34:44.000Z
 1. *Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. To see if this mattered, I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify yourself - I added the new rounds into the post.*
 2. *I'm unemployed and would love to not be unemployed. If you have a project involving map data - or frankly just anything interesting - send me an email.*
 
-*Update 2: The [map](https://www.geoguessr.com/challenge/gDq4wXvsLU3oNuY8) has now been played by 70+ players! o3 is currently holding strong in 9th place.*
+*Update 2: The [map](https://www.geoguessr.com/challenge/gDq4wXvsLU3oNuY8) has now been played by 100 players! o3 is currently holding strong in 11th place.*
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-29-21-50.png)
 
