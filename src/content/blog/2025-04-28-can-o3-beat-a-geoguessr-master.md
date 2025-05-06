@@ -10,15 +10,17 @@ image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-27-19-41.png
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-04-30T12:51:16.000Z
+last_edited: 2025-05-02T15:03:35.000Z
 created: 2025-04-28T08:34:44.000Z
 ---
 *Update: Hello HN, MR, and ACX folks! Two quick updates:*
 
-1. *Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. To see if this mattered, I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify yourself - I added the new rounds into the post.*
+1. *Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify in the updated post.*
 2. *I'm unemployed and would love to not be unemployed. If you have a project involving map data - or frankly just anything interesting - send me an email.*
 
-*Update 2: The [map](https://www.geoguessr.com/challenge/gDq4wXvsLU3oNuY8) has now been played by 118 players! o3 is currently holding strong in 12th place.*
+*Update 2: The [map](https://www.geoguessr.com/challenge/gDq4wXvsLU3oNuY8) has now been played by 175 players! o3 is currently holding strong in 13th place.*
+
+*Update 3: ccmdi wrote an informative [blog post](https://ccmdi.com/blog/additional-thoughts-on-llm-geolocation) about the current state of LLM geolocation - they've also created a neat LLM [geolocation benchmark](https://geobench.org/).*
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-04-26-geoguessr/image/2025-04-29-21-50.png)
 
