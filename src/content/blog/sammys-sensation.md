@@ -11,7 +11,7 @@ tags:
   - philosophy
 image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-05-23-sammys-sensation/image/2025-05-23-12-46.png
-send_newsletter: 'true'
+send_newsletter: true
 type: blog
 last_edited: 2025-05-23T14:28:29.000Z
 created: 2025-05-23T12:41:18.000Z
