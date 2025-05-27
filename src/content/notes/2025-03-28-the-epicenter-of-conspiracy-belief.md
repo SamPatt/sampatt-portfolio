@@ -8,7 +8,7 @@ tags:
   - political
   - attitudes
 image: null
-last_edited: 2025-03-28T17:11:21.000Z
+last_edited: 2025-05-27T10:39:32.000Z
 created: 2025-03-28T17:10:45.000Z
 ---
 
