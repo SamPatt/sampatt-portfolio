@@ -8,7 +8,7 @@ tags:
   - zsh
   - shell-gpt
 image: null
-send_newsletter: 'true'
+send_newsletter: '"true"'
 type: blog
 last_edited: 2025-07-30T11:34:08.000Z
 created: 2025-07-27T15:23:24.000Z
@@ -67,11 +67,12 @@ Press **Ctrl + O** immediately after any command finishes:
 1. Every command’s `stdout` + `stderr` is automatically mirrored into `~/.last_cmd_out` by a pair of `preexec`/`precmd` hooks.  
 2. The custom **`sgpt_last` widget**—bound to **Ctrl + O**—does three things:
 
-   ```zsh
+```
    tail -n 5000 ~/.last_cmd_out \      # grabs the last 5 000 lines of output
        | sgpt "What went wrong?"       # sends it to Shell‑GPT for analysis
    zle reset-prompt                    # refreshes your prompt afterwards
 ```
+
 
 - **Step 1:** `tail` keeps the capture lightweight (adjust the line count as you like).
     
