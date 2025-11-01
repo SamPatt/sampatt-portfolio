@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Newsletter from './Newsletter';
 import WalkingCalculator from './WalkingCalculator';
+import TweetEmbed from './TweetEmbed';
+import YouTubeEmbed from './YouTubeEmbed';
+
+const loadVisualizationComponent = async (slug) => {
+  switch (slug) {
+    case 'frequency-modulation':
+      return (await import('./visualizations/FrequencyModulationVisualizer.jsx')).default;
+    case 'bandwidth-window':
+      return (await import('./visualizations/BandwidthVisualizer.jsx')).default;
+    case 'block-transfer':
+      return (await import('./visualizations/BlockTransferVisualizer.jsx')).default;
+    case 'network-topology':
+      return (await import('./visualizations/NetworkTopologyVisualizer.jsx')).default;
+    default:
+      return null;
+  }
+};
 
 function BlogPost() {
   const { slug } = useParams();
@@ -42,6 +59,73 @@ function BlogPost() {
             const placeholder = `<div id="walking-calculator-${index}"></div>`;
             processedHtml = processedHtml.replace(match[0], placeholder);
           });
+
+          // Handle tweet embeds
+          const tweetEmbedRegex = /\{\{tweet:\s*([\s\S]*?)\s*\}\}/gi;
+          const tweetEmbeds = [];
+          processedHtml = processedHtml.replace(
+            tweetEmbedRegex,
+            (match, rawContent) => {
+              const content = rawContent.trim();
+              let url = content;
+
+              const hrefMatch = content.match(/href="([^"]+)"/i);
+              if (hrefMatch) {
+                url = hrefMatch[1];
+              }
+
+              if (!/^https?:\/\/(?:www\.)?(?:twitter|x)\.com\/.+/i.test(url)) {
+                // If we can't find a valid tweet URL, leave content unchanged
+                return match;
+              }
+
+              const idMatch = url.match(/status\/(\d+)/i);
+              const tweetId = idMatch ? idMatch[1] : null;
+              const index = tweetEmbeds.length;
+              tweetEmbeds.push({ id: tweetId, url });
+              const dataIdAttr = tweetId ? ` data-tweet-id="${tweetId}"` : '';
+              return `<div id="tweet-embed-${index}" class="tweet-embed-placeholder"${dataIdAttr} data-tweet-url="${url}"></div>`;
+            }
+          );
+
+          // Handle YouTube embeds
+          const youtubeEmbedRegex = /\{\{youtube:\s*([\s\S]*?)\s*\}\}/gi;
+          const youtubeEmbeds = [];
+          processedHtml = processedHtml.replace(
+            youtubeEmbedRegex,
+            (match, rawContent) => {
+              const content = rawContent.trim();
+              let url = content;
+
+              const hrefMatch = content.match(/href="([^"]+)"/i);
+              if (hrefMatch) {
+                url = hrefMatch[1];
+              }
+
+              const idMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/i);
+              const videoId = idMatch ? idMatch[1] : null;
+
+              if (!videoId) {
+                return match;
+              }
+
+              const index = youtubeEmbeds.length;
+              youtubeEmbeds.push({ id: videoId, url });
+              return `<div id="youtube-embed-${index}" class="youtube-embed-placeholder" data-youtube-id="${videoId}" data-youtube-url="${url}"></div>`;
+            }
+          );
+          
+          // Handle visualization embeds
+          const vizEmbedRegex = /\{\{viz:([a-zA-Z0-9-]+)\}\}/g;
+          const vizEmbeds = [];
+          processedHtml = processedHtml.replace(
+            vizEmbedRegex,
+            (match, slugValue) => {
+              const index = vizEmbeds.length;
+              vizEmbeds.push(slugValue);
+              return `<div id="viz-embed-${index}" class="viz-embed-placeholder" data-viz-slug="${slugValue}"></div>`;
+            }
+          );
           
           // Process footNote references - convert [^1] to clickable links
           const footnoteRefRegex = /\[(\^[0-9]+)\]/g;
@@ -283,6 +367,9 @@ function BlogPost() {
             html: processedHtml,
             embedMatches: embedMatches.map(match => match[1]),
             calculatorMatches: calculatorMatches.length > 0,
+            tweetEmbeds,
+            youtubeEmbeds,
+            vizEmbeds,
             attributes: mod.attributes,
             isDraft: matchingPath.includes('/drafts/')
           });
@@ -342,6 +429,124 @@ function BlogPost() {
         });
       }, 100);
     }
+  }, [post]);
+
+  // Handle tweet embeds
+  useEffect(() => {
+    if (!post || !post.tweetEmbeds || post.tweetEmbeds.length === 0) return;
+
+    let isActive = true;
+
+    const renderTweets = async () => {
+      try {
+        const { createRoot } = await import('react-dom/client');
+        post.tweetEmbeds.forEach(({ id, url }, index) => {
+          const placeholder = document.getElementById(`tweet-embed-${index}`);
+          if (!placeholder || placeholder.childNodes.length > 0) return;
+
+          const container = document.createElement('div');
+          placeholder.appendChild(container);
+
+          const root = createRoot(container);
+          root.render(<TweetEmbed tweetId={id} tweetUrl={url} />);
+        });
+      } catch (error) {
+        console.error('Error rendering tweet embed:', error);
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      if (isActive) renderTweets();
+    }, 100);
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeout);
+    };
+  }, [post]);
+
+  // Handle visualization embeds
+  useEffect(() => {
+    if (!post || !post.vizEmbeds || post.vizEmbeds.length === 0) return;
+
+    let isActive = true;
+
+    const renderVisualizations = async () => {
+      try {
+        const { createRoot } = await import('react-dom/client');
+
+        await Promise.all(
+          post.vizEmbeds.map(async (slugValue, index) => {
+            const placeholder = document.getElementById(`viz-embed-${index}`);
+            if (!placeholder || placeholder.childNodes.length > 0) return;
+
+            const container = document.createElement('div');
+            container.className = 'viz-container';
+            placeholder.appendChild(container);
+
+            try {
+              const VisualizationComponent = await loadVisualizationComponent(slugValue);
+
+              if (!VisualizationComponent) {
+                placeholder.innerHTML = `<p class="viz-error">Visualization "${slugValue}" not found.</p>`;
+                return;
+              }
+
+              const root = createRoot(container);
+              root.render(<VisualizationComponent />);
+            } catch (error) {
+              console.error('Error rendering visualization:', error);
+              placeholder.innerHTML = '<p class="viz-error">Unable to load visualization.</p>';
+            }
+          })
+        );
+      } catch (error) {
+        console.error('Error initializing visualizations:', error);
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      if (isActive) renderVisualizations();
+    }, 100);
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeout);
+    };
+  }, [post]);
+
+  // Handle YouTube embeds
+  useEffect(() => {
+    if (!post || !post.youtubeEmbeds || post.youtubeEmbeds.length === 0) return;
+
+    let isActive = true;
+
+    const renderVideos = async () => {
+      try {
+        const { createRoot } = await import('react-dom/client');
+        post.youtubeEmbeds.forEach(({ id, url }, index) => {
+          const placeholder = document.getElementById(`youtube-embed-${index}`);
+          if (!placeholder || placeholder.childNodes.length > 0) return;
+
+          const container = document.createElement('div');
+          placeholder.appendChild(container);
+
+          const root = createRoot(container);
+          root.render(<YouTubeEmbed videoId={id} videoUrl={url} />);
+        });
+      } catch (error) {
+        console.error('Error rendering YouTube embed:', error);
+      }
+    };
+
+    const timeout = setTimeout(() => {
+      if (isActive) renderVideos();
+    }, 100);
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeout);
+    };
   }, [post]);
 
   // Handle embedded notes
