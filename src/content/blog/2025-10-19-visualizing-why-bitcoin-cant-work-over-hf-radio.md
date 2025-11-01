@@ -21,7 +21,7 @@ Not everyone is convinced. Long-time Bitcoiner Rodolfo Novak recently posted [th
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-56.png)
 
 
-Rodolfo knows his stuff: he's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
+Rodolfo knows his stuff. He's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
 
 Would Bitcoin "not need the internet" if we limited blocks to only being 300kB and they were broadcast over HF radio? Is Rodolfo right? 
 
