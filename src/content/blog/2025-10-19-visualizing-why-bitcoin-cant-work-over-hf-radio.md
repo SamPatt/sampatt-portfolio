@@ -9,21 +9,21 @@ tags:
 image: null
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-10-31T23:34:43.000Z
+last_edited: 2025-11-01T16:14:58.000Z
 created: 2025-10-19T21:35:00.000Z
 ---
 Surely if there are two technologies which are inseparable, it's Bitcoin and the Internet. After all, Bitcoin is magic **internet** money, right?
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-10-19-21-42.png)
 
-Not everyone is convinced. Long-time Bitcoiner Rodolfo Novak recently posted [this on X](https://x.com/nvk/status/1978828198914781428):
+Not everyone is convinced. Long-time Bitcoiner NVK recently posted [this on X](https://x.com/nvk/status/1978828198914781428):
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-56.png)
 
 
-Rodolfo knows his stuff: he's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
+NVK knows his stuff: he's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
 
-Would Bitcoin "not need the internet" if we limited blocks to only being 300kB and they were broadcast over HF radio? Is Rodolfo right? 
+Would Bitcoin "not need the internet" if we limited blocks to only being 300kB and they were broadcast over HF radio? Is NVK right? 
 
 **The short answer**: no.
 
@@ -63,7 +63,7 @@ I've been involved with Bitcoin for a long time. I was a senior policy analyst a
 
 I've been a licensed amateur radio operator for even longer than a Bitcoiner - I first got my ham license at 14 years old. I was obsessed with [number stations](https://en.wikipedia.org/wiki/Numbers_station) back in my teen years, spending hours tuning the shortwave band trying to find them. I've logged many hundreds of DX (long distance) conversations over the years - my furthest is South Africa, ~8000 miles using only 100 watts (I love using data modes).
 
-I was the first person to _receive_ Bitcoin over HF radio, in that same transaction mentioned above - Rodolfo sent the message from Toronto to me in Michigan.
+I was the first person to _receive_ Bitcoin over HF radio, in that same transaction mentioned above - NVK sent the message from Toronto to me in Michigan.
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-57.png)
 
@@ -103,17 +103,15 @@ An antenna is a simple device. It’s just a piece of metal of a particular leng
 
 Each time the midpoint of the wave completes a cycle, there’s a flash - each flash represents one moment you could alter or measure the signal, and thus one opportunity to send a bit of information. As you increase the frequency, the flashes speed up, giving you more chances per second to send and receive data.
 
-_(It’s not literally true that 1 Hz = 1 bit of information. The real number depends on various factors. But conceptually, this simple relationship helps visualize how frequency sets the rhythm for communication.)_
+It’s not literally true that 1 Hz = 1 bit of information. In reality, the **[Shannon–Hartley theorem](https://www.geeksforgeeks.org/electronics-engineering/shannon-capacity/)** tells us that the data rate of a channel depends on its bandwidth and its signal-to-noise ratio, not directly on its frequency. However, higher frequencies are usually allocated much wider bandwidth in practice, which is why they can carry vastly more information.
 
-What's important to understand is that with each additional oscillation per second (Hz) you get another opportunity to add modulation. More modulation opportunities = more data. This means that lower frequencies are fundamentally less capable of transmitting data than higher frequencies.
+So while frequency itself doesn’t directly increase data rate, it often _does_ determine how much spectrum you can use - and more bandwidth means more data. With each additional oscillation per second (Hz), you gain another opportunity to add modulation. More modulation opportunities = more data.
 
 Thus far we've been considering a specific frequency, but that's not how signals work in practice. They occupy a range of frequencies at the same time. This size of this range is called *bandwidth*. If you have an extremely narrow slice of frequencies, then you have very low bandwidth. If you have a huge range of frequencies, you have high bandwidth.
 
 The next visualization shows what happens when you increase bandwidth. Note that in the visualization above, if we increased the frequency all the way to 100 Hz, that resulted in 100 chances to send information. But when we expand the bandwidth of the signal, we get many more opportunities.
 
 {{viz:bandwidth-window}}
-
-Higher frequencies don’t just oscillate faster - they can use much wider slices of the spectrum, giving them _way_ more bandwidth to carry information.
 
 If you're operating at 100 Hz and you're using 1% of that frequency for your bandwidth, that means your signal spans about 1 Hz in total - roughly from 99.5 Hz to 100.5 Hz. That's a very narrow slice, just a couple of “lanes” to send information.
 
@@ -133,16 +131,23 @@ Let's see how these different modes of communication compare on speed:
 
 Speeds across these modes vary quite a bit, but the averages I found ended up being approximately 1 Gigabits per second (Gbps) for fiber, 65 Megabits per second (Mbps) for cell networks, and 150 Mbps for Starlink (I averaged them together to 100Mbps).
 
-What about the speed for HF? That's a bit complicated, but let's just take the number [Rodolfo gives us](https://x.com/nvk/status/1979182736070877477):
+What about the speed for HF? That's a bit complicated, but let's just take the number [NVK gives us](https://x.com/nvk/status/1979182736070877477):
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-04-02.png)
 
 
-12 kHz of bandwidth => 50 Kilobits (Kbps) for HF. That amount of bandwidth on HF frequencies would be considered wideband, which currently is only possible for shortwave broadcasters or the government. It's roughly 5 times more bandwidth than amateurs can use. In other words, these numbers only make sense if you have a huge broadcast station and you've been given permission to use this much bandwidth - or you're willing to go rogue.
+12 kHz of bandwidth → roughly **50 kilobits per second (Kbps)** for HF.  
+That amount of bandwidth on HF frequencies would be considered _wideband_, which is far beyond what ordinary ham operators are allowed to use. It’s the kind of channel width used by shortwave broadcasters, military systems, or governments, not individuals. Typical amateur allocations top out around 2-3 kHz.
 
-Could the international community be convinced to allow a Bitcoin block beacon continuously using 12 kHz of spectrum? Probably not, but let's pretend it happens - how fast would it be?
+The modern wideband HF systems that NVK is referencing can reach 50 kbps under ideal conditions, but this almost certainly requires a well-engineered, licensed, high-power setup with good signal-to-noise ratio and forward-error correction.
 
-This visualization shows how quickly a single Bitcoin block would take, in real time, to transmit based on the varying speeds. I randomly chose block #920,315, which was 2,545,182 bytes in size. Each byte is 8 bits, so we'd need 20,361,456 individual opportunities to modulate our signal in order to send this data.
+Those setups are specialized and regulated. In practice, an HF station operating with 12 kHz of continuous bandwidth would need major transmit power, large antennas, and government-level spectrum authorization. In other words, these numbers only make sense if you have a large broadcast-grade facility or you’re willing to go rogue.
+
+Could the international community be convinced to allocate 12 kHz of HF spectrum for a continuous Bitcoin “block beacon”? 
+
+Probably not, but let’s pretend it happens. How fast would it actually be?
+
+This visualization shows how long it would take to transmit a single Bitcoin block in real time at various data rates. I randomly chose block #920,315, which was **2,545,182 bytes** in size. Each byte is 8 bits, so we’d need about **20 million individual modulation opportunities** to send this data.
 
 _(Because of [BIP 152](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki), Compact Blocks, peers that share mempool data don’t need to send full blocks. This saves significant bandwidth when blocks are propagated. However, passive HF receivers wouldn’t have that shared mempool state, so for this visualization I’ll use the full block size.)_
 
@@ -150,7 +155,7 @@ _(Because of [BIP 152](https://github.com/bitcoin/bips/blob/master/bip-0152.medi
 
 Oof. Fiber is nearly instant, cell or Starlink take a few hundred milliseconds, and HF takes more than six minutes.
 
-But what if we limit the block size to 300kB, as Rodolfo suggests? That would drop the time down to 48 seconds - still extremely slow in modern terms, but fast enough to ensure that someone receiving the blocks from such a broadcast wouldn't have blocks piling up faster than the ~10 minute average rate of block generation.
+But what if we limit the block size to 300kB, as NVK suggests? That would drop the time down to 48 seconds - still extremely slow in modern terms, but fast enough to ensure that someone receiving the blocks from such a broadcast wouldn't have blocks piling up faster than the ~10 minute average rate of block generation.
 
 So it would work, right? Well, sorta, but there are a few problems.
 
@@ -200,9 +205,15 @@ So you use the internet to get the blockchain, then switch it off to only receiv
 
 Other than as a temporary backup against unreliable internet, this approach is effectively useless. So let's take a single step in the direction towards active participation without requiring the internet yet. What if we sent transactions over HF?
 
-First, this requires an immediate upgrade to our antenna, power requirements, and radio equipment. It would be nothing like the "Casio watch" example Rodolfo mentions. Also, I've completely ignored the regulatory side of things so far, but if you care about the legality, you'd need a license in basically all countries in the world to use HF spectrum, and broadcasting Bitcoin transactions for commerce isn't allowed in most of them.
+Of course, this is technically possible. Data is being sent and received over HF radio all the time, by amateurs, commercial stations, and governments. It's not hard to imagine one Bitcoiner, or even small communities, doing this. After all, it has been done in experiments. But there's a huge chasm between a handful of experiments and a system that can work at scale.
 
-But let's say you do it anyway - who would be listening to your message? The bitcoin block beacon is a broadcast, not a two-way service. Someone else must be running a service to take your transaction and relay it to the rest of the network (over the internet). The problem is that the person running that service is a point of control, just like the internet infrastructure we tried to avoid. The same problem is true of the block beacon idea, or the Blockstream satellite - someone needs to be running that infrastructure on behalf of others.
+First, this requires an immediate upgrade to our antenna, power requirements, and radio equipment. It would be nothing like the "Casio watch" example NVK mentions. This is far from user-friendly today.
+
+_(I shared a draft of this article with NVK, and he suggested that the barriers of antenna size and power needs aren't as large today as they were in the past; we can do a lot more with a lot less. I've witnessed this myself over my ham career - the advent of cheap [SDR](https://en.wikipedia.org/wiki/Software-defined_radio) and the emergence of weak-signal data modes like [JS8](https://unicomradio.com/js8call/) have made data over HF much more accessible. I'd love nothing more than to see those barriers continue to get lowered, but I suspect the fundamental constraints we're discussing will never make it practical for most users.)_
+
+Also, I've completely ignored the regulatory side of things so far, but if you care about the legality, you'd need a license in basically all countries in the world to use HF spectrum, and broadcasting Bitcoin transactions for commerce isn't allowed in most of them.
+
+But let's say you do it anyway - who would be listening to your message? The bitcoin block beacon is a broadcast, not a two-way service. Someone must be running a service to take your transaction and relay it to the rest of the network (over the internet). The problem is that the person running that service is a point of control, just like the internet infrastructure we tried to avoid. The same problem is true of the block beacon idea, or the Blockstream satellite - someone needs to be running that infrastructure on behalf of others.
 
 Radio can connect people directly - no cables, no routers, no servers. So why not cut out the points of control and talk peer-to-peer? Why not have Bitcoin nodes directly connected via radio? It’s an appealing vision, and it's not impossible. Mesh networking over radio already exists, but to my knowledge it's always involved LOS radio, and has never run a large scale decentralized software network before. But it's simply not feasible on HF; it collapses under scale.
 
