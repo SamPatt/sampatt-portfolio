@@ -102,7 +102,7 @@ const FrequencyModulationVisualizer = () => {
       ctx.clearRect(0, 0, width, height);
 
       const top = 36;
-      const bottom = height - 36;
+      const bottom = height - 40;
       const centerY = (top + bottom) / 2;
       const amplitude = Math.min(48, (bottom - top) / 2 - 12);
       const edgePadding = Math.min(90, width * 0.12);
@@ -155,6 +155,9 @@ const FrequencyModulationVisualizer = () => {
       const elapsedSeconds = timestamp / 1000;
       const freq = frequencyRef.current;
 
+      const baseHeight = 18;
+      const antennaBottom = bottom - baseHeight;
+
       // Antennas
       ctx.strokeStyle = 'rgba(130, 170, 255, 0.85)';
       ctx.lineWidth = 4;
@@ -162,15 +165,14 @@ const FrequencyModulationVisualizer = () => {
 
       ctx.beginPath();
       ctx.moveTo(leftX, top);
-      ctx.lineTo(leftX, bottom);
+      ctx.lineTo(leftX, antennaBottom);
       ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(rightX, top);
-      ctx.lineTo(rightX, bottom);
+      ctx.lineTo(rightX, antennaBottom);
       ctx.stroke();
 
-      const baseHeight = 18;
       ctx.fillStyle = 'rgba(77, 124, 255, 0.25)';
       drawRoundedRect(ctx, leftX - 24, bottom, 48, baseHeight, 8);
       ctx.fill();
@@ -351,9 +353,6 @@ const FrequencyModulationVisualizer = () => {
         <div className="frequency-viz-scale">
           <span>{MIN_FREQUENCY} Hz</span>
           <span>{MAX_FREQUENCY} Hz</span>
-        </div>
-        <div className="frequency-viz-footnote">
-          Visualizing a simple binary keying scheme (one bit encoded per cycle).
         </div>
       </div>
     </div>

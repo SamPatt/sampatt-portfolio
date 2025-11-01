@@ -49,6 +49,27 @@ const formatTime = (seconds) => {
   return `${Math.round(seconds * 1000)} milliseconds`;
 };
 
+const formatTimeMobile = (seconds, channelId) => {
+  if (channelId === 'hf') {
+    // For HF, always show minutes and seconds
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    return `${minutes}m ${secs}s`;
+  }
+  // For fast transfers, show milliseconds
+  if (seconds < 1) {
+    return `${Math.round(seconds * 1000)}ms`;
+  }
+  // For medium transfers, show seconds
+  if (seconds < 60) {
+    return `${seconds.toFixed(seconds >= 10 ? 1 : 2)}s`;
+  }
+  // For longer transfers, show minutes and seconds
+  const minutes = Math.floor(seconds / 60);
+  const secs = Math.round(seconds % 60);
+  return `${minutes}m ${secs}s`;
+};
+
 const BlockTransferVisualizer = () => {
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isRunning, setIsRunning] = useState(false);
@@ -175,9 +196,14 @@ const BlockTransferVisualizer = () => {
                     }}
                   />
                   {isComplete && (
-                    <div className="transfer-complete-overlay">
-                      Completed in {formatTime(channel.duration)}
-                    </div>
+                    <>
+                      <div className="transfer-complete-overlay">
+                        Completed in {formatTime(channel.duration)}
+                      </div>
+                      <div className="transfer-complete-overlay-mobile">
+                        {formatTimeMobile(channel.duration, channel.id)}
+                      </div>
+                    </>
                   )}
                 </div>
                 <div className="transfer-lane-grid destination">

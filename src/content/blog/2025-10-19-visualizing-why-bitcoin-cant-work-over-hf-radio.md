@@ -21,7 +21,7 @@ Not everyone is convinced. Long-time Bitcoiner Rodolfo Novak recently posted [th
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-56.png)
 
 
-Rodolfo knows his stuff. He's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
+Rodolfo knows his stuff: he's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
 
 Would Bitcoin "not need the internet" if we limited blocks to only being 300kB and they were broadcast over HF radio? Is Rodolfo right? 
 
@@ -71,13 +71,13 @@ This experiment gained a small amount of online attention, and I was later invit
 
 {{youtube:https://www.youtube.com/watch?v=6mFu8Wh3rkc}}
 
-_(I'm not a Bitcoin core developer, nor am I an electrical or radio engineer; if you happen to be those things and I've offended you deeply with my oversimplification (or I've made an error) feel free to contact me and I'll do my best to fix it. My contact info is linked in the sidebar.)_
+_(I'm not a Bitcoin core developer, nor am I an electrical or radio engineer; if you happen to be those things and I've offended you deeply with my oversimplification (or I've made an error) feel free to contact me. My  info is in the About section.)_
 
 Regardless of my experience, the subject of radio + Bitcoin fascinates me - so let's dive into it!
 
 #  The problem
 
-The main problem of using HF radio for Bitcoin is bandwidth. How much bandwidth do we need? Let's briefly examine how Bitcoin works.
+The main problem of using HF radio for Bitcoin is limited bandwidth. How much bandwidth do we need? Let's briefly examine how Bitcoin works.
 
 The simplest way to understand Bitcoin is to view it as a distributed ledger to keep track of digital money, combined with everything needed to maintain such a ledger. The ledger is a series of blocks linked in a chain (the blockchain) back to the first transaction in 2009. These blocks are individually quite small - the average block size at the time of writing is roughly 1.5MB, and they are only generated and added to the blockchain approximately every 10 minutes.
 
@@ -121,6 +121,8 @@ But if you're operating at 2.4 GHz (Wi-Fi) and you use 1% of _that_ frequency, y
 
 This is why higher-frequency systems can carry vastly more information - not because the waves themselves are “faster,” but because they can use much wider frequency bands.
 
+HF radio operates at frequencies between 3 - 30 million oscillations per second (MHz). That may sound like a high frequency, and back in the early days of our understanding of radio, it _was_ higher than the most popular use of radio, the AM broadcast band. But at HF frequencies you typically have only about 2–12 kHz of usable bandwidth - thousands of times narrower than the MHz-wide channels used by Wi-Fi, cell networks, or satellites.
+
 ## Speed comparisons
 
 Let's see how these different modes of communication compare on speed:
@@ -131,12 +133,14 @@ Let's see how these different modes of communication compare on speed:
 
 Speeds across these modes vary quite a bit, but the averages I found ended up being approximately 1 Gigabits per second (Gbps) for fiber, 65 Megabits per second (Mbps) for cell networks, and 150 Mbps for Starlink (I averaged them together to 100Mbps).
 
-What about the speed for HF? That's a bit complicated, and we'll get to those complications later, but let's just take the number [Rodolfo gives us](https://x.com/nvk/status/1979182736070877477) at face value:
+What about the speed for HF? That's a bit complicated, but let's just take the number [Rodolfo gives us](https://x.com/nvk/status/1979182736070877477):
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-04-02.png)
 
 
-There we go, 50 Kilobits (Kbps) for HF. 
+12 kHz of bandwidth => 50 Kilobits (Kbps) for HF. That amount of bandwidth on HF frequencies would be considered wideband, which currently is only possible for shortwave broadcasters or the government. It's roughly 5 times more bandwidth than amateurs can use. In other words, these numbers only make sense if you have a huge broadcast station and you've been given permission to use this much bandwidth - or you're willing to go rogue.
+
+Could the international community be convinced to allow a Bitcoin block beacon continuously using 12 kHz of spectrum? Probably not, but let's pretend it happens - how fast would it be?
 
 This visualization shows how quickly a single Bitcoin block would take, in real time, to transmit based on the varying speeds. I randomly chose block #920,315, which was 2,545,182 bytes in size. Each byte is 8 bits, so we'd need 20,361,456 individual opportunities to modulate our signal in order to send this data.
 
@@ -160,7 +164,7 @@ HF doesn't have this limitation, because the signal is _reflected off the ionosp
 
 ### 1. Unreliable
 
-Have you ever listened to HF (shortwave) radio? I have found memories of tuning the dial on my Icom IC-718 rig as a teen, listening to - who knows what. Half the time I certainly didn't. 
+Have you ever listened to HF (shortwave) radio? I have fond memories of tuning the dial on my Icom IC-718 rig as a teen, listening to - who knows what. Half the time I certainly didn't. 
 
 The unreliability of HF is part of the charm. You could be hearing rough Portuguese one minute (Brazilian fishermen?) only to have it fade away, then tune down the band and hear a Voice of America broadcast, then try (and fail) to read Morse code in one of the amateur bands, then find an elusive number station, only to have it fade out just when you try to start recording it.
 
@@ -168,7 +172,7 @@ The HF bands are notorious for being "closed" or "open," meaning sometimes signa
 
 It's not so charming when trying to send data - especially a big, single transmission of data. 
 
-This requires safeguards like forward error correction and sending repeats to be certain the data was safely received. Given the medium, it's never 100%, and if a recipient misses a block... what happens then? It's not simple to use an unreliable medium, especially if you have no alternative methods.
+This means that safeguards such as forward error correction and sending repeats are necessary to increase the likelihood of receiving 100% of the message. Given the medium, it's never certain, and if a recipient misses a block, what happens then? It's not simple to use an unreliable medium, especially if you have no alternative methods.
 
 ### 2. Antennas aren't small
 
@@ -178,7 +182,7 @@ HF antennas are long. This is partially because amateur radio operators want to 
 
 If you're only receiving, they can be much smaller, but they're still not at a user-friendly size. If you wanted to receive a Bitcoin data signal reliably and with a small antenna, the broadcaster would need to be using an enormous amount of power.
 
-All these limits add up to the same problem: HF can deliver information _to_ you, but not _through_ you. It’s a one-way pipe in a network that fundamentally depends on two-way exchange.
+All these limits add up to the same problem: HF isn't practical for a system that frequently exchanges data. It’s a one-way pipe in a network that fundamentally depends on two-way exchange.
 
 ## Passive versus active participants
 
@@ -206,7 +210,9 @@ According to  [Bitnodes](https://bitnodes.io/) there are about **23,000 Bitcoin 
 
 ## Conclusion
 
-In the narrowest possible sense, you might be able to "use Bitcoin" via HF radio by receiving blocks. In any reasonable interpretation of being a _participant_ in the Bitcoin network, you need the internet.
+In the narrowest possible sense, you might be able to "use Bitcoin" via HF radio by receiving blocks. This would require introducing a Bitcoin beacon using a dedicated slice of HF spectrum, which is unlikely to happen legally and which introduces exactly the type of centralized infrastructure we're trying to avoid.
+
+In any reasonable interpretation of being a _participant_ in the Bitcoin network, you need the internet.
 
 Suggesting that Bitcoin's blocks should be significantly smaller in order to better serve non-participants in the network via a poor data communication method makes no sense. Removing points of control over our infrastructure is a good impulse, and I hope to see radio play more of a role in the future, but I'm not hanging my hopes on the HF bands. 
 

@@ -132,6 +132,9 @@ const BandwidthVisualizer = () => {
       }
       ctx.restore();
 
+      const baseHeight = 18;
+      const antennaBottom = bottom - baseHeight;
+
       // Antennas
       ctx.strokeStyle = 'rgba(130, 170, 255, 0.85)';
       ctx.lineWidth = 4;
@@ -139,15 +142,14 @@ const BandwidthVisualizer = () => {
 
       ctx.beginPath();
       ctx.moveTo(leftX, top);
-      ctx.lineTo(leftX, bottom);
+      ctx.lineTo(leftX, antennaBottom);
       ctx.stroke();
 
       ctx.beginPath();
       ctx.moveTo(rightX, top);
-      ctx.lineTo(rightX, bottom);
+      ctx.lineTo(rightX, antennaBottom);
       ctx.stroke();
 
-      const baseHeight = 18;
       ctx.fillStyle = 'rgba(77, 124, 255, 0.25)';
       drawRoundedRect(ctx, leftX - 26, bottom, 52, baseHeight, 8);
       ctx.fill();

@@ -1304,6 +1304,7 @@ sup .footnote-ref {
   border-radius: 12px;
   background: radial-gradient(circle at 10% 50%, rgba(77, 124, 255, 0.35), rgba(10, 14, 20, 0.95));
   border: 1px solid rgba(77, 124, 255, 0.15);
+  overflow: hidden;
 }
 
 .frequency-viz-canvas canvas {
@@ -1806,6 +1807,10 @@ sup .footnote-ref {
   border-radius: 10px;
 }
 
+.transfer-complete-overlay-mobile {
+  display: none;
+}
+
 .transfer-lane-footer {
   display: flex;
   flex-direction: column;
@@ -2081,4 +2086,407 @@ sup .footnote-ref {
 
 .legend-color.passive {
   background: linear-gradient(135deg, rgba(255, 120, 120, 0.95), rgba(205, 70, 70, 0.85));
+}
+
+/* Mobile responsive styles for visualizations */
+@media screen and (max-width: 768px) {
+  /* Frequency modulation visualization mobile styles */
+  .frequency-viz {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .frequency-viz-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .frequency-viz-title {
+    font-size: 1rem;
+  }
+
+  .frequency-viz-metadata {
+    display: none;
+  }
+
+  .frequency-viz-canvas {
+    height: 220px;
+  }
+
+  .frequency-viz-legend {
+    padding: 0 12px;
+    font-size: 0.75rem;
+  }
+
+  .frequency-viz-legend span {
+    padding: 0.2rem 0.5rem;
+  }
+
+  .frequency-viz-opportunities {
+    padding: 0.85rem 1rem 1.1rem;
+  }
+
+  .frequency-viz-opportunities-label {
+    font-size: 0.88rem;
+  }
+
+  .frequency-viz-opportunities-grid {
+    display: none;
+  }
+
+  .frequency-viz-opportunities-summary {
+    font-size: 0.85rem;
+  }
+
+  .frequency-viz-controls label {
+    font-size: 0.9rem;
+  }
+
+  .frequency-viz-scale {
+    font-size: 0.75rem;
+  }
+
+  /* Bandwidth visualization mobile styles */
+  .bandwidth-viz {
+    padding: 1rem;
+    gap: 1.1rem;
+  }
+
+  .bandwidth-viz-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .bandwidth-viz-title {
+    font-size: 1rem;
+  }
+
+  .bandwidth-viz-metadata {
+    display: none;
+  }
+
+  .bandwidth-viz-canvas {
+    height: 240px;
+  }
+
+  .bandwidth-viz-legend {
+    padding: 0 12px;
+    font-size: 0.72rem;
+  }
+
+  .bandwidth-viz-legend span {
+    padding: 0.2rem 0.55rem;
+  }
+
+  .bandwidth-viz-band-label {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.75rem;
+    bottom: 10px;
+  }
+
+  .bandwidth-viz-grid-panel {
+    padding: 0.9rem 1.1rem 1.1rem;
+  }
+
+  .bandwidth-viz-grid-title {
+    font-size: 0.88rem;
+  }
+
+  .bandwidth-viz-grid {
+    display: none;
+  }
+
+  .bandwidth-viz-grid-summary {
+    font-size: 0.82rem;
+  }
+
+  .bandwidth-viz-sliders label {
+    font-size: 0.9rem;
+  }
+
+  .bandwidth-viz-footnote {
+    font-size: 0.72rem;
+    text-align: left;
+  }
+
+  /* Block transfer visualization mobile styles */
+  .transfer-viz {
+    padding: 1rem;
+    gap: 1.2rem;
+  }
+
+  .transfer-viz-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .transfer-viz-title {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  .transfer-viz-controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .transfer-viz-speed {
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .transfer-viz-speed span {
+    width: 100%;
+  }
+
+  .transfer-speed-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .transfer-start-btn {
+    padding: 0.45rem 1rem;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .transfer-lane {
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .transfer-lane-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .transfer-lane-label {
+    font-size: 0.95rem;
+  }
+
+  .transfer-lane-rate {
+    font-size: 0.85rem;
+  }
+
+  .transfer-lane-body {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .transfer-lane-grid {
+    --transfer-grid-cell: 10px;
+    padding: 4px;
+    gap: 1.5px;
+  }
+
+  .transfer-lane-stream {
+    height: calc((var(--transfer-grid-cell, 10px) + 1.5px) * 10 + 8px);
+  }
+
+  .transfer-complete-overlay {
+    display: none;
+  }
+
+  .transfer-complete-overlay-mobile {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255, 230, 180, 0.95);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(12, 18, 32, 0.5), rgba(12, 18, 32, 0.4));
+    backdrop-filter: blur(2px);
+    border-radius: 10px;
+    padding: 0.5rem;
+  }
+
+  .transfer-progress-labels {
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .transfer-complete-tag {
+    font-size: 0.75rem;
+    padding: 0.12rem 0.5rem;
+  }
+
+  .transfer-viz-footnote {
+    font-size: 0.72rem;
+    text-align: left;
+  }
+
+  /* Network topology visualization mobile styles */
+  .topology-viz {
+    padding: 1rem;
+    gap: 1.1rem;
+  }
+
+  .topology-viz-title {
+    font-size: 1rem;
+  }
+
+  .topology-viz-subtitle {
+    font-size: 0.85rem;
+    max-width: 100%;
+  }
+
+  .topology-panel {
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .topology-panel-title {
+    font-size: 0.95rem;
+  }
+
+  .topology-panel-body {
+    height: 200px;
+  }
+
+  .topology-panel-footer {
+    font-size: 0.8rem;
+  }
+
+  .topology-viz-legend {
+    font-size: 0.8rem;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media screen and (max-width: 480px) {
+  /* Frequency modulation visualization extra small */
+  .frequency-viz {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+
+  .frequency-viz-canvas {
+    height: 200px;
+    border-radius: 10px;
+  }
+
+  .frequency-viz-legend {
+    padding: 0 10px;
+    font-size: 0.7rem;
+  }
+
+  .frequency-viz-legend span {
+    padding: 0.15rem 0.4rem;
+  }
+
+  .frequency-viz-opportunities {
+    padding: 0.75rem 0.9rem 1rem;
+    border-radius: 12px;
+  }
+
+  .frequency-viz-opportunities-grid {
+    display: none;
+  }
+
+  /* Bandwidth visualization extra small */
+  .bandwidth-viz {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+
+  .bandwidth-viz-canvas {
+    height: 200px;
+    border-radius: 10px;
+  }
+
+  .bandwidth-viz-legend {
+    padding: 0 10px;
+    font-size: 0.68rem;
+  }
+
+  .bandwidth-viz-band-label {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.65rem;
+  }
+
+  .bandwidth-viz-grid-panel {
+    padding: 0.75rem 0.9rem 1rem;
+    border-radius: 12px;
+  }
+
+  .bandwidth-viz-grid {
+    display: none;
+  }
+
+  /* Block transfer visualization extra small */
+  .transfer-viz {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+
+  .transfer-lane {
+    padding: 0.75rem 0.9rem 0.9rem;
+    border-radius: 12px;
+  }
+
+  .transfer-lane-grid {
+    --transfer-grid-cell: 8px;
+    padding: 3px;
+    gap: 1px;
+  }
+
+  .transfer-lane-stream {
+    height: calc((var(--transfer-grid-cell, 8px) + 1px) * 10 + 6px);
+  }
+
+  .transfer-complete-overlay {
+    display: none;
+  }
+
+  .transfer-complete-overlay-mobile {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 230, 180, 0.95);
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(12, 18, 32, 0.5), rgba(12, 18, 32, 0.4));
+    backdrop-filter: blur(2px);
+    border-radius: 10px;
+    padding: 0.4rem;
+  }
+
+  /* Network topology visualization extra small */
+  .topology-viz {
+    padding: 0.85rem;
+    border-radius: 12px;
+  }
+
+  .topology-panel {
+    padding: 0.75rem 0.9rem 0.9rem;
+    border-radius: 12px;
+  }
+
+  .topology-panel-body {
+    height: 180px;
+    border-radius: 10px;
+  }
+
+  .topology-viz-legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
