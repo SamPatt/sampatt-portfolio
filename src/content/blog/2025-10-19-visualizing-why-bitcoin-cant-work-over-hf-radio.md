@@ -214,6 +214,6 @@ In the narrowest possible sense, you might be able to "use Bitcoin" via HF radio
 
 In any reasonable interpretation of being a _participant_ in the Bitcoin network, you need the internet.
 
-Suggesting that Bitcoin's blocks should be significantly smaller in order to better serve non-participants in the network via a poor data communication method makes no sense. Removing points of control over our infrastructure is a good impulse, and I hope to see radio play more of a role in the future, but I'm not hanging my hopes on the HF bands. 
+Suggesting that Bitcoin's blocks should be significantly smaller in order to better serve passive participants in the network via a poor data communication method makes no sense. Removing points of control over our infrastructure is a good impulse, and I hope to see radio play more of a role in the future, but I'm not hanging my hopes on the HF bands. 
 
 For the foreseeable future, Bitcoin's fate is tied to the internet, and even something as radical as reducing the block size by an order of magnitude won't change that.
