@@ -84,6 +84,7 @@ const generateRingReceivers = (count, radius, centerX, centerY) => {
 };
 
 const NetworkTopologyVisualizer = () => {
+  const [isRunning, setIsRunning] = useState(false);
   const meshData = useMemo(() => {
     const width = 340;
     const height = 230;
@@ -103,10 +104,21 @@ const NetworkTopologyVisualizer = () => {
   return (
     <div className="topology-viz">
       <div className="topology-viz-header">
-        <div className="topology-viz-title">HF Broadcast vs. Bitcoin Network</div>
-        <div className="topology-viz-subtitle">
-          HF only enables passive participation; the internet allows full participation.
+        <div>
+          <div className="topology-viz-title">HF Broadcast vs. Bitcoin Network</div>
+          <div className="topology-viz-subtitle">
+            HF only enables passive participation; the internet allows full participation.
+          </div>
         </div>
+        {isRunning && (
+          <button
+            type="button"
+            className="topology-viz-stop-btn"
+            onClick={() => setIsRunning(false)}
+          >
+            Stop
+          </button>
+        )}
       </div>
 
       <div className="topology-viz-panels">
@@ -114,7 +126,10 @@ const NetworkTopologyVisualizer = () => {
           <div className="topology-panel-header">
             <span className="topology-panel-title">HF broadcast</span>
           </div>
-          <div className="topology-panel-body broadcast">
+          <div 
+            className={`topology-panel-body broadcast${isRunning ? ' running' : ''}`}
+            style={{ animationPlayState: isRunning ? 'running' : 'paused' }}
+          >
             <svg
               className="topology-broadcast"
               viewBox="0 0 320 240"
@@ -194,7 +209,10 @@ const NetworkTopologyVisualizer = () => {
           <div className="topology-panel-header">
             <span className="topology-panel-title">Bitcoin network</span>
           </div>
-          <div className="topology-panel-body mesh">
+          <div 
+            className={`topology-panel-body mesh${isRunning ? ' running' : ''}`}
+            style={{ animationPlayState: isRunning ? 'running' : 'paused' }}
+          >
             <svg
               className="topology-mesh"
               viewBox={`0 0 ${meshData.width} ${meshData.height}`}
@@ -285,6 +303,21 @@ const NetworkTopologyVisualizer = () => {
           </div>
         </div>
       </div>
+
+      {!isRunning && (
+        <div className="topology-viz-overlay">
+          <div className="topology-viz-overlay-content">
+            <div className="topology-viz-overlay-title">HF Broadcast vs. Bitcoin Network</div>
+            <button
+              type="button"
+              className="topology-viz-start-btn"
+              onClick={() => setIsRunning(true)}
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="topology-viz-legend">
         <div className="legend-item">

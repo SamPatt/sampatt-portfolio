@@ -15,6 +15,10 @@ const loadVisualizationComponent = async (slug) => {
       return (await import('./visualizations/BlockTransferVisualizer.jsx')).default;
     case 'network-topology':
       return (await import('./visualizations/NetworkTopologyVisualizer.jsx')).default;
+    case 'dc-ac-em-wave':
+      return (await import('./visualizations/DcAcEmWaveVisualizer.jsx')).default;
+    case 'modulation':
+      return (await import('./visualizations/ModulationVisualizer.jsx')).default;
     default:
       return null;
   }

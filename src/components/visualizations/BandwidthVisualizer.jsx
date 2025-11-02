@@ -14,11 +14,14 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const BandwidthVisualizer = () => {
   const [centerFrequency, setCenterFrequency] = useState(1);
   const [bandwidth, setBandwidth] = useState(1);
+  const [isRunning, setIsRunning] = useState(false);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const animationRef = useRef(null);
   const centerFrequencyRef = useRef(centerFrequency);
   const bandwidthRef = useRef(bandwidth);
+  const bandGradientRef = useRef(null);
+  const bandGradientParamsRef = useRef({ top: 0, bottom: 0, leftX: 0 });
 
   useEffect(() => {
     centerFrequencyRef.current = centerFrequency;
@@ -76,6 +79,11 @@ const BandwidthVisualizer = () => {
     };
 
     const renderFrame = (timestamp) => {
+      if (!isRunning) {
+        animationRef.current = null;
+        return;
+      }
+
       const dpr = window.devicePixelRatio || 1;
       const width = canvas.width / dpr;
       const height = canvas.height / dpr;
@@ -163,11 +171,22 @@ const BandwidthVisualizer = () => {
       const bandBottomY = clamp(centerY + bandPixelHalf, top, bottom);
       const bandHeight = Math.max(12, bandBottomY - bandTopY);
 
-      const bandGradient = ctx.createLinearGradient(leftX, bandTopY, leftX, bandBottomY);
-      bandGradient.addColorStop(0, 'rgba(77, 124, 255, 0.12)');
-      bandGradient.addColorStop(0.5, 'rgba(77, 124, 255, 0.3)');
-      bandGradient.addColorStop(1, 'rgba(77, 124, 255, 0.12)');
-      ctx.fillStyle = bandGradient;
+      // Cache gradient - only recreate if parameters changed
+      const currentGradientParams = { top: bandTopY, bottom: bandBottomY, leftX };
+      const paramsChanged = 
+        bandGradientParamsRef.current.top !== currentGradientParams.top ||
+        bandGradientParamsRef.current.bottom !== currentGradientParams.bottom ||
+        bandGradientParamsRef.current.leftX !== currentGradientParams.leftX;
+
+      if (!bandGradientRef.current || paramsChanged) {
+        bandGradientRef.current = ctx.createLinearGradient(leftX, bandTopY, leftX, bandBottomY);
+        bandGradientRef.current.addColorStop(0, 'rgba(77, 124, 255, 0.12)');
+        bandGradientRef.current.addColorStop(0.5, 'rgba(77, 124, 255, 0.3)');
+        bandGradientRef.current.addColorStop(1, 'rgba(77, 124, 255, 0.12)');
+        bandGradientParamsRef.current = currentGradientParams;
+      }
+
+      ctx.fillStyle = bandGradientRef.current;
       ctx.fillRect(leftX, bandTopY, rightX - leftX, bandBottomY - bandTopY);
 
       ctx.strokeStyle = 'rgba(145, 190, 255, 0.35)';
@@ -188,6 +207,12 @@ const BandwidthVisualizer = () => {
       const centerFreq = centerFrequencyRef.current;
       const laneCount = clamp(Math.max(1, Math.round(bandwidthRef.current)), 1, 32);
 
+      // Dynamic sample reduction: use fewer samples when bandwidth is low
+      // This reduces calculations by ~50% for lower bandwidths
+      const baseSamples = 220;
+      const samplesMultiplier = laneCount <= 5 ? 0.5 : laneCount <= 10 ? 0.75 : 1;
+      const samples = Math.max(110, Math.round(baseSamples * samplesMultiplier));
+
       for (let lane = 0; lane < laneCount; lane++) {
         const normalized = laneCount === 1 ? 0.5 : lane / (laneCount - 1);
         const freqOffset = (normalized - 0.5) * bandwidthRef.current;
@@ -201,7 +226,6 @@ const BandwidthVisualizer = () => {
         ctx.lineWidth = normalized === 0.5 ? 3.2 : 2;
 
         const phaseOffset = normalized * Math.PI;
-        const samples = 220;
         const laneMidline = bandTopY + ((lane + 0.5) / laneCount) * bandHeight;
         const laneAmplitude = Math.max(6, (bandHeight / laneCount) * 0.45);
         for (let i = 0; i <= samples; i++) {
@@ -240,17 +264,22 @@ const BandwidthVisualizer = () => {
       ctx.fill();
       ctx.restore();
 
-      animationRef.current = requestAnimationFrame(renderFrame);
+      if (isRunning) {
+        animationRef.current = requestAnimationFrame(renderFrame);
+      }
     };
 
-    animationRef.current = requestAnimationFrame(renderFrame);
+    if (isRunning) {
+      animationRef.current = requestAnimationFrame(renderFrame);
+    }
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     };
-  }, []);
+  }, [isRunning]);
 
   const totalCells = TOTAL_GRID_COLUMNS * TOTAL_GRID_ROWS;
   const estimatedThroughput = Math.round(centerFrequency * bandwidth);
@@ -265,6 +294,15 @@ const BandwidthVisualizer = () => {
           <span><strong>{bandwidth.toFixed(0)} Hz</strong> bandwidth window</span>
           <span><strong>{estimatedThroughput.toLocaleString()}</strong> chances per second</span>
         </div>
+        {isRunning && (
+          <button
+            type="button"
+            className="bandwidth-viz-stop-btn"
+            onClick={() => setIsRunning(false)}
+          >
+            Stop
+          </button>
+        )}
       </div>
 
       <div className="bandwidth-viz-stage">
@@ -303,6 +341,21 @@ const BandwidthVisualizer = () => {
           </div>
         </div>
       </div>
+
+      {!isRunning && (
+        <div className="bandwidth-viz-overlay">
+          <div className="bandwidth-viz-overlay-content">
+            <div className="bandwidth-viz-overlay-title">Bandwidth unlocks parallel modulation lanes</div>
+            <button
+              type="button"
+              className="bandwidth-viz-start-btn"
+              onClick={() => setIsRunning(true)}
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bandwidth-viz-controls">
         <div className="bandwidth-viz-sliders">

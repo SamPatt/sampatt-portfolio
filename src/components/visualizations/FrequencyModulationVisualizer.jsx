@@ -11,6 +11,7 @@ const OPPORTUNITY_MULTIPLIER = TOTAL_OPPORTUNITIES / MAX_FREQUENCY; // 1 slot pe
 
 const FrequencyModulationVisualizer = () => {
   const [frequency, setFrequency] = useState(MIN_FREQUENCY);
+  const [isRunning, setIsRunning] = useState(false);
   const [opportunityFill, setOpportunityFill] = useState(
     Math.min(TOTAL_OPPORTUNITIES, Math.round(MIN_FREQUENCY * OPPORTUNITY_MULTIPLIER))
   );
@@ -88,6 +89,11 @@ const FrequencyModulationVisualizer = () => {
     };
 
     const renderFrame = (timestamp) => {
+      if (!isRunning) {
+        animationRef.current = null;
+        return;
+      }
+
       const dpr = window.devicePixelRatio || 1;
       const width = canvas.width / dpr;
       const height = canvas.height / dpr;
@@ -282,17 +288,22 @@ const FrequencyModulationVisualizer = () => {
         ctx.restore();
       }
 
-      animationRef.current = requestAnimationFrame(renderFrame);
+      if (isRunning) {
+        animationRef.current = requestAnimationFrame(renderFrame);
+      }
     };
 
-    animationRef.current = requestAnimationFrame(renderFrame);
+    if (isRunning) {
+      animationRef.current = requestAnimationFrame(renderFrame);
+    }
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     };
-  }, []);
+  }, [isRunning]);
 
   const bitsPerSecond = frequency * BITS_PER_CYCLE;
   const bitsPerSecondLabel = Number.isInteger(bitsPerSecond)
@@ -310,6 +321,15 @@ const FrequencyModulationVisualizer = () => {
           </span>
           <span><strong>{bitsPerSecondLabel}</strong> bits per second (1 bit/cycle)</span>
         </div>
+        {isRunning && (
+          <button
+            type="button"
+            className="frequency-viz-stop-btn"
+            onClick={() => setIsRunning(false)}
+          >
+            Stop
+          </button>
+        )}
       </div>
 
       <div className="frequency-viz-stage">
@@ -335,6 +355,21 @@ const FrequencyModulationVisualizer = () => {
           </div>
         </div>
       </div>
+
+      {!isRunning && (
+        <div className="frequency-viz-overlay">
+          <div className="frequency-viz-overlay-content">
+            <div className="frequency-viz-overlay-title">Frequency controls modulation opportunities</div>
+            <button
+              type="button"
+              className="frequency-viz-start-btn"
+              onClick={() => setIsRunning(true)}
+            >
+              Start
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="frequency-viz-controls">
         <label htmlFor="frequency-slider">

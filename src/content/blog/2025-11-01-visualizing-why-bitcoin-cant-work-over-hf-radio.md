@@ -9,8 +9,8 @@ tags:
 image: null
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-11-01T16:14:58.000Z
-created: 2025-10-19T21:35:00.000Z
+last_edited: 2025-11-02T00:03:09.000Z
+created: 2025-11-01T21:35:00.000Z
 ---
 Surely if there are two technologies which are inseparable, it's Bitcoin and the Internet. After all, Bitcoin is magic **internet** money, right?
 
@@ -22,6 +22,12 @@ Not everyone is convinced. Long-time Bitcoiner NVK recently posted [this on X](h
 
 
 NVK knows his stuff: he's been running a Bitcoin hardware company for ages, has been a prominent technical voice in the Bitcoin community, and he's a licensed amateur radio operator. In fact, he was the first person to *send* Bitcoin over HF radio, [back in 2019](https://x.com/nvk/status/1095354354289135617).
+
+Also, NVK isn't the only one who has taken this seriously. Famous Bitcoiners Nick Szabo and Elaine Ou did some experimentation with Bitcoin and HF in 2017 and gave this fascinating presentation at Scaling Bitcoin:
+
+{{youtube:https://youtu.be/Wt8iGvgclXI?si=YQACnf5KzCKibBVa}}
+
+It's been a few years since these experiments. I shared a few messages with Szabo in the year or two after the experiment - he hoped to continue them, but to my knowledge, neither he nor Ou did anything more with the idea. But given NVK's interest, perhaps the idea isn't totally dead.
 
 Would Bitcoin "not need the internet" if we limited blocks to only being 300kB and they were broadcast over HF radio? Is NVK right? 
 
@@ -87,29 +93,54 @@ Only 1.5 - 4 MB of data every ten minutes? Where's the bandwidth problem?
 
 There isn't one - for internet, or most forms of radio communication. Let's visualize this.
 
-## Modulation, Frequency, and Bandwidth
+If you've already got a solid handle on radio fundamentals, you can skip to the [Speed comparisons](#speed-comparisons) section below.
 
-Could you send information with a signal that never changed? If you were using a Morse code paddle and held it down indefinitely, would anyone listening be able to glean any information from it?
+## Frequency, Bandwidth, and Modulation
 
-Other than inferring that you fell asleep with your finger down, no, they wouldn’t. Sending information requires something about the signal to change. This change is called _modulation_.
+For many years the terms _frequency_, _bandwidth_, and _modulation_ - and how they related to each other - were always just outside my intuitive grasp. I knew how to use them in radio communications, but not what they represented at a fundamental level. Visualizations helped immensely.
 
-There are various ways to modulate a signal, but those aren’t important right now. What matters is _how many opportunities you have to modulate a signal._ This is dependent on the bandwidth available, which is influenced by the _frequency_ of the signal.
+Electromagnetic fields are strange things. They can be static, like the electric field around a charged balloon or the magnetic field around a neodymium magnet. Unless you interact with or move those fields in some way, they’re content to sit there.
 
-Hertz (Hz) measures frequency. 1 Hz means one full oscillation each second - one complete cycle of a sine wave. The essential idea is that **higher frequency means more opportunities to send information.**
+If you connected a DC power source to an antenna, you’d create a static electric field (and a steady magnetic field) that could be measured nearby. But it wouldn’t radiate; it would just sit in place and fade quickly with distance.
 
-An antenna is a simple device. It’s just a piece of metal of a particular length. When you push electrons back and forth through it, you create an electromagnetic wave that propagates outward. In this visualization, we have two antennas: one transmitting, one receiving. The first pushes electrons through the metal once per second - one push-and-pull cycle (1 Hz) - creating a sine wave. This wave travels through space to the second antenna, where its energy moves electrons inside the metal, producing an electrical signal we can measure.
+Hook up the same antenna to AC, and it’s no longer static. The alternating current makes the electrons accelerate back and forth, and the changing electric and magnetic fields they generate propagate outward on their own - no longer bound to the antenna - radiating outward at the speed of light. Those propagating fields are _electromagnetic waves_.
+
+{{viz:dc-ac-em-wave}}
+
+We can detect these EM waves when they interact with matter, such as another antenna. The oscillating fields drive the electrons in the receiving antenna in the same rhythm as the transmitter, creating an alternating voltage we can measure.
+
+To understand _frequency_, _bandwidth_, and _modulation_ all you need to do is follow that oscillating voltage line through time and watch how it varies.
+
+### Frequency
+
+Looking at the voltage line, you'll see EM waves primarily as sine waves. The most fundamental aspect of these waves is how frequently they complete a cycle - how far apart each of the peaks are. This spacing is called the _frequency_, and we measure this in Hertz (Hz), which is one cycle per second.
+
+The essential idea is that **higher frequency means more opportunities to send information.** To understand why, we need to know what a _carrier wave_ is.
 
 {{viz:frequency-modulation}}
 
-Each time the midpoint of the wave completes a cycle, there’s a flash - each flash represents one moment you could alter or measure the signal, and thus one opportunity to send a bit of information. As you increase the frequency, the flashes speed up, giving you more chances per second to send and receive data.
+A sine wave itself doesn't give you any information. It's just a line that moves up and down predictably. But this predictability is important, because if you want to send information over radio, you need to send this sine wave (called a carrier wave), but alter it a little bit to encode your data. We call these alterations to the carrier wave _modulation_.
 
-It’s not literally true that 1 Hz = 1 bit of information. In reality, the **[Shannon–Hartley theorem](https://www.geeksforgeeks.org/electronics-engineering/shannon-capacity/)** tells us that the data rate of a channel depends on its bandwidth and its signal-to-noise ratio, not directly on its frequency. However, higher frequencies are usually allocated much wider bandwidth in practice, which is why they can carry vastly more information.
+### Modulation
 
-So while frequency itself doesn’t directly increase data rate, it often _does_ determine how much spectrum you can use - and more bandwidth means more data. With each additional oscillation per second (Hz), you gain another opportunity to add modulation. More modulation opportunities = more data.
+If the receiver knows the frequency of the sender's carrier wave (they knew the distance between peaks on the voltage line), then they can look for any variations away from that perfect sine wave. Anything that deviates from the carrier wave is the underlying information.
 
-Thus far we've been considering a specific frequency, but that's not how signals work in practice. They occupy a range of frequencies at the same time. This size of this range is called *bandwidth*. If you have an extremely narrow slice of frequencies, then you have very low bandwidth. If you have a huge range of frequencies, you have high bandwidth.
+There are various ways to modulate the carrier, and all of them can be visualized by looking at the voltage line. If you vary the height of the wave, that's _amplitude modulation_ (AM). If you vary the frequency away from the carrier (change the distance of the peaks), that's _frequency modulation_ (FM). If you shift when the line is moving up and down (changing the phase), that's called _phase modulation_ (PM). These can be combined as well - another method called Quadrature Amplitude Modulation (QAM) changes the amplitude and phase together.
+
+{{viz:modulation}}
+
+In this visualization you can see the carrier wave as a dashed line behind the modulated signal. By selecting different modulation modes and their strength, you can see differences emerge between the two lines - that difference contains the information of the signal.
+### Bandwidth
+
+Notice that if you crank up the modulation strength, you can deviate from the carrier quite a bit. The more significant the deviation becomes, the further away the modulated signal reaches from the carrier frequency. This distance is called the _bandwidth_ of the signal, and it's directly related to how much information can be transmitted.
+
+The frequency visualization earlier is a bit misleading. It’s not literally true that 1 Hz = 1 bit of information. In reality, the **[Shannon–Hartley theorem](https://www.geeksforgeeks.org/electronics-engineering/shannon-capacity/)** tells us that the data rate of a channel depends on its bandwidth and its signal-to-noise ratio, not directly on its frequency. 
+
+So while frequency itself doesn’t directly increase the data rate, it does give you way more space for your modulated signal to deviate further and further away from the carrier signal. All that extra space - bandwidth - means you can pack in more data.
 
 The next visualization shows what happens when you increase bandwidth. Note that in the visualization above, if we increased the frequency all the way to 100 Hz, that resulted in 100 chances to send information. But when we expand the bandwidth of the signal, we get many more opportunities.
+
+There are different ways to use bandwidth. We've been discussing single-carrier signals, where using more bandwidth means further deviation from the carrier frequency. But you can also use multiple carriers in parallel instead, such as the popular [OFDM](https://en.wikipedia.org/wiki/Orthogonal_frequency-division_multiplexing). 
 
 {{viz:bandwidth-window}}
 
@@ -120,7 +151,6 @@ But if you're operating at 2.4 GHz (Wi-Fi) and you use 1% of _that_ frequency, y
 This is why higher-frequency systems can carry vastly more information - not because the waves themselves are “faster,” but because they can use much wider frequency bands.
 
 HF radio operates at frequencies between 3 - 30 million oscillations per second (MHz). That may sound like a high frequency, and back in the early days of our understanding of radio, it _was_ higher than the most popular use of radio, the AM broadcast band. But at HF frequencies you typically have only about 2–12 kHz of usable bandwidth - thousands of times narrower than the MHz-wide channels used by Wi-Fi, cell networks, or satellites.
-
 ## Speed comparisons
 
 Let's see how these different modes of communication compare on speed:
@@ -136,12 +166,11 @@ What about the speed for HF? That's a bit complicated, but let's just take the n
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-04-02.png)
 
 
-12 kHz of bandwidth → roughly **50 kilobits per second (Kbps)** for HF.  
-That amount of bandwidth on HF frequencies would be considered _wideband_, which is far beyond what ordinary ham operators are allowed to use. It’s the kind of channel width used by shortwave broadcasters, military systems, or governments, not individuals. Typical amateur allocations top out around 2-3 kHz.
+12 kHz of bandwidth → roughly **50 kilobits per second (Kbps)** for HF.  That amount of bandwidth on HF frequencies would be considered _wideband_, which is far beyond what ordinary ham operators are allowed to use. It’s the kind of channel width used by shortwave broadcasters, military systems, or governments, not individuals. Typical amateur allocations top out around 2-3 kHz.
 
-The modern wideband HF systems that NVK is referencing can reach 50 kbps under ideal conditions, but this almost certainly requires a well-engineered, licensed, high-power setup with good signal-to-noise ratio and forward-error correction.
+The modern wideband HF systems that NVK is referencing can reach 50 kbps under ideal conditions, but this almost certainly requires a well-engineered, licensed, high-power setup with good signal-to-noise ratio and forward-error correction. Real-world amateur setups are an order of magnitude slower than this.
 
-Those setups are specialized and regulated. In practice, an HF station operating with 12 kHz of continuous bandwidth would need major transmit power, large antennas, and government-level spectrum authorization. In other words, these numbers only make sense if you have a large broadcast-grade facility or you’re willing to go rogue.
+In practice, an HF station operating with 12 kHz of continuous bandwidth would need major transmit power, large antennas, and government-level spectrum authorization. In other words, these numbers only make sense if you have a large broadcast-grade facility or you’re willing to go rogue.
 
 Could the international community be convinced to allocate 12 kHz of HF spectrum for a continuous Bitcoin “block beacon”? 
 
@@ -165,7 +194,10 @@ Most people's interactions with radio nowadays are at much higher frequencies th
 
 LOS radio has the massive bandwidth advantage we've discussed, but it also has a fundamental problem - the earth is curved. The distance a signal can reach is inherently limited. Tall antennas can help get further around the curve, but unless you're a satellite or on a mountain or airplane / balloon, you're not usually going much further than ~50 miles.
 
-HF doesn't have this limitation, because the signal is _reflected off the ionosphere back to earth_. LOS signals just blast off into space, but when the angle is correct, HF will "bounce" from the ionosphere and back to earth multiple times, allowing incredible distances. It's amazing this is possible, but it comes at a huge disadvantage.
+![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-02-04-40.png)
+[Image source](https://www.qsl.net/4x4xm/HF-Propagation.htm)
+
+HF doesn't have this limitation, because the signal is _reflected off the ionosphere back to earth_. As the image above shows, LOS signals (such as VHF or UHF) just blast off into space, but when the angle is correct, HF will "bounce" from the ionosphere and back to earth multiple times, allowing incredible distances. It's amazing this is possible, but it comes at a huge disadvantage.
 
 ### 1. Unreliable
 

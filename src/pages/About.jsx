@@ -26,7 +26,7 @@ function About() {
             After co-founding <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helping to build the decentralized marketplace OpenBazaar, I decided to finish getting the skills I needed, and I went on to graduate from the General Assembly Software Engineering Immersive bootcamp.
           </p>
           <p>
-            As a fullstack developer, I focus on projects advancing decentralization, self-hosting, privacy, and local LLMs. I'm currently developing a WebRTC-based streaming platform that connects self-hosted LLM operators with users, making AI more accessible while preserving privacy and autonomy.
+            I focus on projects advancing decentralization, self-hosting, privacy, and local LLMs. I'm currently developing a WebRTC-based streaming platform that connects self-hosted LLM operators with users, making AI more accessible while preserving privacy and autonomy.
           </p>
           <p>
             My projects, resume, LinkedIn and Github are all linked. Feel free to send me an email if you'd like to collaborate, hire me, or just to say hello.
