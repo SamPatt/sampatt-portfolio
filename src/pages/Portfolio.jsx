@@ -7,6 +7,11 @@ const portfolioData = {
     description: 'My most recent writing can be found on my <a href="/blog">blog</a>. Selected articles below.',
     items: [
       {
+        title: "o3 Beats a Master-Level Geoguessr Player—Even with Fake EXIF Data",
+        description: "Reached #1 on Hacker News",
+        link: '/blog/2025-04-28-can-o3-beat-a-geoguessr-master'
+      },
+      {
         title: "Unc's Unlearning Outfit for 2024",
         description: "A short fiction piece that won runner up in the 2024 Interintellect Essay contest",
         link: '/blog/2025-03-03-unc-unclearning'
