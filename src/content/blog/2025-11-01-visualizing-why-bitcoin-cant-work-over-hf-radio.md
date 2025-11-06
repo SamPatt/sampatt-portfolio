@@ -9,7 +9,7 @@ tags:
 image: null
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-11-02T00:03:09.000Z
+last_edited: 2025-11-02T23:20:23.000Z
 created: 2025-11-01T21:35:00.000Z
 ---
 Surely if there are two technologies which are inseparable, it's Bitcoin and the Internet. After all, Bitcoin is magic **internet** money, right?
@@ -61,7 +61,7 @@ If you look at authoritarian regimes today, and throughout history, they typical
 
 Radio is so compelling because *it bypasses all points of control.* The signal is emitted from one antenna, travels through the atmosphere, and is received by another antenna. Truly peer to peer; nothing in-between! This is as decentralized as it gets. 
 
-Rodalfo is right when he says "Truly decentralize. Speed of light." It's a beautiful vision - have the underlying communication network be peer to peer at the most fundamental level possible. And to be clear, I support this vision. This post isn't about why radio can't be used to empower decentralization, or even why radio can't be used for Bitcoin (I believe it can), but why *HF radio specifically* isn't sufficient.
+NVK is right when he says "Truly decentralize. Speed of light." It's a beautiful vision - have the underlying communication network be peer to peer at the most fundamental level possible. And to be clear, I support this vision. This post isn't about why radio can't be used to empower decentralization, or even why radio can't be used for Bitcoin (I believe it can), but why *HF radio specifically* isn't sufficient.
 
 # My Bitcoin / Radio Experience
 
