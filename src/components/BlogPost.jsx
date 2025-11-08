@@ -19,6 +19,8 @@ const loadVisualizationComponent = async (slug) => {
       return (await import('./visualizations/DcAcEmWaveVisualizer.jsx')).default;
     case 'modulation':
       return (await import('./visualizations/ModulationVisualizer.jsx')).default;
+    case 'radio-spectrum':
+      return (await import('./visualizations/RadioSpectrumVisualizer.jsx')).default;
     default:
       return null;
   }

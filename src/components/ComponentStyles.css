@@ -1762,6 +1762,224 @@ sup .footnote-ref {
   box-shadow: 0 4px 12px rgba(255, 120, 120, 0.4);
 }
 
+/* Radio spectrum visualization */
+.radio-spectrum-viz {
+  position: relative;
+  background: linear-gradient(180deg, rgba(18, 26, 40, 0.9), rgba(10, 16, 27, 0.9));
+  border: 1px solid rgba(90, 150, 255, 0.25);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 18px 40px rgba(12, 20, 38, 0.45);
+}
+
+.radio-spectrum-viz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.radio-spectrum-viz-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #e3ebff;
+}
+
+.radio-spectrum-viz-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  font-size: 0.92rem;
+  color: rgba(230, 238, 255, 0.82);
+}
+
+.radio-spectrum-viz-metadata span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.radio-spectrum-viz-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.radio-spectrum-viz-canvas {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 10% 50%, rgba(77, 124, 255, 0.35), rgba(10, 14, 20, 0.95));
+  border: 1px solid rgba(77, 124, 255, 0.2);
+  overflow: hidden;
+}
+
+.radio-spectrum-viz-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 16, 27, 0.85);
+  border-radius: 12px;
+  z-index: 10;
+}
+
+.radio-spectrum-viz-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.radio-spectrum-viz-instruction {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 16, 27, 0.7);
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(77, 124, 255, 0.28);
+  font-size: 0.85rem;
+  color: rgba(230, 238, 255, 0.75);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.radio-spectrum-viz-display {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 10% 50%, rgba(77, 124, 255, 0.25), rgba(10, 14, 20, 0.9));
+  border: 1px solid rgba(77, 124, 255, 0.2);
+  overflow: hidden;
+}
+
+.radio-spectrum-viz-display canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.radio-spectrum-viz-footnote {
+  font-size: 0.78rem;
+  color: rgba(230, 238, 255, 0.6);
+  text-align: right;
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+
+.radio-spectrum-viz-overlay-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.radio-spectrum-viz-overlay-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #e3ebff;
+  text-align: center;
+}
+
+.radio-spectrum-viz-start-btn {
+  background: linear-gradient(135deg, rgba(109, 173, 255, 0.9), rgba(86, 138, 255, 0.9));
+  border: 1px solid rgba(130, 185, 255, 0.85);
+  color: #0c1424;
+  border-radius: 999px;
+  padding: 0.6rem 2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.radio-spectrum-viz-start-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(109, 173, 255, 0.4);
+}
+
+/* Mobile-friendly styles */
+@media (max-width: 768px) {
+  .radio-spectrum-viz {
+    padding: 1rem;
+  }
+
+  .radio-spectrum-viz-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .radio-spectrum-viz-title {
+    font-size: 1rem;
+  }
+
+  .radio-spectrum-viz-metadata {
+    font-size: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .radio-spectrum-viz-canvas {
+    height: 180px;
+  }
+
+  .radio-spectrum-viz-display {
+    height: 100px;
+  }
+
+  .radio-spectrum-viz-instruction {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+    bottom: 8px;
+  }
+
+  .radio-spectrum-viz-overlay-title {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .radio-spectrum-viz-start-btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .radio-spectrum-viz-footnote {
+    font-size: 0.7rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .radio-spectrum-viz {
+    padding: 0.75rem;
+  }
+
+  .radio-spectrum-viz-canvas {
+    height: 160px;
+  }
+
+  .radio-spectrum-viz-display {
+    height: 90px;
+  }
+
+  .radio-spectrum-viz-title {
+    font-size: 0.95rem;
+  }
+
+  .radio-spectrum-viz-metadata {
+    font-size: 0.8rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
 /* Block transfer visualization */
 .transfer-viz {
   background: linear-gradient(180deg, rgba(18, 24, 38, 0.92), rgba(12, 18, 30, 0.92));

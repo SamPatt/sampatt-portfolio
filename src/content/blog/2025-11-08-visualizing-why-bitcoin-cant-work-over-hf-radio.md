@@ -9,9 +9,15 @@ tags:
 image: null
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-11-02T23:20:23.000Z
-created: 2025-11-01T21:35:00.000Z
+last_edited: 2025-11-08T16:36:58.000Z
+created: 2025-11-08T12:35:00.000Z
 ---
+HN discussion: 
+
+_Video version of this article:_
+
+{{youtube:https://youtu.be/tpdWersuhjQ}}
+
 Surely if there are two technologies which are inseparable, it's Bitcoin and the Internet. After all, Bitcoin is magic **internet** money, right?
 
 ![Screenshot](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-10-19-21-42.png)
@@ -148,6 +154,10 @@ If you're operating at 100 Hz and you're using 1% of that frequency for your ban
 
 But if you're operating at 2.4 GHz (Wi-Fi) and you use 1% of _that_ frequency, your bandwidth is **24 MHz** - 24 million hertz wide! That’s an enormous amount of spectrum to modulate, giving you millions of times more opportunities each second to modulate data.
 
+For many forms of radio communication you'd be using even less than 1% of the carrier's frequency as bandwidth, closer to 0.1%. This visualization shows you how much bandwidth you get when using only 0.1% of the carrier frequency - notice how quickly it grows at higher frequencies.
+
+{{viz:radio-spectrum}}
+
 This is why higher-frequency systems can carry vastly more information - not because the waves themselves are “faster,” but because they can use much wider frequency bands.
 
 HF radio operates at frequencies between 3 - 30 million oscillations per second (MHz). That may sound like a high frequency, and back in the early days of our understanding of radio, it _was_ higher than the most popular use of radio, the AM broadcast band. But at HF frequencies you typically have only about 2–12 kHz of usable bandwidth - thousands of times narrower than the MHz-wide channels used by Wi-Fi, cell networks, or satellites.
@@ -260,3 +270,5 @@ In any reasonable interpretation of being a _participant_ in the Bitcoin network
 Suggesting that Bitcoin's blocks should be significantly smaller in order to better serve passive participants in the network via a poor data communication method makes no sense. Removing points of control over our infrastructure is a good impulse, and I hope to see radio play more of a role in the future, but I'm not hanging my hopes on the HF bands. 
 
 For the foreseeable future, Bitcoin's fate is tied to the internet, and even something as radical as reducing the block size by an order of magnitude won't change that.
+
+_Thanks to NVK for reviewing a draft of this article, and for promoting Bitcoin & ham radio over the years._
