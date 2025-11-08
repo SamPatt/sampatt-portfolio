@@ -6,13 +6,14 @@ tags:
   - radio
   - amateur-radio
   - ham-radio
-image: null
+image: >-
+  https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-56.png
 send_newsletter: 'false'
 type: blog
 last_edited: 2025-11-08T16:36:58.000Z
 created: 2025-11-08T12:35:00.000Z
 ---
-HN discussion: 
+_HN discussion:_ 
 
 _Video version of this article:_
 
