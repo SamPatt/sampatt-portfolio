@@ -450,29 +450,6 @@ const RadioSpectrumVisualizer = () => {
       ctx.fillText(placeholderText, displayLeft + displayWidth / 2, displayTop + displayHeight / 2);
       ctx.restore();
     }
-
-    // Frequency markers for display
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-    ctx.font = isSmallMobile ? '7px sans-serif' : isMobile ? '8px sans-serif' : '9px sans-serif';
-    ctx.fillStyle = 'rgba(230, 238, 255, 0.5)';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-
-    const displayMarkers = [0, 10e6, 20e6, 30e6];
-    displayMarkers.forEach((freq) => {
-      const pos = freq / FIXED_DISPLAY_WIDTH;
-      const x = displayLeft + pos * displayWidth;
-      if (x >= displayLeft && x <= displayRight) {
-        ctx.beginPath();
-        ctx.moveTo(x, displayTop);
-        ctx.lineTo(x, displayBottom);
-        ctx.stroke();
-        ctx.fillText(formatFrequency(freq), x, displayBottom + (isSmallMobile ? 4 : isMobile ? 5 : 6));
-      }
-    });
-    ctx.restore();
   }, [bandwidth]);
 
   const handleSpectrumClick = (e) => {
