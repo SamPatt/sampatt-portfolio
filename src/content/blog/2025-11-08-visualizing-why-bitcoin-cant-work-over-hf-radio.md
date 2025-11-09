@@ -10,10 +10,10 @@ image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-10-19-visualizing-why-bitcoin-cant-work-over-hf-radio/image/2025-11-01-03-56.png
 send_newsletter: 'false'
 type: blog
-last_edited: 2025-11-08T16:36:58.000Z
+last_edited: 2025-11-09T07:10:16.000Z
 created: 2025-11-08T12:35:00.000Z
 ---
-_HN discussion:_ 
+_HN discussion:_ https://news.ycombinator.com/item?id=45865015
 
 _Video version of this article:_
 
