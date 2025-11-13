@@ -1,7 +1,7 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-10-16T12:08:35.000Z
+last_edited: 2025-11-12T21:57:53.000Z
 tags:
   - personal
   - update
@@ -16,7 +16,6 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 - Looking for work as a fullstack developer / technical writer / developer relations
 - Reading as [much as I can](/notes) and [writing as much as I can](/blog)
 - Training to reach Champion division in Geoguessr
-- Training to run a half-marathon
 - Building a [bunch of fun stuff](/projects), particularly focused on self-hosted LLMs
 - [Staying fit](/blog/2025-02-20-fitness-nerd) and improving my lifts
 - Playing table tennis in my local league
