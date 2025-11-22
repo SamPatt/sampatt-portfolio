@@ -13,7 +13,7 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 
 - Living in West Michigan
 - Homeschooling two of my children
-- Looking for work as a fullstack developer / technical writer / developer relations
+- Looking for work as a technical guy who enjoys writing and research
 - Reading as [much as I can](/notes) and [writing as much as I can](/blog)
 - Training to reach Champion division in Geoguessr
 - Building a [bunch of fun stuff](/projects), particularly focused on self-hosted LLMs
