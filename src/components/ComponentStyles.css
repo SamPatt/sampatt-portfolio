@@ -5,19 +5,21 @@
 }
 
 .date {
-  color: #666;
-  font-size: 0.95rem;
+  color: var(--text-muted, #636363);
+  font-size: 0.8rem;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.02em;
 }
 
 .date.modified {
   margin-top: 4px;
-  font-size: 0.9rem;
-  color: #888;
+  font-size: 0.8rem;
+  color: var(--text-muted, #636363);
 }
 
 .date-label {
   font-weight: 500;
-  color: #555;
+  color: var(--text-muted, #636363);
 }
 
 .time {
@@ -56,7 +58,7 @@
 }
 
 .footnotes .footnote-backref {
-  color: var(--primary, #4D7CFF);
+  color: var(--primary, var(--primary, #E8C872));
   text-decoration: none;
   margin-left: 0.3em;
   font-size: 0.8em;
@@ -64,7 +66,7 @@
 }
 
 .footnote-ref {
-  color: var(--primary, #4D7CFF);
+  color: var(--primary, var(--primary, #E8C872));
   text-decoration: none;
   font-weight: 600;
   padding: 0 2px;
@@ -81,8 +83,8 @@ sup .footnote-ref {
 /* Animation for footnote highlighting */
 @keyframes highlight-footnote {
   0% { background-color: transparent; }
-  20% { background-color: rgba(93, 139, 244, 0.2); }
-  80% { background-color: rgba(93, 139, 244, 0.2); }
+  20% { background-color: rgba(232, 200, 114, 0.12); }
+  80% { background-color: rgba(232, 200, 114, 0.12); }
   100% { background-color: transparent; }
 }
 
@@ -105,7 +107,7 @@ sup .footnote-ref {
 }
 
 .calculator-title {
-  color: var(--primary-light, #4D7CFF);
+  color: var(--primary-light, var(--primary, #E8C872));
   font-size: 1.5rem;
   margin-bottom: 1.2rem;
   text-align: center;
@@ -156,7 +158,7 @@ sup .footnote-ref {
 }
 
 .calculator-results {
-  background-color: rgba(93, 139, 244, 0.05);
+  background-color: rgba(232, 200, 114, 0.03);
   padding: 1.2rem;
   border-radius: 8px;
   margin-top: 1rem;
@@ -167,7 +169,7 @@ sup .footnote-ref {
 }
 
 .daily-results h4, .yearly-results h4 {
-  color: var(--primary-light, #4D7CFF);
+  color: var(--primary-light, var(--primary, #E8C872));
   margin-bottom: 0.7rem;
   font-size: 1.1rem;
 }
@@ -183,14 +185,14 @@ sup .footnote-ref {
 
 .progress-bar {
   height: 20px;
-  background-color: rgba(93, 139, 244, 0.1);
+  background-color: rgba(232, 200, 114, 0.06);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4D7CFF, #5D8BF4);
+  background: linear-gradient(90deg, var(--primary, #E8C872), #5D8BF4);
   border-radius: 10px;
   transition: width 0.5s ease-out;
 }
@@ -252,7 +254,7 @@ sup .footnote-ref {
 
 .equivalent-number {
   font-weight: bold;
-  color: var(--primary-light, #4D7CFF);
+  color: var(--primary-light, var(--primary, #E8C872));
   font-size: 1.1rem;
 }
 
@@ -295,12 +297,13 @@ sup .footnote-ref {
 
 /* Shared styles for subscription components */
 .subscription-container {
-  background-color: rgba(30, 40, 70, 0.8);
-  border-radius: 10px;
-  padding: 30px;
-  margin: 40px 0;
+  background-color: var(--surface, #16161D);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 2rem 0;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
+  border: 1px solid var(--border-color);
   position: relative;
 }
 
@@ -325,20 +328,21 @@ sup .footnote-ref {
 .subscription-icon svg {
   width: 40px;
   height: 40px;
-  color: #4D7CFF;
+  color: var(--primary, #E8C872);
 }
 
 .subscription-title {
-  color: #FFB800;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  font-weight: 700;
+  color: var(--text-primary, #E8E6E3);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .subscription-description {
-  color: white;
-  font-size: 1.1rem;
-  margin-bottom: 25px;
+  color: var(--text-secondary, #9A9A9A);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
 }
 
 /* Newsletter specific styles */
@@ -362,26 +366,35 @@ sup .footnote-ref {
 
 .newsletter-input {
   flex: 1;
-  padding: 12px 15px;
-  border-radius: 5px;
-  border: none;
-  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--surface-raised, #1E1E28);
+  color: var(--text-primary, #E8E6E3);
+  font-size: 0.9rem;
+  font-family: var(--font-sans, 'Sora', sans-serif);
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 .newsletter-button {
-  background-color: #4D7CFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 12px 25px;
-  font-size: 1rem;
-  font-weight: 600;
+  background-color: transparent;
+  color: var(--primary, #E8C872);
+  border: 1px solid var(--primary, #E8C872);
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.25s ease;
 }
 
 .newsletter-button:hover {
-  background-color: #3A68E0;
+  background-color: rgba(232, 200, 114, 0.06);
 }
 
 .newsletter-status {
@@ -409,7 +422,7 @@ sup .footnote-ref {
 }
 
 .feed-link {
-  color: #4D7CFF;
+  color: var(--primary, #E8C872);
   text-decoration: none;
   font-size: 1.1rem;
   display: inline-flex;
@@ -421,8 +434,8 @@ sup .footnote-ref {
 }
 
 .feed-link:hover {
-  color: #FFB800;
-  background-color: rgba(77, 124, 255, 0.1);
+  color: var(--primary, #E8C872);
+  background-color: rgba(232, 200, 114, 0.06);
 }
 
 .feed-link svg {
@@ -446,7 +459,7 @@ sup .footnote-ref {
   font-weight: 600;
   text-align: left;
   padding: 0.75rem 1rem;
-  color: var(--primary-light);
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -457,49 +470,41 @@ sup .footnote-ref {
 }
 
 .blog-post tr:nth-child(even) {
-  background-color: rgba(93, 139, 244, 0.05);
+  background-color: rgba(232, 200, 114, 0.03);
 }
 
 .blog-post tr:hover {
-  background-color: rgba(93, 139, 244, 0.1);
+  background-color: rgba(232, 200, 114, 0.06);
 }
 
 /* Table of contents styling */
 .toc {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
+  background-color: var(--surface, #16161D);
+  border-radius: 4px;
+  padding: 1.25rem;
   margin: 2rem 0;
   border: 1px solid var(--border-color);
-  box-shadow: var(--card-shadow);
+  box-shadow: none;
   position: relative;
   overflow: hidden;
 }
 
 .toc::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  transform: scaleX(0.3);
-  transform-origin: left;
-  transition: transform var(--transition-speed) ease;
+  display: none;
 }
 
 .toc:hover::before {
-  transform: scaleX(1);
+  display: none;
 }
 
 .toc-title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
   margin-bottom: 1rem;
-  color: var(--primary-light);
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 0.5px;
+  color: var(--primary);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.08em;
 }
 
 .toc ul {
@@ -529,7 +534,7 @@ sup .footnote-ref {
 
 .toc a:hover {
   color: var(--accent);
-  background-color: rgba(93, 139, 244, 0.08);
+  background-color: rgba(232, 200, 114, 0.06);
   transform: translateX(3px);
 }
 
@@ -566,7 +571,7 @@ sup .footnote-ref {
 }
 
 .pagination-button:hover:not(:disabled) {
-  background-color: rgba(93, 139, 244, 0.08);
+  background-color: rgba(232, 200, 114, 0.06);
   color: var(--primary);
 }
 
@@ -591,14 +596,14 @@ sup .footnote-ref {
 }
 
 .pagination-number:hover:not(.active) {
-  background-color: rgba(93, 139, 244, 0.08);
+  background-color: rgba(232, 200, 114, 0.06);
   color: var(--primary);
 }
 
 .pagination-number.active {
-  background-color: var(--primary);
-  color: white;
-  box-shadow: 0 2px 6px rgba(93, 139, 244, 0.2);
+  background-color: rgba(232, 200, 114, 0.12);
+  color: var(--primary);
+  box-shadow: none;
 }
 
 .pagination-ellipsis {
@@ -723,11 +728,11 @@ sup .footnote-ref {
 }
 
 .tags-container {
-  background-color: var(--card-bg);
+  background-color: transparent;
   border-radius: var(--border-radius);
-  padding: 15px;
+  padding: 0;
   margin-bottom: 20px;
-  border: 1px solid var(--border-color);
+  border: none;
 }
 
 .tags-header {
@@ -738,18 +743,20 @@ sup .footnote-ref {
 }
 
 .tags-toggle-button {
-  background-color: rgba(93, 139, 244, 0.1);
-  color: var(--primary);
-  border: none;
-  padding: 4px 10px;
-  border-radius: 4px;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  padding: 3px 8px;
+  border-radius: 3px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   transition: all var(--transition-speed) ease;
 }
 
 .tags-toggle-button:hover {
-  background-color: rgba(93, 139, 244, 0.2);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .tags-search {
@@ -758,12 +765,13 @@ sup .footnote-ref {
 
 .tags-search-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 4px;
   border: 1px solid var(--border-color);
-  background-color: var(--bg-color);
+  background-color: var(--surface-raised, #1E1E28);
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
 }
 
 .tags-search-input:focus {
@@ -797,7 +805,7 @@ sup .footnote-ref {
 }
 
 .tag {
-  background-color: rgba(93, 139, 244, 0.1);
+  background-color: rgba(232, 200, 114, 0.06);
   color: var(--text-secondary);
   font-size: 0.8rem;
   padding: 4px 8px;
@@ -810,13 +818,13 @@ sup .footnote-ref {
 }
 
 .tag:hover {
-  background-color: rgba(93, 139, 244, 0.2);
+  background-color: rgba(232, 200, 114, 0.12);
   color: var(--primary);
 }
 
 .tag.active {
-  background-color: var(--primary);
-  color: white;
+  background-color: rgba(232, 200, 114, 0.12);
+  color: var(--primary);
 }
 
 .tag-count {
@@ -832,7 +840,8 @@ sup .footnote-ref {
 
 .note-preview h2 {
   margin-bottom: 10px;
-  color: var(--primary-light);
+  color: var(--text-primary);
+  font-size: 1.15rem;
 }
 
 .note-meta {
@@ -877,7 +886,7 @@ sup .footnote-ref {
 
 .note h1 {
   margin-bottom: 10px;
-  color: var(--primary-light);
+  color: var(--text-primary);
 }
 
 .note .date {
@@ -899,12 +908,13 @@ sup .footnote-ref {
 
 .note .rating,
 .embedded-note-header .rating {
-  background-color: #FFB800;
-  color: #1e2846;
+  background-color: rgba(232, 200, 114, 0.1);
+  color: var(--primary, #E8C872);
   padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  font-weight: bold;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
   margin-top: 8px;
   margin-bottom: 15px;
   display: inline-block;
@@ -918,7 +928,7 @@ sup .footnote-ref {
 .note-content h2 {
   margin-top: 30px;
   margin-bottom: 15px;
-  color: var(--primary-light);
+  color: var(--text-primary);
 }
 
 .note-content p {
@@ -976,7 +986,7 @@ sup .footnote-ref {
   top: 2px;
   width: 20px;
   height: 20px;
-  background: linear-gradient(135deg, var(--primary), rgba(54, 238, 224, 0.8));
+  background: var(--primary, #E8C872);
   color: var(--dark-bg);
   font-size: 0.8rem;
   font-weight: 600;
@@ -987,14 +997,14 @@ sup .footnote-ref {
 }
 
 .note-content blockquote {
-  border-left: 3px solid var(--border-color);
+  border-left: 2px solid var(--primary);
   padding-left: 15px;
   color: var(--text-secondary);
   font-style: italic;
   margin: 20px 0;
-  background-color: rgba(93, 139, 244, 0.05);
+  background-color: rgba(232, 200, 114, 0.02);
   padding: 15px;
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-radius: 0 4px 4px 0;
 }
 
 /* Blog and Note image styles */
@@ -1016,7 +1026,7 @@ sup .footnote-ref {
 
 .related-notes h3 {
   margin-bottom: 15px;
-  color: var(--primary-light);
+  color: var(--text-primary);
 }
 
 .related-notes ul {
@@ -1047,7 +1057,7 @@ sup .footnote-ref {
 
 /* Embedded note styles */
 .embedded-note {
-  background-color: rgba(93, 139, 244, 0.05);
+  background-color: rgba(232, 200, 114, 0.03);
   border-left: 3px solid var(--primary);
   border-radius: 0 var(--border-radius) var(--border-radius) 0;
   padding: 15px;
@@ -1066,7 +1076,7 @@ sup .footnote-ref {
 .embedded-note-header h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: var(--primary-light);
+  color: var(--text-primary);
 }
 
 .title-container {
@@ -1089,7 +1099,7 @@ sup .footnote-ref {
 .embedded-note-content h3 {
   font-size: 1.1rem;
   margin: 12px 0 8px;
-  color: var(--primary-light);
+  color: var(--text-primary);
 }
 
 .embedded-note-content p {
@@ -1154,7 +1164,7 @@ sup .footnote-ref {
   top: 2px;
   width: 18px;
   height: 18px;
-  background: linear-gradient(135deg, var(--primary), rgba(54, 238, 224, 0.8));
+  background: var(--primary, #E8C872);
   color: var(--dark-bg);
   font-size: 0.7rem;
   font-weight: 600;
@@ -1417,7 +1427,7 @@ sup .footnote-ref {
   width: var(--cell-size);
   height: var(--cell-size);
   border-radius: 4px;
-  border: 1px solid rgba(77, 124, 255, 0.1);
+  border: 1px solid rgba(232, 200, 114, 0.06);
   background: rgba(255, 255, 255, 0.04);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;

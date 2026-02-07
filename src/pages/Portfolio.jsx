@@ -3,6 +3,16 @@ import '../App.css';
 import artificialAdvocatesPdf from '../assets/artificial_advocates.pdf';
 
 const portfolioData = {
+  research: {
+    title: 'Research',
+    items: [
+      {
+        title: 'Artificial Advocates: Biasing Democratic Feedback Using AI',
+        description: 'Lead author. Apart Research, 2025.',
+        link: artificialAdvocatesPdf
+      }
+    ]
+  },
   writing: {
     title: 'Writing',
     description: 'My most recent writing can be found on my <a href="/blog">blog</a>. Selected articles below.',
@@ -47,16 +57,6 @@ const portfolioData = {
         title: 'How Bitcoin Works',
         description: 'Hillsdale College Free Market Forum, 2014',
         link: 'https://www.hillsdale.edu/wp-content/uploads/2016/02/FMF-2014-How-Bitcoin-Works.pdf'
-      }
-    ]
-  },
-  research: {
-    title: 'Research',
-    items: [
-      {
-        title: 'Artificial Advocates: Biasing Democratic Feedback Using AI',
-        description: 'Lead author. Apart Research, 2025.',
-        link: artificialAdvocatesPdf
       }
     ]
   },
@@ -209,9 +209,7 @@ const portfolioData = {
 function PortfolioSection({ title, description, items }) {
   return (
     <div className="portfolio-section">
-      <h2>
-        {title}
-      </h2>
+      <h2>{title}</h2>
       {description && <div className="section-description" dangerouslySetInnerHTML={{ __html: description }} />}
       <div className="portfolio-items">
         {items.map((item, index) => (
@@ -240,8 +238,7 @@ function PortfolioSection({ title, description, items }) {
 function Portfolio() {
   return (
     <div className="primary-container">
-      <h1>Portfolio and Media</h1>
-      
+      <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Portfolio & Media</h4>
       <div className="portfolio-container">
         {Object.entries(portfolioData).map(([key, section]) => (
           <PortfolioSection

@@ -1,105 +1,139 @@
-import { useState } from 'react';
-import Project from './Project';
 import '../App.css';
 
 const projectsData = [
   {
     id: 1,
-    title: 'STRAPTO',
-    description: 'StrapTo is designed to capture and stream outputs from self-hosted AI models (e.g., Ollama, LMStudio, Llama.cpp, LangChain/Langgraph, etc.) in real time. Built in Python with the aiortc library, the local server handles WebRTC connections and facilitates bi-directional communication—allowing consumer inputs to be fed back into your model.',
+    title: 'Strapto',
+    description: 'Capture and stream outputs from self-hosted AI models in real time. Built in Python with aiortc, the server handles WebRTC connections and bi-directional communication.',
     year: '2024',
-    type: 'Open Source',
-    git: 'https://github.com/SamPatt/strapto-server'
+    type: 'Python / WebRTC',
+    git: 'https://github.com/SamPatt/strapto-server',
+    // image: new URL('../assets/projects/strapto.png', import.meta.url).href,
   },
   {
     id: 2,
-    title: 'LLAMATRIVIA',
-    description: 'I hooked up a browser trivia game to a LLM to see if it could beat my score.',
+    title: 'LlamaTrivia',
+    description: 'I hooked up a browser trivia game to an LLM to see if it could beat my score.',
     year: '2024',
-    type: 'Open Source',
+    type: 'JavaScript / AI',
     git: 'https://github.com/SamPatt/wikitrivia-ai/tree/master',
-    videoEmbed: '<div class="video-container"><iframe src="https://www.youtube.com/embed/itk5oz_f27M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'
+    videoEmbed: 'https://www.youtube.com/embed/itk5oz_f27M',
   },
   {
     id: 3,
-    title: 'LOOKMA',
-    description: 'A React Native Android App which allows users to connect their phones to a locally hosted LLM server.',
+    title: 'LookMa',
+    description: 'A React Native Android app that connects your phone to a locally hosted LLM server.',
     year: '2024',
-    type: 'Open Source',
+    type: 'React Native',
     git: 'https://github.com/SamPatt/lookma',
-    image: 'https://camo.githubusercontent.com/a7f730397315720c4bb08e74f80fdbf0ca66e32f59347a29c43b94f317df296a/68747470733a2f2f692e696d6775722e636f6d2f576d65644454582e6a706567'
+    videoEmbed: 'https://www.youtube.com/embed/DY0rSqmzqNs',
   },
   {
     id: 4,
-    title: 'AUTO-COMPONENT',
-    description: 'An npm package which uses AI to help React developers build their UI in a live browser session.',
-    year: '2023', 
-    type: 'Open Source',
+    title: 'Auto-Component',
+    description: 'An npm package that uses AI to help React developers build their UI in a live browser session.',
+    year: '2023',
+    type: 'npm / React / AI',
     git: 'https://github.com/TimHuitt/auto-component',
-    videoEmbed: '<div class="video-container"><iframe src="https://www.youtube.com/embed/SYhRGkiXS_M?si=mBoCpF_NmSk-djg9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>'
+    videoEmbed: 'https://www.youtube.com/embed/SYhRGkiXS_M?si=mBoCpF_NmSk-djg9',
   },
   {
     id: 5,
-    title: 'HAVEWORDS.AI',
-    description: 'HaveWords is a p2p JS browser app I built using WebRTC, which connects users for a live roleplaying session, guided by AI. This open source app was rebuilt by the excellent JS devs Steve Dekorte and Rich Collins.',
-    year: '2023', 
-    type: 'Open Source',
+    title: 'HaveWords.ai',
+    description: 'A peer-to-peer browser app built with WebRTC that connects users for a live AI-guided roleplaying session.',
+    year: '2023',
+    type: 'WebRTC / P2P',
     git: 'https://github.com/SamPatt/HaveWords.ai',
-    image: 'https://i.imgur.com/FAsLFdN.png'
+    image: 'https://i.imgur.com/FAsLFdN.png',
   },
   {
     id: 6,
-    title: 'GG-GEOJSON',
+    title: 'GG-GeoJSON',
     description: 'A geography meta database and browser editing tool.',
     year: '2025',
-    type: 'Open Source',
-    git: 'https://github.com/SamPatt/gg-geojson'
+    type: 'JavaScript / GeoJSON',
+    git: 'https://github.com/SamPatt/gg-geojson',
+    // image: new URL('../assets/projects/gg-geojson.png', import.meta.url).href,
   },
   {
     id: 7,
-    title: 'FOURNINER',
+    title: 'FourNiner',
     description: 'A Geoguessr training tool that connects a browser with Google Street View locations to an Obsidian vault to easily create and train flashcards.',
     year: '2025',
-    type: 'Open Source',
-    git: 'https://github.com/SamPatt/fourniner'
+    type: 'JavaScript / Obsidian',
+    git: 'https://github.com/SamPatt/fourniner',
+    image: 'https://cdn.jsdelivr.net/gh/sampatt/media@main/gifs/fourniner_example.gif',
   },
   {
     id: 8,
-    title: 'SHELL-RECALL',
+    title: 'Shell-Recall',
     description: 'Shell History Timeline — a tool for searching, visualizing, and recalling your shell command history.',
     year: '2025',
-    type: 'Open Source',
-    git: 'https://github.com/SamPatt/shell-recall'
+    type: 'Python / CLI',
+    git: 'https://github.com/SamPatt/shell-recall',
+    // image: new URL('../assets/projects/shell-recall.png', import.meta.url).href,
   },
   {
     id: 9,
-    title: 'CLOSE ENCOUNTERS OF THE CUTE KIND',
-    description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
+    title: 'Close Encounters of the Cute Kind',
+    description: 'A JavaScript browser game built in one week as a project for the General Assembly Software Engineering Immersive bootcamp.',
     year: '2023',
-    type: 'Game',
-    live: 'http://sampatt.github.io/close-encounters-of-the-cute-kind/',
+    type: 'Game / JavaScript',
     git: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind',
-    image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
+    live: 'http://sampatt.github.io/close-encounters-of-the-cute-kind/',
+    image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif',
   }
 ];
 
 function Projects() {
-  const [activeProjectId, setActiveProjectId] = useState(null);
-
-  const handleProjectClick = (projectId) => {
-    // Toggle the active project ID, close if the same project is clicked again
-    setActiveProjectId(activeProjectId === projectId ? null : projectId);
-  };
-
   return (
-    <div className='primary-container'>
-      {projectsData.map(project => (
-        <div className='project' key={project.id} onClick={() => handleProjectClick(project.id)}>
-          <h1>{project.title}</h1>
-          {/* If the project is active, display the Project component */}
-          {activeProjectId === project.id && <Project project={project} />}
-        </div>
-      ))}
+    <div className="projects-page">
+      <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Projects</h4>
+      <div className="projects-grid">
+        {projectsData.map(project => (
+          <div className="project-card" key={project.id}>
+            {project.videoEmbed ? (
+              <div className="project-card-video">
+                <iframe
+                  src={project.videoEmbed}
+                  title={project.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            ) : project.image ? (
+              <div className="project-card-image">
+                <img src={project.image} alt={project.title} />
+              </div>
+            ) : null}
+            <div className="project-card-body">
+              <div className="project-card-meta">
+                <span className="project-card-type">{project.type}</span>
+                <span className="project-card-year">{project.year}</span>
+              </div>
+              <h2 className="project-card-title">{project.title}</h2>
+              <p className="project-card-desc">{project.description}</p>
+              <div className="project-card-links">
+                <a href={project.git} target="_blank" rel="noopener noreferrer" className="project-card-link">
+                  GitHub
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+                  </svg>
+                </a>
+                {project.live && (
+                  <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-card-link">
+                    Live Demo
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+                    </svg>
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
