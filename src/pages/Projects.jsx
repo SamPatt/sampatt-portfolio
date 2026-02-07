@@ -49,29 +49,37 @@ const projectsData = [
   },
   {
     id: 6,
-    title: 'AILOQUIUM: CYBER PSYCHE REPAIR',
-    description: 'Ailoquium is a game set in the near future where AIs are considered conscious beings, and you are a doctor treating them. Built with a Django backend using the Django REST Framework, and a React frontend.',
-    year: '2024', 
-    type: 'Game',
-    git: 'https://github.com/SamPatt/ailoquium'
+    title: 'GG-GEOJSON',
+    description: 'A geography meta database and browser editing tool.',
+    year: '2025',
+    type: 'Open Source',
+    git: 'https://github.com/SamPatt/gg-geojson'
   },
   {
     id: 7,
+    title: 'FOURNINER',
+    description: 'A Geoguessr training tool that connects a browser with Google Street View locations to an Obsidian vault to easily create and train flashcards.',
+    year: '2025',
+    type: 'Open Source',
+    git: 'https://github.com/SamPatt/fourniner'
+  },
+  {
+    id: 8,
+    title: 'SHELL-RECALL',
+    description: 'Shell History Timeline — a tool for searching, visualizing, and recalling your shell command history.',
+    year: '2025',
+    type: 'Open Source',
+    git: 'https://github.com/SamPatt/shell-recall'
+  },
+  {
+    id: 9,
     title: 'CLOSE ENCOUNTERS OF THE CUTE KIND',
     description: 'Close Encounters of the Cute Kind is a JavaScript browser game built in one week as a project for my General Assembly Software Engineering Immersive bootcamp.',
-    year: '2023', 
+    year: '2023',
     type: 'Game',
     live: 'http://sampatt.github.io/close-encounters-of-the-cute-kind/',
     git: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind',
     image: 'https://github.com/SamPatt/close-encounters-of-the-cute-kind/raw/main/imgs/video.gif'
-  },
-  {
-    id: 8,
-    title: 'PAWZBE',
-    description: 'Pawzbe is a pet social media platform. User can create accounts using either Google or Github logins, and share photos and updates about their pets with their friends. Built alongside Tim Huitt and Ellie Solhjou.',
-    year: '2023', 
-    type: 'Social Media',
-    git: 'https://github.com/SamPatt/pawzbe'
   }
 ];
 

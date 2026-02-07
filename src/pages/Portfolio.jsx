@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../App.css';
+import artificialAdvocatesPdf from '../assets/artificial_advocates.pdf';
 
 const portfolioData = {
   writing: {
@@ -46,6 +47,16 @@ const portfolioData = {
         title: 'How Bitcoin Works',
         description: 'Hillsdale College Free Market Forum, 2014',
         link: 'https://www.hillsdale.edu/wp-content/uploads/2016/02/FMF-2014-How-Bitcoin-Works.pdf'
+      }
+    ]
+  },
+  research: {
+    title: 'Research',
+    items: [
+      {
+        title: 'Artificial Advocates: Biasing Democratic Feedback Using AI',
+        description: 'Lead author. Apart Research, 2025.',
+        link: artificialAdvocatesPdf
       }
     ]
   },
