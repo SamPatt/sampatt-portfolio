@@ -333,8 +333,8 @@ function scanDirectory(dirPath) {
   const items = fs.readdirSync(dirPath);
   
   for (const item of items) {
-    // Skip hidden files and directories
-    if (item.startsWith('.')) continue;
+    // Skip hidden files/directories and Obsidian template directories
+    if (item.startsWith('.') || item === 'Templates') continue;
     
     const itemPath = path.join(dirPath, item);
     const stat = fs.statSync(itemPath);
