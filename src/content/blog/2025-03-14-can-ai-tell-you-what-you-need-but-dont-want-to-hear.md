@@ -13,7 +13,7 @@ tags:
   - human-ai-interaction
   - future-of-society
 image: >-
-  https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-03-14-can-ai-tell/image/2025-03-14-23-35.png)
+  https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2025-03-14-can-ai-tell/image/2025-03-14-23-35.png
 send_newsletter: false
 type: blog
 last_edited: 2025-03-15T00:33:25.000Z
