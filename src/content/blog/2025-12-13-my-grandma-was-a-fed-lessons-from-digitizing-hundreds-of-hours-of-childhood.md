@@ -13,9 +13,11 @@ image: >-
   https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2026-02-08-patterkin/image/2026-02-08-01-11.png
 send_newsletter: 'false'
 type: blog
-last_edited: 2026-02-08T01:18:33.000Z
+last_edited: 2026-02-08T01:28:55.000Z
 created: 2026-01-13T02:28:43.000Z
 ---
+_This post is getting some [love on HN](https://news.ycombinator.com/item?id=46934513) - welcome! I'm looking for work right now so if you need someone technical who can write and knows how to use AI tools, send me an email, it's on my About page._
+
 I was in my basement on my birthday, cleaning out our cluttered utility room, when I first noticed the plastic tub near the furnace. This bit of tidying up was in order to install a squat rack I'd just bought from a fellow father off Facebook Marketplace - apparently mid-life crises _do_ hit at exactly 40 years old.
 
 I'd forgotten entirely about this container, but the tightly-sealed white lid stood out in a room half-full of boxes with mangled cardboard flaps barely keeping them closed. I knelt down, released the snaps on each side, and lifted off the lid, revealing rows upon rows of neatly stacked video tapes.
