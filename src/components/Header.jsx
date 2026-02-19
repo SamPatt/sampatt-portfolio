@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import '../App.css';
-import resume from '../assets/Patterson_Resume.pdf';
 
 function Header() {
   return (
@@ -14,7 +13,7 @@ function Header() {
         fontFamily: 'var(--font-mono)',
         marginTop: '0.25rem',
         letterSpacing: '0.02em'
-      }}>Developer &amp; Writer</p>
+      }}>Technical Builder &amp; Communicator</p>
       <nav>
         <NavLink to="/about" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>About</div>
@@ -76,9 +75,9 @@ function Header() {
         <a href="https://www.linkedin.com/in/sampatt-dev/" target="_blank" rel="noopener noreferrer">
           <div>LinkedIn</div>
         </a>
-        <a href={resume} target="_blank" rel="noopener noreferrer">
+        <NavLink to="/resume" className={({ isActive }) => isActive ? 'active' : ''}>
           <div>Resume</div>
-        </a>
+        </NavLink>
       </nav>
     </header>
   );

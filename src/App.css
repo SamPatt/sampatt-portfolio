@@ -1343,3 +1343,235 @@ footer {
     columns: 1;
   }
 }
+
+/* Resume page */
+.resume-container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.resume-header {
+  margin-bottom: 1.5rem;
+}
+
+.resume-tagline {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.resume-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.resume-contact a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+.resume-contact a:hover {
+  color: var(--primary);
+}
+
+.resume-sep {
+  color: var(--text-muted);
+  margin: 0 0.15rem;
+}
+
+.resume-summary {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.resume-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.resume-section:last-child {
+  border-bottom: none;
+}
+
+.resume-section h2 {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.resume-job {
+  margin-bottom: 1.5rem;
+}
+
+.resume-job:last-child {
+  margin-bottom: 0;
+}
+
+.resume-job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.resume-job-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.resume-company {
+  color: var(--primary);
+  font-size: 0.85rem;
+}
+
+.resume-job-meta {
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.resume-job-meta span {
+  display: block;
+}
+
+.resume-location {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.resume-job ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume-job li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.resume-job li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.resume-writing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resume-writing-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.resume-writing-item a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color var(--transition-speed);
+}
+
+.resume-writing-item a:hover {
+  color: var(--primary);
+}
+
+.resume-writing-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.resume-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-skill-tag {
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  border: 1px solid var(--card-border);
+}
+
+.resume-education {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resume-edu-item {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.resume-edu-item strong {
+  color: var(--text-primary);
+}
+
+.resume-edu-year {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.resume-presentations {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+@media screen and (max-width: 640px) {
+  .resume-job-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .resume-job-meta {
+    text-align: left;
+  }
+
+  .resume-edu-item {
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+}

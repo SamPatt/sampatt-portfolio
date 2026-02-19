@@ -9,6 +9,7 @@ import Notes from "./pages/Notes";
 import Note from "./components/Note";
 import Now from "./pages/Now";
 import Portfolio from "./pages/Portfolio";
+import Resume from "./pages/Resume";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route exact path="/" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/resume" element={<Resume />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
