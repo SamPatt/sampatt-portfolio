@@ -55,7 +55,7 @@ const writing = [
   },
   {
     title: 'Artificial Advocates: Biasing Democratic Feedback Using AI',
-    note: 'Lead author, Apart Research, 2025',
+    note: '3rd place, Apart Hackathon — led to Apart Labs Fellowship',
     link: '/portfolio'
   },
   {
