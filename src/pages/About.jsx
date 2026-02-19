@@ -1,6 +1,7 @@
 import '../App.css';
 import Skills from "../components/Skills"
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function About() {
   const [copyText, setCopyText] = useState('Click to copy');
@@ -19,27 +20,16 @@ function About() {
         <div className="bio-container">
           <h4 style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>About</h4>
           <h1 style={{ fontSize: '1.75rem', marginBottom: '1.5rem', lineHeight: '1.3' }}>
-            Building software at the intersection of decentralization, privacy, and AI.
+            Technical builder & communicator working at the intersection of AI, decentralization, and privacy.
           </h1>
           <p>
-            I'm Sam Patterson. I've evolved from shaping technology policy at a DC think tank to building the future I once wrote about. After authoring one of the first books on Bitcoin and seeing its impact on the cryptocurrency space, I realized I wanted to move from analyzing technology to creating it.
+            I'm Sam Patterson. I co-founded <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helped build OpenBazaar, a decentralized marketplace backed by $9M from Andreessen Horowitz and Union Square Ventures. Before that I founded the tech policy program at a DC think tank. I wrote one of the first books on Bitcoin and I'm an Apart Labs Fellow for AI safety research.
           </p>
           <p>
-            After co-founding <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helping to build the decentralized marketplace OpenBazaar, I decided to finish getting the skills I needed, and I went on to graduate from the General Assembly Software Engineering Immersive bootcamp.
+            I write about emerging technology and regularly reach the front page of Hacker News. I build AI-powered tools, and I'm always looking for interesting problems at the edge of what's possible.
           </p>
           <p>
-            I focus on projects advancing decentralization, self-hosting, privacy, and local LLMs. I'm currently developing a WebRTC-based streaming platform that connects self-hosted LLM operators with users, making AI more accessible while preserving privacy and autonomy.
-          </p>
-          <p>
-            My projects, resume, LinkedIn and Github are all linked. Feel free to send me an email if you'd like to collaborate, hire me, or just to say hello.
-          </p>
-
-          <h2>Writing</h2>
-          <p>
-            My journey in technology spans both analysis and implementation. My 2013 book <i>Bitcoin Beginner</i> helped introduce Bitcoin to mainstream audiences, and I've continued to write about emerging technologies from both policy and technical perspectives.
-          </p>
-          <p>
-            Through my blog and newsletter, I share detailed tutorials on open source tools, development insights from my current projects, and analysis of AI's evolving landscape.
+            See my full <Link to="/resume">resume</Link>, browse my <Link to="/projects">projects</Link> and <Link to="/portfolio">portfolio</Link>, or send me an email.
           </p>
 
           <h2>Contact</h2>
