@@ -23,13 +23,13 @@ function About() {
             Technical builder & communicator working at the intersection of AI, decentralization, and privacy.
           </h1>
           <p>
-            I'm Sam Patterson. I co-founded <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helped build OpenBazaar, a decentralized marketplace backed by $9M from Andreessen Horowitz and Union Square Ventures. Before that I founded the tech policy program at a DC think tank. I wrote one of the first books on Bitcoin and I'm an Apart Labs Fellow for AI safety research.
+            I'm Sam Patterson. I've been building things at the edge of technology for about 15 years now — started in tech policy at a DC think tank, then co-founded <a href="https://www.usv.com/writing/2015/06/introducing-ob1/" target="_blank" rel="noopener noreferrer">OB1</a> and helped build OpenBazaar, a decentralized marketplace backed by Andreessen Horowitz and Union Square Ventures. Somewhere in there I wrote one of the first books on Bitcoin. More recently I was an Apart Labs Fellow doing AI safety research.
           </p>
           <p>
-            I write about emerging technology and regularly reach the front page of Hacker News. I build AI-powered tools, and I'm always looking for interesting problems at the edge of what's possible.
+            These days I build AI-powered tools and write about emerging technology — my posts regularly hit the front page of Hacker News. I'm always looking for interesting problems and good people to work with.
           </p>
           <p>
-            See my full <Link to="/resume">resume</Link>, browse my <Link to="/projects">projects</Link> and <Link to="/portfolio">portfolio</Link>, or send me an email.
+            Have a look at my <Link to="/resume">resume</Link>, <Link to="/projects">projects</Link>, or <Link to="/portfolio">portfolio</Link> — or just send me an email.
           </p>
 
           <h2>Contact</h2>
