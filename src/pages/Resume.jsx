@@ -1,4 +1,5 @@
 import '../App.css';
+import resumePdf from '../assets/Patterson_Resume.pdf';
 
 const experience = [
   {
@@ -94,6 +95,7 @@ function Resume() {
           <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Resume</h4>
           <h1 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>Sam Patterson</h1>
           <p className="resume-tagline">Technical Builder & Communicator</p>
+          <a href={resumePdf} download="Patterson_Resume.pdf" className="resume-download">Download PDF</a>
           <div className="resume-contact">
             <span>Grand Rapids, MI</span>
             <span className="resume-sep">·</span>

@@ -1382,6 +1382,24 @@ footer {
   color: var(--primary);
 }
 
+.resume-download {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--primary);
+  text-decoration: none;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition-speed);
+}
+
+.resume-download:hover {
+  background: var(--primary);
+  color: var(--dark-bg);
+}
+
 .resume-sep {
   color: var(--text-muted);
   margin: 0 0.15rem;
