@@ -13,10 +13,9 @@ type: blog
 last_edited: 2025-05-02T15:03:35.000Z
 created: 2025-04-28T08:34:44.000Z
 ---
-*Update: Hello HN, MR, and ACX folks! Two quick updates:*
+*Update: Hello HN, MR, and ACX folks! Quick update:*
 
-1. *Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify in the updated post.*
-2. *I'm unemployed and would love to not be unemployed. If you have a project involving map data - or frankly just anything interesting - send me an email.*
+*Many comments suggested it was unfair that the o3 model used search in 2 / 5 rounds. I ran those two rounds over again, in a Temporary Chat as before, and ensured they didn't employ search. The results were nearly identical, as you can verify in the updated post.*
 
 *Update 2: The [map](https://www.geoguessr.com/challenge/gDq4wXvsLU3oNuY8) has now been played by 175 players! o3 is currently holding strong in 13th place.*
 
