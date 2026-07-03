@@ -1,7 +1,7 @@
 ---
 title: What I'm Doing Now
 date: 2025-03-10T00:00:00.000Z
-last_edited: 2025-11-22T23:00:58.000Z
+last_edited: 2026-02-08T00:54:21.000Z
 tags:
   - personal
   - update
@@ -13,13 +13,12 @@ This is a [now page](https://nownownow.com/about), inspired by [Derek Sivers](ht
 
 - Living in West Michigan
 - Homeschooling two of my children
-- Looking for work as a technical guy who enjoys writing and research
+- Recently began a new job as a Technical Operations Specialist
 - Reading as [much as I can](/notes) and [writing as much as I can](/blog)
 - Training to reach Champion division in Geoguessr
 - Building a [bunch of fun stuff](/projects), particularly focused on self-hosted LLMs
 - [Staying fit](/blog/2025-02-20-fitness-nerd) and improving my lifts
 - Playing table tennis in my local league
-- Finalizing my family video streaming site
 ## Recent Updates
 
 - I benched 225 lbs - this took me about 18 months to achieve so I was glad to reach it

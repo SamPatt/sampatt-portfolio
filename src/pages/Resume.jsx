@@ -3,6 +3,13 @@ import resumePdf from '../assets/Patterson_Resume.pdf';
 
 const experience = [
   {
+    title: 'Technical Operations Specialist',
+    company: 'MessageWrap',
+    period: 'June 2026 – Present',
+    location: 'Grand Rapids, MI',
+    bullets: []
+  },
+  {
     title: 'Co-Founder & Head of Operations',
     company: 'OB1 (OpenBazaar)',
     period: '2015 – 2020',
@@ -128,11 +135,13 @@ function Resume() {
                   <span className="resume-location">{job.location}</span>
                 </div>
               </div>
-              <ul>
-                {job.bullets.map((bullet, j) => (
-                  <li key={j}>{bullet}</li>
-                ))}
-              </ul>
+              {job.bullets.length > 0 && (
+                <ul>
+                  {job.bullets.map((bullet, j) => (
+                    <li key={j}>{bullet}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           ))}
         </section>

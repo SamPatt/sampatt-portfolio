@@ -2,6 +2,15 @@ import '../App.css';
 
 const projectsData = [
   {
+    id: 10,
+    title: 'Patterkin',
+    description: 'A private family video streaming platform. I digitized 122 Video8 tapes of childhood footage and built an HLS streaming site with personalized timelines, reactions, and comments, backed by Cloudflare R2 and Supabase auth.',
+    year: '2026',
+    type: 'Video / HLS / Self-hosted',
+    post: '/blog/2025-12-13-my-grandma-was-a-fed-lessons-from-digitizing-hundreds-of-hours-of-childhood',
+    image: 'https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2026-02-08-patterkin/image/2026-02-07-23-45.png',
+  },
+  {
     id: 1,
     title: 'GG-GeoJSON',
     description: 'A geography meta database and browser editing tool.',
@@ -115,12 +124,22 @@ function Projects() {
               <h2 className="project-card-title">{project.title}</h2>
               <p className="project-card-desc">{project.description}</p>
               <div className="project-card-links">
-                <a href={project.git} target="_blank" rel="noopener noreferrer" className="project-card-link">
-                  GitHub
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7 17L17 7" /><path d="M7 7h10v10" />
-                  </svg>
-                </a>
+                {project.git && (
+                  <a href={project.git} target="_blank" rel="noopener noreferrer" className="project-card-link">
+                    GitHub
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+                    </svg>
+                  </a>
+                )}
+                {project.post && (
+                  <a href={project.post} className="project-card-link">
+                    Blog Post
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+                    </svg>
+                  </a>
+                )}
                 {project.live && (
                   <a href={project.live} target="_blank" rel="noopener noreferrer" className="project-card-link">
                     Live Demo
