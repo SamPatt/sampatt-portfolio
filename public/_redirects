@@ -2,6 +2,12 @@
 /feed.json /feed.json 200
 /atom.xml  /atom.xml  200
 
+# Short link for the Lucy video. Must be a 301, not a 200 rewrite: a rewrite
+# keeps the browser on /lucy, which React Router has no route for, so the app
+# renders an empty page. Trailing slash on the target because Netlify redirects
+# /blog/lucy -> /blog/lucy/ anyway.
+/lucy      /blog/lucy/   301
+
 /api/subscribers https://camouflaged-axolotl.pikapod.net/api/subscribers 200!
 
 /* /index.html 200
