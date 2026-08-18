@@ -9,6 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "sync-notes": "node scripts/sync-obsidian.js",
+    "resume-pdf": "node scripts/generate-resume-pdf.js",
     "prebuild-with-sync": "node scripts/sync-obsidian.js",
     "build-with-sync": "vite build && node scripts/generate-rss.js"
   },

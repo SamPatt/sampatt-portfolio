@@ -45,6 +45,14 @@ const experience = [
   }
 ];
 
+const grants = [
+  {
+    title: 'Resilient Societies Grant — Mercatus Center',
+    note: '2026 — Research on AI and voluntary claim accountability',
+    link: 'https://www.mercatus.org/announcements/mercatus-announces-resilient-societies-grant-recipients'
+  }
+];
+
 const writing = [
   {
     title: 'o3 Beats a Master-Level GeoGuessr Player — Even with Fake EXIF Data',
@@ -144,6 +152,20 @@ function Resume() {
               )}
             </div>
           ))}
+        </section>
+
+        <section className="resume-section">
+          <h2>Grants & Fellowships</h2>
+          <div className="resume-writing">
+            {grants.map((item, i) => (
+              <div key={i} className="resume-writing-item">
+                <a href={item.link} target={item.link.startsWith('http') ? '_blank' : '_self'} rel="noopener noreferrer">
+                  {item.title}
+                </a>
+                <span className="resume-writing-note">{item.note}</span>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="resume-section">

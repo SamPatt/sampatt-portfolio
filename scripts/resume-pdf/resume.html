@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sam Patterson — Resume</title>
+<!--
+  Print source for src/assets/Patterson_Resume.pdf.
+  Mirrors the content of src/pages/Resume.jsx — update both together.
+  Regenerate the PDF with: npm run resume-pdf
+-->
+<style>
+  @page {
+    size: A4;
+    margin: 0.65in 0.7in;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1, h2, h3 { margin: 0; font-weight: bold; }
+
+  .name {
+    font-size: 27px;
+    letter-spacing: -0.3px;
+    margin-bottom: 8px;
+  }
+
+  .tagline {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 6px;
+  }
+
+  .contact {
+    font-size: 11.5px;
+    color: #777;
+  }
+
+  .sep { padding: 0 2px; }
+
+  .summary {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: #333;
+    margin: 16px 0 0;
+  }
+
+  /* Rules hang below their block rather than above the next one, so a page
+     break never leaves a stray divider floating at the top of a page. */
+  header, section {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  section { padding-top: 12px; }
+
+  section:last-of-type {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  section h2 {
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2.4px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .job { margin-bottom: 14px; }
+  .job:last-child { margin-bottom: 0; }
+
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .job-header h3 { font-size: 12.5px; }
+
+  .period {
+    font-size: 11px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  .company {
+    font-size: 11.5px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .job ul {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .job li {
+    position: relative;
+    padding-left: 14px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #333;
+  }
+
+  .job li::before {
+    content: "·";
+    position: absolute;
+    left: 3px;
+    color: #999;
+  }
+
+  .entry { margin-bottom: 10px; }
+  .entry:last-child { margin-bottom: 0; }
+
+  .entry-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #1a1a1a;
+  }
+
+  .entry-note {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .skill {
+    background: #f1f1f1;
+    border-radius: 3px;
+    padding: 4px 9px;
+    font-size: 11px;
+    color: #333;
+  }
+
+  .edu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .edu-item:last-child { margin-bottom: 0; }
+
+  .edu-year {
+    font-size: 11px;
+    color: #888;
+    white-space: nowrap;
+  }
+
+  .presentations {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1 class="name">Sam Patterson</h1>
+    <div class="tagline">Technical Builder &amp; Communicator</div>
+    <div class="contact">
+      Grand Rapids, MI <span class="sep">·</span> sam@sampatt.com <span class="sep">·</span>
+      linkedin.com/in/sampatt-dev <span class="sep">·</span> github.com/SamPatt <span class="sep">·</span> sampatt.com
+    </div>
+    <p class="summary">
+      I've spent 15 years building at the intersection of technology, communication, and community — from
+      founding a tech policy program in DC, to co-founding a venture-backed decentralized marketplace, to
+      writing about Bitcoin before most people had heard of it. Today I build AI-powered tools and write about
+      emerging technology, regularly reaching the front page of Hacker News.
+    </p>
+  </header>
+
+  <section>
+    <h2>Experience</h2>
+
+    <div class="job">
+      <div class="job-header">
+        <h3>Technical Operations Specialist</h3>
+        <span class="period">June 2026 – Present</span>
+      </div>
+      <div class="company">MessageWrap · Grand Rapids, MI</div>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <h3>Co-Founder &amp; Head of Operations</h3>
+        <span class="period">2015 – 2020</span>
+      </div>
+      <div class="company">OB1 (OpenBazaar) · Remote</div>
+      <ul>
+        <li>Co-founded and helped build OpenBazaar, an open-source decentralized marketplace using Bitcoin for peer-to-peer commerce</li>
+        <li>Raised $9M in venture capital from Andreessen Horowitz and Union Square Ventures</li>
+        <li>Served as developer advocate and documentation lead, managing a global open-source community</li>
+        <li>Featured in Wired, Forbes, Yahoo Finance; presented at conferences in Prague, Guatemala, New Hampshire</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <h3>Senior Policy Analyst &amp; Research Fellow</h3>
+        <span class="period">2011 – 2015</span>
+      </div>
+      <div class="company">Stand Together · Washington DC</div>
+      <ul>
+        <li>Founded and directed the technology policy program</li>
+        <li>Conducted research on how technology policy affects individual well-being</li>
+        <li>Created the Crony Chronicles project, a public awareness initiative on political cronyism</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-header">
+        <h3>Freelance Technical Writer &amp; Voiceover Artist</h3>
+        <span class="period">2020 – Present</span>
+      </div>
+      <div class="company">Remote</div>
+      <ul>
+        <li>Technical tutorials and educational content for open-source projects</li>
+        <li>Recorded and published audiobooks on Audible</li>
+        <li>Blog writing with multiple Hacker News front-page hits</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Grants &amp; Fellowships</h2>
+
+    <div class="entry">
+      <span class="entry-title">Resilient Societies Grant — Mercatus Center</span>
+      <span class="entry-note">2026 — Research on AI and voluntary claim accountability</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selected Writing &amp; Research</h2>
+
+    <div class="entry">
+      <span class="entry-title">o3 Beats a Master-Level GeoGuessr Player — Even with Fake EXIF Data</span>
+      <span class="entry-note">#1 on Hacker News</span>
+    </div>
+    <div class="entry">
+      <span class="entry-title">My Grandma Was a Fed — Lessons from Digitizing Hundreds of Hours of Childhood</span>
+      <span class="entry-note">Hacker News front page</span>
+    </div>
+    <div class="entry">
+      <span class="entry-title">Visualizing Why Bitcoin Can't Work Over HF Radio</span>
+      <span class="entry-note">Interactive visualization + video</span>
+    </div>
+    <div class="entry">
+      <span class="entry-title">Artificial Advocates: Biasing Democratic Feedback Using AI</span>
+      <span class="entry-note">3rd place, Apart Hackathon — led to Apart Labs Fellowship</span>
+    </div>
+    <div class="entry">
+      <span class="entry-title">Bitcoin Beginner</span>
+      <span class="entry-note">One of the first books published about Bitcoin (2013)</span>
+    </div>
+    <div class="entry">
+      <span class="entry-title">Breakdown of All Satoshi's Writings</span>
+      <span class="entry-note">Analysis with accompanying video</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills">
+      <span class="skill">Python</span>
+      <span class="skill">JavaScript</span>
+      <span class="skill">React</span>
+      <span class="skill">Node.js</span>
+      <span class="skill">PostgreSQL</span>
+      <span class="skill">Linux</span>
+      <span class="skill">Git</span>
+      <span class="skill">AI/LLM Integration</span>
+      <span class="skill">WebRTC</span>
+      <span class="skill">Self-hosted Infrastructure</span>
+      <span class="skill">Technical Writing</span>
+      <span class="skill">Developer Advocacy</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Education</h2>
+    <div class="edu-item">
+      <span><strong>General Assembly</strong> — Full-Stack Software Engineering Immersive</span>
+      <span class="edu-year">2024</span>
+    </div>
+    <div class="edu-item">
+      <span><strong>Alfred University</strong> — B.A. Political Science</span>
+      <span class="edu-year">2010</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Presentations</h2>
+    <p class="presentations">
+      Hacker's Congress, Paralelní Polis (Prague) · CryptoEcon Conference (Saigon) · Hillsdale College Free
+      Market Forum · PorcFest XIII (New Hampshire) · Universidad Francisco Marroquín (Guatemala) · Liberty.me
+    </p>
+  </section>
+
+</body>
+</html>
