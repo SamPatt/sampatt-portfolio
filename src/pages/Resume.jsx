@@ -50,6 +50,11 @@ const grants = [
     title: 'Resilient Societies Grant — Mercatus Center',
     note: '2026 — Research on AI and voluntary claim accountability',
     link: 'https://www.mercatus.org/announcements/mercatus-announces-resilient-societies-grant-recipients'
+  },
+  {
+    title: 'Apart Labs AI Fellow — Apart Research',
+    note: 'Fall 2024 — AI safety research',
+    link: '/portfolio'
   }
 ];
 
