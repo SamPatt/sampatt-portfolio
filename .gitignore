@@ -32,3 +32,6 @@ notes.md
 # Local documentation
 SAM_READ_THIS.md
 AGENTS.md
+# Role-targeted resume variants and the PDFs rendered next to them stay local
+scripts/resume-pdf/resume-*.html
+scripts/resume-pdf/*.pdf

@@ -1,19 +1,43 @@
 /**
- * Renders scripts/resume-pdf/resume.html to src/assets/Patterson_Resume.pdf
- * using headless Chrome. Run with: npm run resume-pdf
+ * Renders a resume HTML source to PDF using headless Chrome.
  *
- * The HTML is the print-only mirror of src/pages/Resume.jsx — keep them in sync.
+ *   npm run resume-pdf             -> resume.html, published on the site
+ *   npm run resume-pdf -- <name>   -> resume-<name>.html, kept local
+ *
+ * resume.html is the print-only mirror of src/pages/Resume.jsx — keep them in
+ * sync. Variants are standalone, intentionally diverge, and are gitignored
+ * along with every PDF this writes into scripts/resume-pdf/.
  */
 import { execFileSync } from 'child_process';
-import { existsSync, mkdtempSync, copyFileSync, rmSync } from 'fs';
+import { existsSync, mkdtempSync, copyFileSync, rmSync, readdirSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
-const source = path.join(projectRoot, 'scripts', 'resume-pdf', 'resume.html');
-const output = path.join(projectRoot, 'src', 'assets', 'Patterson_Resume.pdf');
+const sourceDir = path.join(projectRoot, 'scripts', 'resume-pdf');
+
+const requested = process.argv[2];
+
+const source = requested
+  ? path.join(sourceDir, `resume-${requested}.html`)
+  : path.join(sourceDir, 'resume.html');
+
+const output = requested
+  ? path.join(sourceDir, `Patterson_Resume_${titleCase(requested)}.pdf`)
+  : path.join(projectRoot, 'src', 'assets', 'Patterson_Resume.pdf');
+
+function titleCase(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function listVariants() {
+  return readdirSync(sourceDir)
+    .map(file => file.match(/^resume-(.+)\.html$/))
+    .filter(Boolean)
+    .map(match => match[1]);
+}
 
 const CHROME_CANDIDATES = [
   process.env.CHROME_PATH,
@@ -38,7 +62,11 @@ function findChrome() {
 }
 
 if (!existsSync(source)) {
-  console.error(`Resume source not found: ${source}`);
+  console.error(`Resume source not found: ${path.relative(projectRoot, source)}`);
+  const available = listVariants();
+  if (available.length > 0) {
+    console.error(`Available variants: ${available.join(', ')}`);
+  }
   process.exit(1);
 }
 
