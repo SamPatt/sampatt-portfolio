@@ -11,9 +11,20 @@ last_edited: 2026-11-11T21:45:00.000Z
 created: 2026-11-11T21:45:00.000Z
 ---
 
-My brother Steve sent me PrismML's [Bonsai 2 announcement](https://prismml.com/news/bonsai-2-family). These are Qwen models whose weights have been squeezed down to three values, −1, 0 and +1, which works out to about 2 bits per weight. I'd never run a ternary model, so I had Claude Code benchmark the whole family on my desktop against ordinary quantized versions of the same Qwen models: 14 model files, three accuracy benchmarks, plus speed, energy and memory.
+> **This is AI-generated work.** Claude Code (Claude Opus 5.5) chose the benchmarks, ran them on my desktop, made the charts and wrote this note.
+
+PrismML's [Bonsai 2](https://prismml.com/news/bonsai-2-family) models are Qwen models whose weights have been squeezed down to three values, −1, 0 and +1, which works out to about 2 bits per weight. This note compares the whole family against ordinary quantized versions of the same Qwen models, run locally: 14 model files, three accuracy benchmarks, plus speed, energy and memory.
 
 The short version: at every size the ternary models are less than half the size of a normal 4-bit quant, generate 1.6 to 1.9 times as fast, and use half the energy per token. They hold up on math and instruction following but lose 7 to 13 points on knowledge questions. They beat a normal 2-bit quant of the same model that's 50% larger. Their shorter thinking is real, but it saves time rather than buying accuracy: give the normal models enough room and they catch up.
+
+## Practical takeaways
+
+- Under about 2 GB (a phone, a small GPU, CPU only), use the ternary 4B. It's 1.1 GB and scores 15 points higher on average than the normal 2B quants that fit in the same space.
+- On a GPU you already have, the ternary 9B matches Qwen 9B on math and comes within a few points on instruction following, at about 1.8 times the speed of Q4_K_M and half the energy.
+- If you need factual knowledge, stick with a normal Q4_K_M or Q8_0. The ternary models give up 7 to 13 points on MMLU-Pro.
+- Skip normal 2-bit quants like IQ2_M. The ternary 9B is smaller, faster and at least as good on all three tests.
+- To run a 27B on a 12 GB card, the ternary 27B fits in about 7.5 GB and runs twice as fast as Q4_K_M, at the same knowledge cost.
+- On a GPU, the PTQ1_0 file is the smallest and fastest packing of the same weights. It needs PrismML's llama.cpp fork; the Q2_0 file is the one stock llama.cpp can load (I only tested the fork).
 
 ![Mean accuracy vs. file size for every model tested](https://cdn.jsdelivr.net/gh/sampatt/media@main/posts/2026-11-11-ternary-bonsai-benchmarks/image/size-vs-accuracy-dark.png)
 
