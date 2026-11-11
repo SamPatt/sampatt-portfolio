@@ -444,7 +444,8 @@ sup .footnote-ref {
 } 
 
 /* Table styling */
-.blog-post table {
+.blog-post table,
+.note table {
   border-collapse: collapse;
   width: auto;
   margin: 1.5rem auto;
@@ -454,7 +455,8 @@ sup .footnote-ref {
   box-shadow: var(--card-shadow);
 }
 
-.blog-post th {
+.blog-post th,
+.note th {
   background-color: var(--card-bg);
   font-weight: 600;
   text-align: left;
@@ -463,18 +465,28 @@ sup .footnote-ref {
   border-bottom: 1px solid var(--border-color);
 }
 
-.blog-post td {
+.blog-post td,
+.note td {
   padding: 0.75rem 1rem;
   border-top: 1px solid var(--border-color);
   color: var(--text-secondary);
 }
 
-.blog-post tr:nth-child(even) {
+.blog-post tr:nth-child(even),
+.note tr:nth-child(even) {
   background-color: rgba(232, 200, 114, 0.03);
 }
 
-.blog-post tr:hover {
+.blog-post tr:hover,
+.note tr:hover {
   background-color: rgba(232, 200, 114, 0.06);
+}
+
+/* Wide tables in notes scroll sideways on narrow screens */
+.note table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 /* Table of contents styling */
