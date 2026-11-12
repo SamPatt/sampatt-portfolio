@@ -7,7 +7,11 @@ const experience = [
     company: 'MessageWrap',
     period: 'June 2026 – Present',
     location: 'Grand Rapids, MI',
-    bullets: []
+    bullets: [
+      'Built and run the company\'s MCP server and its Claude integration, giving AI assistants structured access to company data',
+      'Built the database export pipeline that feeds the MCP server',
+      'Own company infrastructure, the production database and the integrations between platforms'
+    ]
   },
   {
     title: 'Co-Founder & Head of Operations',

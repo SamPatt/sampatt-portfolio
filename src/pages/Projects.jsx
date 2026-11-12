@@ -9,18 +9,11 @@ const projectsData = [
     type: 'AI agents / Python / systemd / Tailscale',
   },
   {
-    id: 21,
-    title: 'Prediction-Market Trading Systems',
-    description: 'Live automated trading on Polymarket: real-time data collection, a backtesting engine, a strategy lab and execution bots, split across separate data, trading and analysis machines.',
-    year: '2025–2026',
-    type: 'Python / PostgreSQL / FastAPI / WebSockets',
-  },
-  {
-    id: 22,
-    title: 'Cledo',
-    description: 'A research workbench for prediction markets across Polymarket and Kalshi: paste any market link to get price history, custom dashboards, forecast tracking and external data overlays such as weather.',
-    year: '2025',
-    type: 'FastAPI / HTMX / Supabase',
+    id: 23,
+    title: 'NO-CAP: Open Claims Accountability',
+    description: 'Funded by a Mercatus Center Resilient Societies grant. A voluntary protocol that lets institutions attach structured, revisitable metadata to serious empirical and predictive claims, with AI acting as an editor and archivist rather than a truth judge. Draft standard, claim-entry template and AI-assisted workflows; final report due December 2026.',
+    year: '2026',
+    type: 'Research / AI workflows / Policy',
   },
   {
     id: 10,
