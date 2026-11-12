@@ -2,6 +2,27 @@ import '../App.css';
 
 const projectsData = [
   {
+    id: 20,
+    title: 'Agent Fleet & Agent Radio',
+    description: 'I run Claude Code and Codex agents as scheduled, headless workers across my own machines and VPSes, with a fleet inventory they read and write. Agent Radio turns their updates into a private podcast on my phone; I reply by voice and the relay resumes the same agent thread.',
+    year: '2026',
+    type: 'AI agents / Python / systemd / Tailscale',
+  },
+  {
+    id: 21,
+    title: 'Prediction-Market Trading Systems',
+    description: 'Live automated trading on Polymarket: real-time data collection, a backtesting engine, a strategy lab and execution bots, split across separate data, trading and analysis machines.',
+    year: '2025–2026',
+    type: 'Python / PostgreSQL / FastAPI / WebSockets',
+  },
+  {
+    id: 22,
+    title: 'Cledo',
+    description: 'A research workbench for prediction markets across Polymarket and Kalshi: paste any market link to get price history, custom dashboards, forecast tracking and external data overlays such as weather.',
+    year: '2025',
+    type: 'FastAPI / HTMX / Supabase',
+  },
+  {
     id: 10,
     title: 'Patterkin',
     description: 'A private family video streaming platform. I digitized 122 Video8 tapes of childhood footage and built an HLS streaming site with personalized timelines, reactions, and comments, backed by Cloudflare R2 and Supabase auth.',
