@@ -106,7 +106,7 @@ const presentations = [
 
 const skills = [
   'Python', 'JavaScript', 'React', 'Node.js', 'PostgreSQL',
-  'Linux', 'Git', 'AI/LLM Integration', 'WebRTC',
+  'Linux', 'Git', 'AI/LLM Integration', 'MCP Servers', 'WebRTC',
   'Self-hosted Infrastructure', 'Technical Writing', 'Developer Advocacy'
 ];
 
