@@ -20,7 +20,8 @@
     padding-block: 0; box-sizing: border-box; overflow: hidden; margin: 0;
   }
   /* keep 9:16 exactly: as wide as the screen allows, leaving room for the credit line */
-  .stage { position: relative; width: min(100vw, calc((100dvh - 44px) * 9 / 16)); aspect-ratio: 9 / 16; }
+  .stage { position: relative; width: min(100vw, calc((100vh - 44px) * 9 / 16)); width: min(100vw, calc((100dvh - 44px) * 9 / 16)); aspect-ratio: 9 / 16; }
+  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - 44px) * 9 / 16)) * 16 / 9); } }
   canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
   .play {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -33,6 +34,7 @@
   .credit { font-size: 13px; padding-inline: 8px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
   .credit a { color: var(--ink); }
   .endlink { position: absolute; display: block; cursor: pointer; }
+  .endlink[hidden], .play[hidden] { display: none; }
   .endlink:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
   .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
 </style>
@@ -576,47 +578,59 @@ function bootAnim() {
 </script>
 <script>
 (async function () {
-  const cv = document.getElementById("c"), ctx = cv.getContext("2d"), btn = document.getElementById("play");
+  const cv = document.getElementById("c"), ctx = cv.getContext("2d"), btn = document.getElementById("play"), endLink = document.getElementById("endlink");
   window.SAT_OPTS = { labels: "center" };
   window.SAT_DATA = await (await fetch("data.json")).json();
   bootAnim();
   const A = window.SatAnim;
 
   // clock: the audio context is the master clock while sound plays; rAF otherwise
-  let t = 0, playing = false, last = null, actx = null, buffer = null, src = null, ctxStart = 0, tStart = 0;
+  // The page clock (performance.now) drives the animation. Sound follows it and is optional:
+  // some browsers block or suspend Web Audio, and the animation must play regardless.
+  let t = 0, playing = false, wallStart = 0, tAtStart = 0, actx = null, buffer = null, src = null;
   let audioReady = null; // fetched on first play, so a visit that never plays costs no audio bandwidth
+  let srcCtxStart = 0, srcT = 0, lastSync = 0;
 
   async function startAudio(at) {
     try {
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
-      if (actx.state === "suspended") await actx.resume();
+      if (actx.state !== "running") actx.resume().catch(() => {});
       if (!audioReady) audioReady = fetch("orbit.mp3").then((r) => r.arrayBuffer()).catch(() => null);
-      if (!buffer) { const ab = await audioReady; if (ab) buffer = await actx.decodeAudioData(ab); }
-      if (!buffer) return;
+      if (!buffer) {
+        const ab = await audioReady;
+        if (ab) buffer = await new Promise((ok, no) => { const p = actx.decodeAudioData(ab, ok, no); if (p && p.then) p.then(ok, no); });
+      }
+      if (!buffer || !playing) return;
       stopAudio();
+      const now = playing ? tAtStart + (performance.now() - wallStart) / 1000 : at;
       src = actx.createBufferSource(); src.buffer = buffer; src.connect(actx.destination);
-      src.start(0, Math.min(at, buffer.duration - 0.01));
-      ctxStart = actx.currentTime; tStart = at;
+      src.start(0, Math.min(Math.max(0, now), buffer.duration - 0.01));
+      srcCtxStart = actx.currentTime; srcT = now;
     } catch (e) { src = null; }
   }
-  function stopAudio() { if (src) { try { src.stop(); } catch (e) {} src.disconnect(); src = null; } }
+  function stopAudio() { if (src) { try { src.stop(); } catch (e) {} try { src.disconnect(); } catch (e) {} src = null; } }
 
-  async function play(from) {
+  function play(from) {
     if (from != null) t = from;
     if (t >= A.DURATION) t = 0;
-    playing = true; btn.hidden = true; last = null;
-    await startAudio(t);
+    playing = true; btn.hidden = true;
+    wallStart = performance.now(); tAtStart = t;
+    startAudio(t);
   }
   function pause() { playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#9654; Resume"; }
 
   function tick(now) {
     if (playing) {
-      if (src) t = tStart + (actx.currentTime - ctxStart);
-      else if (last !== null) t += (now - last) / 1000;
+      t = tAtStart + (now - wallStart) / 1000;
       if (t >= A.DURATION) { t = A.DURATION; playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#8635; Watch again"; }
+      // keep the sound in step; only when the audio clock is actually running
+      if (src && actx && actx.state === "running" && now - lastSync > 2000) {
+        lastSync = now;
+        const audioPos = srcT + (actx.currentTime - srcCtxStart);
+        if (Math.abs(audioPos - t) > 0.3) startAudio(t);
+      }
     }
-    last = now;
-    A.render(ctx, t);
+    try { A.render(ctx, t); } catch (e) { console.error(e); }
     const er = A.endRect(); // keep a real link over the end card
     if (er) {
       Object.assign(endLink.style, { left: er[0] / A.W * 100 + "%", top: er[1] / A.H * 100 + "%", width: er[2] / A.W * 100 + "%", height: er[3] / A.H * 100 + "%" });
