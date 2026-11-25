@@ -10,6 +10,8 @@ import Note from "./components/Note";
 import Now from "./pages/Now";
 import Portfolio from "./pages/Portfolio";
 import Resume from "./pages/Resume";
+import Animations from "./pages/Animations";
+import Animation from "./pages/Animation";
 
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           <Route path="/notes/tags/:tag" element={<Notes />} />
           <Route path="/notes/:slug" element={<Note />} />
           <Route path="/now" element={<Now />} />
+          <Route path="/animations" element={<Animations />} />
+          <Route path="/animations/:slug" element={<Animation />} />
         </Routes>
       </main>
     </div>

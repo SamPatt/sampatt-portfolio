@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Every Satellite Ever Launched</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
+  :root {
+    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--ground); color: var(--ink); font-family: var(--mono);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 8px; box-sizing: border-box; overflow: hidden;
+  }
+  .stage { position: relative; height: calc(100% - 34px); aspect-ratio: 9 / 16; max-width: 100%; }
+  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; box-shadow: 0 0 0 2px var(--ink); }
+  .play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font: inherit; font-size: clamp(18px, min(4vh, 5.5vw), 34px); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+    background: var(--signal); color: var(--paper); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+    padding: 0.35em 0.9em; cursor: pointer;
+  }
+  .play:hover { background: var(--ink); }
+  .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  .credit { font-size: 15px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
+  .credit a { color: var(--ink); }
+  .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+
+</head>
+<body>
+<div class="stage">
+  <canvas id="c" width="1080" height="1920" aria-label="Animation: every satellite launched since Sputnik, one grid cell per satellite"></canvas>
+  <button class="play" id="play" type="button">&#9654; Play with sound</button>
+</div>
+<p class="credit">Data: <a href="https://planet4589.org/space/gcat/" target="_blank" rel="noopener">GCAT, J. McDowell</a> (CC-BY), payloads launched through 30 Jun 2026 &middot; Sputnik audio: NASA &middot; tap to pause</p>
+
+<script>
+function bootAnim() {
+// Satellite scale animation. Deterministic: render(ctx, t) draws the frame at t seconds.
+(function () {
+  const D = window.SAT_DATA;
+  const W = 1080, H = 1920;           // real pixels
+  const S = 2;                        // logical pixel scale for the card
+
+  // ---- palette ----
+  const PAL = ["#ffffff", "#111111", "#e0201b", "#9a9a9a"]; // 0 white, 1 black, 2 red, 3 grey
+
+  // ---- 5x7 font ----
+  const F = {
+    "A":"01110100011000111111100011000110001","B":"11110100011000111110100011000111110","C":"01110100011000010000100001000101110",
+    "D":"11110100011000110001100011000111110","E":"11111100001000011110100001000011111","F":"11111100001000011110100001000010000",
+    "G":"01110100011000010111100011000101111","H":"10001100011000111111100011000110001","I":"01110001000010000100001000010001110",
+    "J":"00111000100001000010000101001001100","K":"10001100101010011000101001001010001","L":"10000100001000010000100001000011111",
+    "M":"10001110111010110101100011000110001","N":"10001110011010110011100011000110001","O":"01110100011000110001100011000101110",
+    "P":"11110100011000111110100001000010000","Q":"01110100011000110001101011001001101","R":"11110100011000111110101001001010001",
+    "S":"01111100001000001110000010000111110","T":"11111001000010000100001000010000100","U":"10001100011000110001100011000101110",
+    "V":"10001100011000110001100010101000100","W":"10001100011000110101101011010101010","X":"10001100010101000100010101000110001",
+    "Y":"10001100010101000100001000010000100","Z":"11111000010001000100010001000011111",
+    "0":"01110100011001110101110011000101110","1":"00100011000010000100001000010001110","2":"01110100010000100010001000100011111",
+    "3":"11111000100010000010000011000101110","4":"00010001100101010010111110001000010","5":"11111100001111000001000011000101110",
+    "6":"00110010001000011110100011000101110","7":"11111000010001000100010000100001000","8":"01110100011000101110100011000101110",
+    "9":"01110100011000101111000010001001100",
+    " ":"00000000000000000000000000000000000",",":"00000000000000000000001100010001000",".":"00000000000000000000000000110001100",
+    ":":"00000011000110000000011000110000000","+":"00000001000010011111001000010000000","-":"00000000000000011111000000000000000",
+    "/":"00001000010001000100010001000010000","'":"01100001000100000000000000000000000","(":"00010001000100001000010000010000010",
+    ")":"01000001000001000010000100010001000","s":"00000000000111110000011100000111110","^":"00000011110001100101010010100000000", // ^ = north-east arrow
+  };
+  // 3x5 digits for rocket labels
+  const F3 = {"0":"111101101101111","1":"010110010010111","2":"111001111100111","3":"111001111001111","4":"101101111001001",
+    "5":"111100111001111","6":"111100111101111","7":"111001001001001","8":"111101111101111","9":"111101111001111"};
+
+  // ---- card layout (logical px) ----
+  const CARD_W = 474, MAP_H = 188;
+  const MAP_X = 3, MAP_Y = 46, MAP_W = CARD_W - 6;
+  const PANEL_Y = MAP_Y + MAP_H + 4, BLK_H = 29, BLK_GAP = 4, BLK_MAXCOLS = 4;
+  const BLK_ROWS = Math.ceil(D.countries.length / BLK_MAXCOLS);
+  // e.g. 14 countries -> rows of 4,4,3,3: every row ends full once the last country has launched
+  const ROW_N = Array.from({ length: BLK_ROWS }, (_, r) => Math.floor(D.countries.length / BLK_ROWS) + (r < D.countries.length % BLK_ROWS ? 1 : 0));
+  const SLOTS = ROW_N.flatMap((n, r) => Array.from({ length: n }, (_, c) => {
+    const w = Math.floor((CARD_W - 6 - (n - 1) * BLK_GAP) / n);
+    return { x: 3 + c * (w + BLK_GAP), y: PANEL_Y + r * (BLK_H + 2), w };
+  }));
+  const FOOT_Y = PANEL_Y + BLK_ROWS * (BLK_H + 2) + 2;
+  const CARD_H = FOOT_Y + 56;
+  const CX = Math.floor((W / S - CARD_W) / 2);
+  const CY0 = 332, CY_TOP = 6; // card starts below the pre-Starlink rows; after the first Starlink batch it moves to the top
+  const LON0 = -135, LON1 = 184, LAT0 = 76;
+  const K = MAP_W / (LON1 - LON0);
+  const proj = (lat, lon) => [MAP_X + (lon - LON0) * K, MAP_Y + (LAT0 - lat) * K];
+
+  // label specs: [x, y, style] in map-local px; style: 'L' = [tally] NAME, 'R' = NAME [tally], 'S' = stacked
+  const LABELS = {
+    "VANDENBERG": [2, 84, "S"], "CAPE CANAVERAL": [90, 80, "S"], "WALLOPS": [100, 42, "R"],
+    "KOUROU": [146, 104, "S"], "PLESETSK": [270, 6, "R"], "KAPUSTIN YAR": [150, 20, "L"],
+    "BAIKONUR": [196, 56, "L"], "JIUQUAN": [292, 38, "L"], "XICHANG": [282, 76, "L"],
+    "SRIHARIKOTA": [250, 108, "L"],
+    "VOSTOCHNY": [404, 8, "S"], "TAIYUAN": [404, 30, "S"], "TANEGASHIMA": [404, 52, "S"],
+    "WENCHANG": [404, 74, "S"], "MAHIA": [432, 112, "S"],
+  };
+
+  // ---- timing: constant clock, except the clock holds during special moments ----
+  const TM = D.timing, T0 = TM.t0;
+  const LABEL_MODE = (window.SAT_OPTS && window.SAT_OPTS.labels) || "center"; // "center" (v6) or "left"
+  const LAST_MONTH = ["JAN", "FEB", "MAR", "APR", "MAY", "JUNE", "JULY", "AUG", "SEPT", "OCT", "NOV", "DEC"][new Date(Date.parse(D.epoch) + D.end * 86400000).getUTCMonth()];
+  const SEC_PER_DAY = (TM.duration - T0 - D.events.reduce((a, e) => a + e.hold, 0) - TM.tail) / D.end;
+  const TRAIL_LIFE = 0.6, FLY = 0.3;
+  const L = D.launches; // [day, n, node, lat, lon, az, starlink, country]
+  const EV = D.events.map((e) => ({ ...e, day: L[e.i][0] }));
+  function realOf(day) { let r = T0 + day * SEC_PER_DAY; for (const e of EV) if (e.day < day) r += e.hold; return r; }
+  function clock(t) {
+    let acc = 0;
+    for (const e of EV) {
+      const ts = T0 + e.day * SEC_PER_DAY + acc;
+      if (t < ts) break;
+      if (t < ts + e.hold) return { day: e.day, ev: e, phase: (t - ts) / e.hold, evT: t - ts };
+      acc += e.hold;
+    }
+    return { day: Math.max(0, Math.min(D.end, (t - T0 - acc) / SEC_PER_DAY)), ev: null };
+  }
+  const T_END = realOf(D.end);
+  const DURATION = TM.duration;
+  const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
+  // card position (logical y): fixed, then lifts off the top at the very end to reveal the whole grid
+  function cardY(t) {
+    const off = T_END + 2.0;
+    const y = CY0 + (-(CARD_H + 12) - CY0) * ease((t - off) / 0.8);
+    return Math.round(y);
+  }
+
+  const buf = new Uint8Array((CARD_W + 4) * (CARD_H + 4));
+  const BW = CARD_W + 4;
+  const px = (x, y, c) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < BW && y < CARD_H + 4) buf[y * BW + x] = c; };
+  const rect = (x, y, w, h, c) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) px(x + i, y + j, c); };
+  const frame = (x, y, w, h, c) => { rect(x, y, w, 1, c); rect(x, y + h - 1, w, 1, c); rect(x, y, 1, h, c); rect(x + w - 1, y, 1, h, c); };
+  const inMap = (x, y) => x >= MAP_X && x < MAP_X + MAP_W && y >= MAP_Y && y < MAP_Y + MAP_H;
+  function line(x0, y0, x1, y1, c, dash, clip) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    let err = dx + dy, n = 0;
+    for (;;) {
+      if ((!dash || n % dash === 0) && (!clip || inMap(x0, y0))) px(x0, y0, c);
+      n++;
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 >= dy) { err += dy; x0 += sx; }
+      if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+  }
+  const textW = (s, k = 1) => s.length * 6 * k - k;
+  function text(s, x, y, c, k = 1) {
+    const bw = k > 1 ? k + 1 : k; // big text gets a bolder stroke
+    for (const ch of s) {
+      const g = F[ch] || F[" "];
+      for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") rect(x + q * k, y + r * k, bw, k, c);
+      x += 6 * k;
+    }
+  }
+  function text3(s, x, y, c) {
+    for (const ch of s) {
+      const g = F3[ch]; if (!g) { x += 4; continue; }
+      for (let r = 0; r < 5; r++) for (let q = 0; q < 3; q++) if (g[r * 3 + q] === "1") px(x + q, y + r, c);
+      x += 4;
+    }
+  }
+  const fmt = (n) => n.toLocaleString("en-US");
+
+  // ---- precompute ----
+  const NC = D.countries.length;
+  const cum = new Float64Array(L.length + 1);
+  for (let i = 0; i < L.length; i++) cum[i + 1] = cum[i] + L[i][1];
+  const nodeCum = D.nodes.map(() => new Int32Array(L.length + 1));
+  const ctyCum = D.countries.map(() => new Int32Array(L.length + 1));
+  for (let i = 0; i < L.length; i++) {
+    for (let k = 0; k < D.nodes.length; k++) nodeCum[k][i + 1] = nodeCum[k][i] + (L[i][2] === k ? L[i][1] : 0);
+    for (let k = 0; k < NC; k++) ctyCum[k][i + 1] = ctyCum[k][i] + (L[i][7] === k ? L[i][1] : 0);
+  }
+  const ctyFirst = D.countries.map((_, k) => L.findIndex((l) => l[7] === k)); // launch index of first satellite
+  const idxAt = (day) => { let lo = 0, hi = L.length; while (lo < hi) { const m = (lo + hi) >> 1; if (L[m][0] <= day) lo = m + 1; else hi = m; } return lo; };
+  // country slot order = order of first satellite; sparkline samples sized to each slot's width
+  const order = D.countries.map((_, k) => k).sort((a, b) => ctyFirst[a] - ctyFirst[b]);
+  const slotOf = []; order.forEach((k, s) => { slotOf[k] = s; });
+  const spark = D.countries.map((_, k) => {
+    const nS = SLOTS[slotOf[k]].w - 6;
+    return Int32Array.from({ length: nS }, (_, j) => ctyCum[k][idxAt((j + 1) / nS * D.end)]);
+  });
+
+  // ---- background grid: one cell per satellite, sized so the final total (nearly) exactly fills the screen ----
+  const N_ALL = cum[L.length];
+  const { COLS, ROWS } = (() => { let b = null; for (let c = 100; c <= 150; c++) { const r = Math.ceil(N_ALL / c), sc = c * r - N_ALL + 100 * Math.abs(Math.log((W / c) / (H / r))); if (!b || sc < b.sc) b = { COLS: c, ROWS: r, sc }; } return b; })();
+  const gx = (c) => Math.round(c * W / COLS), gy = (r) => Math.round(r * H / ROWS);
+  function fillCells(ctx, a, b) { // cells [a, b)
+    while (a < b) {
+      const r = Math.floor(a / COLS), c = a % COLS;
+      if (c === 0 && b - a >= COLS) { const r2 = Math.floor(b / COLS); ctx.fillRect(0, gy(r), W, gy(r2) - gy(r)); a = r2 * COLS; continue; }
+      const e = Math.min(b, (r + 1) * COLS);
+      ctx.fillRect(gx(c), gy(r), gx(e - r * COLS) - gx(c), gy(r + 1) - gy(r)); a = e;
+    }
+  }
+  // ---- periods: decades until 2020, then single years; each becomes a labelled block of cells once it ends ----
+  const dayOfYear1 = (y) => (Date.UTC(y, 0, 1) - Date.parse(D.epoch)) / 86400000;
+  const PERIODS = [];
+  for (let y = 1950; y < 2020; y += 10) PERIODS.push({ label: y + "s", d0: Math.max(0, dayOfYear1(y)), d1: dayOfYear1(y + 10) });
+  for (let y = 2020; dayOfYear1(y) < D.end; y++) PERIODS.push({ label: String(y), d0: dayOfYear1(y), d1: Math.min(D.end, dayOfYear1(y + 1)), last: dayOfYear1(y + 1) >= D.end });
+  for (const P of PERIODS) { P.a = cum[idxAt(P.d0 - 1e-9)]; P.b = P.last ? N_ALL : cum[idxAt(P.d1 - 1e-9)]; }
+
+  // red cells: Sputnik, and every Starlink satellite
+  const redRuns = [[0, 1]];
+  for (let i = 0; i < L.length; i++) if (L[i][6] > 0) {
+    const a = cum[i], b = cum[i] + L[i][6], last = redRuns[redRuns.length - 1];
+    if (last[1] === a) last[1] = b; else redRuns.push([a, b]);
+  }
+  const hash = (i) => { let h = (i + 1) * 2654435761 >>> 0; h ^= h >>> 13; h = Math.imul(h, 1274126177) >>> 0; return (h >>> 0) / 4294967296; };
+  const coastPx = D.coast.map((ring) => ring.map(([lon, lat]) => [lon, lat, ...proj(lat, lon)]));
+  const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const epoch = Date.parse(D.epoch);
+  // permanently red background cells: Sputnik, and the first Starlink batch
+  const evCells = EV.map((e) => [cum[e.i], cum[e.i] + L[e.i][1]]);
+
+  // trail geometry for launch i (map px): quadratic curve, returns point at fraction u
+  function trail(i, lenScale = 1, exact = false) {
+    const [, n, , lat, lon, az] = L[i];
+    const [sx, sy] = proj(lat, lon);
+    const jit = exact ? 0 : (hash(i) - 0.5) * 34, a = (az + jit) * Math.PI / 180;
+    const len = exact ? 40 * lenScale : (26 + hash(i + 7777) * 22 + Math.min(18, Math.log2(n + 1) * 3)) * lenScale;
+    const bend = exact ? 0.35 : (hash(i + 31) - 0.5) * 0.9;
+    const ex = sx + Math.sin(a) * len, ey = sy - Math.cos(a) * len;
+    const mx = (sx + ex) / 2 - Math.cos(a) * len * bend * 0.5, my = (sy + ey) / 2 - Math.sin(a) * len * bend * 0.5 - len * 0.18;
+    return { len, at: (u) => [(1 - u) * (1 - u) * sx + 2 * u * (1 - u) * mx + u * u * ex, (1 - u) * (1 - u) * sy + 2 * u * (1 - u) * my + u * u * ey] };
+  }
+  function drawTrail(tr, p) {
+    const steps = Math.ceil(tr.len);
+    let q = tr.at(0);
+    for (let s = 0; s <= steps * p; s++) { q = tr.at(s / steps); if (s % 2 === 0 && inMap(q[0], q[1])) px(q[0], q[1], 1); }
+    return tr.at(Math.min(1, p));
+  }
+
+  function drawCardStatic() {
+    buf.fill(255); // 255 = transparent
+    rect(3, 3, CARD_W, CARD_H, 1);                     // shadow
+    rect(0, 0, CARD_W, CARD_H, 0); frame(0, 0, CARD_W, CARD_H, 1);
+    for (let y = 2; y < 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);   // hatched title bar
+    const title = "EVERY SATELLITE EVER LAUNCHED", tw = textW(title);
+    rect((CARD_W - tw) / 2 - 4, 1, tw + 8, 10, 0); text(title, (CARD_W - tw) / 2, 2, 1);
+    rect(1, 11, CARD_W - 2, 1, 1);
+    const lab = "SATELLITES LAUNCHED";
+    text(lab, CARD_W - 116 - textW(lab), 23, 1);
+    // map
+    for (const ring of coastPx) for (let i = 1; i < ring.length; i++) {
+      const a = ring[i - 1], b = ring[i];
+      if (Math.abs(a[0] - b[0]) > 180) continue;
+      line(a[2], a[3], b[2], b[3], 1, 0, true);
+    }
+    rect(1, MAP_Y + MAP_H, CARD_W - 2, 1, 1);
+    // footer
+    rect(1, FOOT_Y, CARD_W - 2, 1, 1);
+    const q = "ONE CANNOT LIVE IN THE CRADLE FOREVER";
+    for (let x = 6; x < CARD_W - 6; x += 2) px(x, FOOT_Y + 5, 1);
+    text(q, Math.floor((CARD_W - textW(q, 2)) / 2), FOOT_Y + 12, 1, 2);
+    for (let x = 6; x < CARD_W - 6; x += 2) px(x, FOOT_Y + 32, 1);
+    const by = FOOT_Y + 38;
+    const btn = (label, x, inv) => { const w = textW(label) + 12; rect(x, by, w, 13, inv ? 1 : 0); frame(x, by, w, 13, 1); text(label, x + 6, by + 3, inv ? 0 : 1); return x + w + 4; };
+    const labels = ["PAUSE", "RESTART", "THE DATA: GCAT ^"];
+    const total = labels.reduce((s, l) => s + textW(l) + 16, -4);
+    let x = Math.floor((CARD_W - total) / 2);
+    btnX = []; for (let i = 0; i < 3; i++) { btnX.push([x, by, textW(labels[i]) + 12, 13]); x = btn(labels[i], x, i === 0); }
+  }
+  let btnX = [];
+  let staticCopy = null;
+
+  function tallyBox(n, x, y) { const s = fmt(n), w = textW(s) + 4; rect(x, y, w, 9, 2); text(s, x + 2, y + 1, 0); return w; }
+
+  function drawSiteLabel(k, n, active) {
+    const node = D.nodes[k], [sx, sy] = proj(node.lat, node.lon);
+    const [lx0, ly0, st] = LABELS[node.name]; const lx = MAP_X + lx0, ly = MAP_Y + ly0;
+    const nw = textW(node.name), tw = n > 0 ? textW(fmt(n)) + 4 : 0;
+    let bx0, by0, bx1, by1, nx, ny, tx, ty;
+    if (st === "L") { tx = lx; ty = ly - 1; nx = lx + (n > 0 ? tw + 3 : 0); ny = ly; bx0 = lx; bx1 = lx + tw + 3 + nw; by0 = ly - 1; by1 = ly + 8; }
+    else if (st === "R") { nx = lx; ny = ly; tx = lx + nw + 3; ty = ly - 1; bx0 = lx; bx1 = lx + nw + 3 + tw; by0 = ly - 1; by1 = ly + 8; }
+    else { nx = lx; ny = ly; tx = lx; ty = ly + 9; bx0 = lx; bx1 = lx + Math.max(nw, tw); by0 = ly - 1; by1 = ly + 18; }
+    const cx = Math.max(bx0, Math.min(bx1, sx)), cy = Math.max(by0, Math.min(by1, sy));
+    if (Math.hypot(cx - sx, cy - sy) > 6) line(cx, cy, sx, sy, 1, 2);
+    rect(nx - 1, ny - 1, nw + 2, 9, 0); text(node.name, nx, ny, 1);
+    if (n > 0) tallyBox(n, tx, ty);
+    rect(sx - 2, sy - 2, 5, 5, 0); frame(sx - 2, sy - 2, 5, 5, 1);
+    if (active) { frame(sx - 4, sy - 4, 9, 9, 1); px(sx - 4, sy - 4, 0); px(sx + 4, sy - 4, 0); px(sx - 4, sy + 4, 0); px(sx + 4, sy + 4, 0); }
+  }
+
+  // ---- country blocks ----
+  function drawCountry(k, iNow, day, t) {
+    const { x: bx, y: by, w: BLK_W } = SLOTS[slotOf[k]], SPARK_N = BLK_W - 6;
+    const joinedT = realOf(L[ctyFirst[k]][0]);
+    const inv = t - joinedT < 0.5; // a new block flashes inverted as it arrives
+    const fg = inv ? 0 : 1, bg = inv ? 1 : 0;
+    rect(bx, by, BLK_W, BLK_H, bg); frame(bx, by, BLK_W, BLK_H, 1);
+    const name = D.countries[k];
+    text(name, bx + 3, by + 3, fg);
+    const n = ctyCum[k][iNow], s = fmt(n), w = textW(s) + 4;
+    rect(bx + BLK_W - 2 - w, by + 2, w, 9, 2); text(s, bx + BLK_W - w, by + 3, 0);
+    // sparkline: shared time axis (Sputnik -> end), own vertical scale
+    const x0 = bx + 3, base = by + BLK_H - 3, hgt = 14;
+    for (let j = 0; j < SPARK_N; j += 2) px(x0 + j, base, fg);
+    const jNow = Math.min(SPARK_N - 1, Math.floor(day / D.end * SPARK_N));
+    let prev = null;
+    for (let j = 0; j <= jNow; j++) {
+      const v = j === jNow ? n : spark[k][j];
+      if (v === 0) { prev = null; continue; }
+      const y = base - Math.max(1, Math.round(hgt * v / Math.max(1, n)));
+      for (let yy = y + 1; yy < base; yy++) if ((x0 + j + yy) % 2 === 0) px(x0 + j, yy, fg); // dithered area
+      if (prev) line(x0 + j - 1, prev, x0 + j, y, fg); else px(x0 + j, y, fg);
+      prev = y;
+    }
+  }
+
+  // ---- special moments ----
+  function sputnikGlyph(x, y, c) {
+    x = Math.round(x); y = Math.round(y);
+    rect(x - 2, y - 3, 5, 7, c); rect(x - 3, y - 2, 7, 5, c); px(x - 1, y - 1, 0); // the ball, with a glint
+    line(x - 3, y + 1, x - 13, y + 7, c); line(x - 2, y + 3, x - 8, y + 13, c);   // four swept-back antennas
+    line(x - 3, y - 1, x - 14, y + 2, c); line(x, y + 3, x - 2, y + 14, c);
+  }
+  function callout(x, y, title, lines, ax, ay, reveal) {
+    const w = Math.max(textW(title, 2) + 10, ...lines.map((l) => textW(l) + 10)), h = 22 + lines.length * 10;
+    line(Math.max(x, Math.min(x + w, ax)), y + (ay > y ? h : 0), ax, ay, 1, 2);
+    rect(x + 2, y + 2, w, h, 1); rect(x, y, w, h, 0); frame(x, y, w, h, 1);
+    rect(x, y, w, 19, 2); frame(x, y, w, 19, 1); text(title, x + 5, y + 3, 0, 2);
+    lines.forEach((l, i) => { if (i < reveal) text(l, x + 5, y + 23 + i * 10, 1); });
+  }
+  // simplified ground track (no Earth rotation) from the launch site for an orbit of inclination e.inc
+  function groundTrack(e) {
+    const [, , , lat0, lon0] = L[e.i], R = Math.PI / 180, inc = e.inc * R;
+    const u0 = Math.asin(Math.min(1, Math.sin(lat0 * R) / Math.sin(inc)));
+    const l0 = Math.atan2(Math.cos(inc) * Math.sin(u0), Math.cos(u0));
+    const at = (f) => {
+      const u = u0 + f * e.span * R;
+      const lat = Math.asin(Math.sin(inc) * Math.sin(u)) / R;
+      let dl = Math.atan2(Math.cos(inc) * Math.sin(u), Math.cos(u)) - l0; if (dl < 0) dl += 2 * Math.PI;
+      return proj(lat, lon0 + dl / R);
+    };
+    let len = 0, q = at(0);
+    for (let k = 1; k <= 50; k++) { const r = at(k / 50); len += Math.hypot(r[0] - q[0], r[1] - q[1]); q = r; }
+    return { len, at };
+  }
+  const beepOn = (e, evT) => e.beeps.some(([a, b]) => evT - e.audio_at >= a && evT - e.audio_at < b);
+  function drawEvent(e, evT, hold) {
+    const tr = groundTrack(e);
+    if (e.kind === "sputnik") {
+      const p = Math.min(1, evT / e.audio_at);
+      const [qx, qy] = drawTrail(tr, p);
+      if (p < 1) { rect(qx, qy - 2, 1, 4, 1); px(qx, qy - 3, 1); px(qx - 1, qy + 1, 1); px(qx + 1, qy + 1, 1); }
+      else if (beepOn(e, evT) || evT > hold) sputnikGlyph(qx, qy, 1); // visible while the recording beeps
+      if (evT > 0.4) callout(MAP_X + 300, MAP_Y + 116, "SPUTNIK 1", ["4 OCT 1957, USSR", "THE FIRST SATELLITE"], qx + 3, qy + 4, Math.floor((evT - 0.4) / 0.4));
+    } else {
+      // the "train": 60 satellites strung out along the trail, spreading apart
+      const p = Math.min(1, evT / 1.0), n = L[e.i][1];
+      const spread = Math.min(1, Math.max(0, (evT - 0.4) / 1.8));
+      let last = tr.at(p);
+      for (let k = 0; k < n; k++) {
+        const u = Math.max(0, Math.min(1, p - spread * 0.85 * (k / n)));
+        const [x, y] = tr.at(u); if (inMap(x, y)) rect(Math.round(x), Math.round(y), 2, 2, 1);
+        if (k === 0) last = [x, y];
+      }
+      if (evT > 0.4 && evT <= hold) callout(SL_POS[0], SL_POS[1], "STARLINK", ["24 MAY 2019, USA", "60 SATELLITES, ONE ROCKET"], last[0], last[1] + 2, Math.floor((evT - 0.4) / 0.4));
+    }
+  }
+
+  // Starlink callout: after its moment it closes to its red header, which becomes a legend in the top-right corner
+  const SL_POS = [MAP_X + 150, MAP_Y + 126], SL_TITLE = "STARLINK", SL_LINES = ["24 MAY 2019, USA", "60 SATELLITES, ONE ROCKET"];
+  function drawLegend(ctx, t) {
+    const e = EV.find((q) => q.kind === "starlink"), t1 = realOf(e.day) + e.hold;
+    if (t < t1) return;
+    const u = t - t1, close = ease(u / 0.3), mv = ease((u - 0.3) / 0.8);
+    const wFull = Math.max(textW(SL_TITLE, 2) + 10, ...SL_LINES.map((l) => textW(l) + 10)) * S, wHead = (textW(SL_TITLE, 2) + 10) * S;
+    const hHead = 19 * S, bodyFull = (22 + SL_LINES.length * 10) * S - hHead;
+    const w = wFull + (wHead - wFull) * close, bodyH = Math.round(bodyFull * (1 - close));
+    const sx = (CX + SL_POS[0]) * S, sy = (cardY(t1) + SL_POS[1]) * S, tx = W - wHead - 24, ty = 24;
+    const x = Math.round(sx + (tx - sx) * mv), y = Math.round(sy + (ty - sy) * mv), h = hHead + bodyH;
+    ctx.fillStyle = "#111111"; ctx.fillRect(x + 2 * S, y + 2 * S, w, h);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = "#e0201b"; ctx.fillRect(x, y, w, hHead);
+    ctx.fillStyle = "#111111";
+    ctx.fillRect(x, y, w, S); ctx.fillRect(x, y + h - S, w, S); ctx.fillRect(x, y, S, h); ctx.fillRect(x + w - S, y, S, h); ctx.fillRect(x, y + hHead - S, w, S);
+    ctx.fillStyle = "#ffffff"; bgText(ctx, SL_TITLE, x + 5 * S, y + 3 * S, 2 * S, 3 * S);
+  }
+  // end card: where to find more, after the card has lifted away
+  const END_LINK = (window.SAT_OPTS && window.SAT_OPTS.endLink) || "SAMPATT.COM/ANIMATIONS";
+  function drawEndLink(ctx, t) {
+    const t0 = T_END + 3.0;
+    if (t < t0 || !END_LINK) return;
+    const pop = ease((t - t0) / 0.3);
+    const head = "MORE ANIMATIONS", kh = 4, kb = 5;
+    const w = Math.max(head.length * 6 * kh, END_LINK.length * 6 * kb) + 40;
+    const hHead = 7 * kh + 20, hBody = 7 * kb + 32, h = hHead + hBody;
+    const x = Math.round(W / 2 - w / 2), y = Math.round(H / 2 - h / 2 + (1 - pop) * 24);
+    ctx.globalAlpha = pop;
+    ctx.fillStyle = "#111111"; ctx.fillRect(x + 8, y + 8, w, h);
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = "#e0201b"; ctx.fillRect(x, y, w, hHead);
+    ctx.fillStyle = "#111111";
+    ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
+    ctx.fillStyle = "#ffffff"; bgText(ctx, head, x + 20, y + 10, kh, kh + 2);
+    ctx.fillStyle = "#111111"; bgText(ctx, END_LINK, Math.round(W / 2 - (END_LINK.length * 6 * kb - kb) / 2), y + hHead + 14, kb, kb + 2);
+    ctx.globalAlpha = 1;
+  }
+  function bgText(ctx, str, x, y, k, bw = k + 1) {
+    for (const ch of str) {
+      const g = F[ch] || F[" "];
+      for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") ctx.fillRect(x + q * k, y + r * k, bw, k);
+      x += 6 * k;
+    }
+  }
+  function drawPeriods(ctx, t) {
+    PERIODS.forEach((P, k) => {
+      const tEnd = P.last ? T_END : realOf(P.d1);
+      if (t < tEnd || P.b <= P.a) return;
+      const age = t - tEnd;
+      // alternate blocks are tinted lighter; a finished block flashes once
+      const tint = (k % 2 ? 0.2 : 0) + Math.max(0, 0.75 * (1 - age / 0.5));
+      if (tint > 0) { ctx.fillStyle = `rgba(255,255,255,${tint})`; fillCells(ctx, P.a, P.b); }
+      // boundary at the end of the block (staircase between cell b-1 and b)
+      ctx.fillStyle = "#ffffff";
+      const rb = Math.floor(P.b / COLS), cb = P.b % COLS;
+      if (cb === 0) ctx.fillRect(0, gy(rb) - 2, W, 3);
+      else {
+        ctx.fillRect(gx(cb), gy(rb) - 2, W - gx(cb), 3);
+        ctx.fillRect(gx(cb) - 1, gy(rb) - 2, 3, gy(rb + 1) - gy(rb) + 3);
+        ctx.fillRect(0, gy(rb + 1) - 2, gx(cb) + 2, 3);
+      }
+      // label tag, centred in the block's full rows (or beside a block shorter than a row)
+      const left = LABEL_MODE === "left";
+      // left gutter is narrow: short forms ("60s", "'21") so labels can use the largest pixel scale that fits
+      const short = P.label.endsWith("s") ? P.label.slice(2) : "'" + P.label.slice(2);
+      const base = left ? short : P.label;
+      const label = P.last ? base + " (TO " + LAST_MONTH + ")" : base;
+      const kk = left ? 3 : 4, pad = left ? 3 : 8;
+      const tw = label.length * 6 * kk - kk + 2 * pad, th = 7 * kk + 2 * pad;
+      const r0 = Math.ceil(P.a / COLS), r1 = Math.floor(P.b / COLS);
+      let x, y;
+      if (left) { // in the gutter left of the card; kept on screen and clear of the previous tag
+        x = 2; y = (gy(Math.floor(P.a / COLS)) + gy(Math.floor((P.b - 1) / COLS) + 1)) / 2 - th / 2;
+        y = Math.max(y, 3, (k > 0 && PERIODS[k - 1].tagBottom != null ? PERIODS[k - 1].tagBottom + 3 : 0));
+        P.tagBottom = y + th;
+      }
+      else if (r1 > r0) { x = W / 2 - tw / 2; y = (gy(r0) + gy(r1)) / 2 - th / 2; }
+      else { x = Math.max(6, gx(P.b % COLS) / 2 - tw / 2); y = Math.max(4, gy(Math.floor(P.a / COLS)) + 4); } // block shorter than a row: centre over its cells
+      const pop = Math.min(1, age / 0.25);
+      x = Math.round(x); y = Math.round(y + (1 - pop) * (left ? 0 : 10));
+      if (!left) { ctx.fillStyle = "#111111"; ctx.fillRect(x + 4, y + 4, tw, th); }
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(x, y, tw, th);
+      ctx.fillStyle = "#111111"; ctx.fillRect(x, y, tw, 2); ctx.fillRect(x, y + th - 2, tw, 2); ctx.fillRect(x, y, 2, th); ctx.fillRect(x + tw - 2, y, 2, th);
+      bgText(ctx, label, x + pad, y + pad, kk);
+    });
+  }
+
+  function render(ctx, t) {
+    const clk = clock(t);
+    const day = clk.day;
+    const started = t >= T0;
+    const iNow = started ? idxAt(day) : 0;
+    const total = cum[iNow];
+
+    // ---- background (real px) ----
+    ctx.fillStyle = "#dcdcdc"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#151515";
+    fillCells(ctx, 0, total);
+    ctx.fillStyle = "#e0201b";
+    for (const [a, b] of redRuns) { if (a >= total) break; fillCells(ctx, a, Math.min(b, total)); }
+    if (clk.ev) {
+      const k = EV.indexOf(clk.ev), e = clk.ev, [a, b] = evCells[k];
+      // blink the event's own cells, and send out ping rings (on each beep for Sputnik, every 0.6 s for Starlink)
+      const on = e.beeps ? beepOn(e, clk.evT) : Math.floor(clk.evT / 0.3) % 2 === 0;
+      ctx.fillStyle = on ? "#e0201b" : "#ffffff"; fillCells(ctx, a, Math.min(b, total));
+      const x0 = gx(a % COLS), y0 = gy(Math.floor(a / COLS));
+      const x1 = Math.floor((b - 1) / COLS) > Math.floor(a / COLS) ? W : gx((b - 1) % COLS + 1), y1 = gy(Math.floor((b - 1) / COLS) + 1);
+      const starts = e.beeps ? e.beeps.map(([s0]) => e.audio_at + s0) : Array.from({ length: Math.ceil(e.hold / 0.5) }, (_, j) => j * 0.5);
+      ctx.strokeStyle = "#e0201b";
+      for (const s0 of starts) {
+        const ph = (clk.evT - s0) / 0.7; if (ph < 0 || ph >= 1) continue;
+        const r = 6 + ph * 80; ctx.lineWidth = 7 * (1 - ph) + 1;
+        ctx.strokeRect(x0 - r, y0 - r, x1 - x0 + 2 * r, y1 - y0 + 2 * r);
+      }
+    }
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    for (let c = 1; c < COLS; c++) ctx.fillRect(gx(c) - 1, 0, 1, H);
+    for (let r = 1; r < ROWS; r++) ctx.fillRect(0, gy(r) - 1, W, 1);
+    drawPeriods(ctx, t);
+
+    // ---- card (logical px) ----
+    if (!staticCopy) { drawCardStatic(); staticCopy = buf.slice(); } else buf.set(staticCopy);
+
+    // date + clock
+    const d = new Date(epoch + day * 86400000);
+    const yearN = Math.floor(day / 365.25) + 1;
+    const red = "YEAR " + yearN;
+    rect(6, 16, 88, 20, 2); frame(6, 16, 88, 20, 1); text(red, 6 + Math.floor((88 - textW(red, 2)) / 2), 19, 0, 2);
+    rect(93, 16, 64, 20, 0); frame(93, 16, 64, 20, 1); frame(94, 17, 62, 18, 1);
+    const ys = String(d.getUTCFullYear()); text(ys, 93 + Math.floor((64 - textW(ys, 2)) / 2), 19, 1, 2);
+    const ds = d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear();
+    text(ds, 6 + Math.floor((88 - textW(ds)) / 2), 38, 1);
+    // counter
+    const ts = fmt(total);
+    frame(CARD_W - 112, 16, 106, 20, 1); frame(CARD_W - 111, 17, 104, 18, 1);
+    text(ts, CARD_W - 9 - textW(ts, 2), 19, 1, 2);
+    if (started && day > 30) {
+      const rate = "+" + fmt(total - cum[idxAt(day - 365.25)]) + " IN THE PAST YEAR";
+      text(rate, CARD_W - 9 - textW(rate), 38, 1);
+    }
+
+    // trails: launches within TRAIL_LIFE real seconds (special launches are drawn by drawEvent)
+    const evIdx = new Set(EV.map((e) => e.i));
+    const activeSite = new Set();
+    const labelsToDraw = [];
+    const i0 = started ? idxAt(day - TRAIL_LIFE / SEC_PER_DAY - 1) : 0;
+    for (let i = i0; i < iNow; i++) {
+      if (evIdx.has(i)) continue;
+      const [ld, n, node] = L[i];
+      const age = t - realOf(ld);
+      if (age > TRAIL_LIFE) continue;
+      if (age < 0.3 && node >= 0) activeSite.add(node);
+      const [qx, qy] = drawTrail(trail(i), Math.min(1, age / FLY));
+      if (qx >= MAP_X + 2 && qx < MAP_X + MAP_W - 3 && qy >= MAP_Y + 3 && qy < MAP_Y + MAP_H - 2) {
+        rect(qx, qy - 2, 1, 4, 1); px(qx - 1, qy + 1, 1); px(qx + 1, qy + 1, 1); px(qx, qy - 3, 1);
+        if (n >= 2) labelsToDraw.push([String(n), qx + 3, qy - 3]);
+      }
+    }
+    for (const [s, x, y] of labelsToDraw) { rect(x - 1, y - 1, s.length * 4 + 1, 7, 0); text3(s, x, y, 1); }
+
+    for (const m of D.minor) { const [x, y] = proj(m.lat, m.lon); if (x > MAP_X && x < MAP_X + MAP_W) frame(x - 1, y - 1, 3, 3, 1); }
+    for (let k = 0; k < D.nodes.length; k++) drawSiteLabel(k, started ? nodeCum[k][iNow] : 0, activeSite.has(k) || (clk.ev && L[clk.ev.i][2] === k));
+
+    // special moments: during the hold, and lingering briefly after it
+    for (const e of EV) {
+      const evT = t - realOf(e.day);
+      if (started && evT >= 0 && evT < e.hold + 0.6) drawEvent(e, evT, e.hold);
+    }
+
+    // country blocks, in order of each country's first satellite
+    for (const k of order) if (started && ctyFirst[k] < iNow) drawCountry(k, iNow, day, t);
+
+    // blit
+    const img = ctx.__img || (ctx.__img = new ImageData(BW, CARD_H + 4));
+    const rgb = PAL.map((h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+    for (let i = 0; i < buf.length; i++) {
+      const c = buf[i], o = i * 4;
+      if (c === 255) { img.data[o + 3] = 0; continue; }
+      const [r, g, b] = rgb[c]; img.data[o] = r; img.data[o + 1] = g; img.data[o + 2] = b; img.data[o + 3] = 255;
+    }
+    const off = ctx.__off || (ctx.__off = Object.assign(document.createElement("canvas"), { width: BW, height: CARD_H + 4 }));
+    off.getContext("2d").putImageData(img, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, CX * S, cardY(t) * S, BW * S, (CARD_H + 4) * S);
+    drawLegend(ctx, t);
+    drawEndLink(ctx, t);
+  }
+
+  window.SatAnim = { grid: () => [COLS, ROWS, COLS * ROWS - N_ALL], render, DURATION, T_END, W, H, S, CX, cardY, buttons: () => btnX, events: EV.map((e) => ({ kind: e.kind, t: realOf(e.day), hold: e.hold })) };
+})();
+
+}
+</script>
+<script>
+(async function () {
+  const cv = document.getElementById("c"), ctx = cv.getContext("2d"), btn = document.getElementById("play");
+  window.SAT_OPTS = { labels: "center" };
+  window.SAT_DATA = await (await fetch("data.json")).json();
+  bootAnim();
+  const A = window.SatAnim;
+
+  // clock: the audio context is the master clock while sound plays; rAF otherwise
+  let t = 0, playing = false, last = null, actx = null, buffer = null, src = null, ctxStart = 0, tStart = 0;
+  let audioReady = null; // fetched on first play, so a visit that never plays costs no audio bandwidth
+
+  async function startAudio(at) {
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === "suspended") await actx.resume();
+      if (!audioReady) audioReady = fetch("orbit.mp3").then((r) => r.arrayBuffer()).catch(() => null);
+      if (!buffer) { const ab = await audioReady; if (ab) buffer = await actx.decodeAudioData(ab); }
+      if (!buffer) return;
+      stopAudio();
+      src = actx.createBufferSource(); src.buffer = buffer; src.connect(actx.destination);
+      src.start(0, Math.min(at, buffer.duration - 0.01));
+      ctxStart = actx.currentTime; tStart = at;
+    } catch (e) { src = null; }
+  }
+  function stopAudio() { if (src) { try { src.stop(); } catch (e) {} src.disconnect(); src = null; } }
+
+  async function play(from) {
+    if (from != null) t = from;
+    if (t >= A.DURATION) t = 0;
+    playing = true; btn.hidden = true; last = null;
+    await startAudio(t);
+  }
+  function pause() { playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#9654; Resume"; }
+
+  function tick(now) {
+    if (playing) {
+      if (src) t = tStart + (actx.currentTime - ctxStart);
+      else if (last !== null) t += (now - last) / 1000;
+      if (t >= A.DURATION) { t = A.DURATION; playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#8635; Watch again"; }
+    }
+    last = now;
+    A.render(ctx, t);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  btn.addEventListener("click", () => play());
+  cv.addEventListener("click", (e) => {
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * A.W / A.S - A.CX, y = (e.clientY - r.top) / r.height * A.H / A.S - A.cardY(t);
+    const b = A.buttons(), hit = (i) => b[i] && x >= b[i][0] && x < b[i][0] + b[i][2] && y >= b[i][1] && y < b[i][1] + b[i][3];
+    if (hit(1)) play(0);
+    else if (playing) pause();
+    else play();
+  });
+})();
+</script>
+
+</body>
+</html>
