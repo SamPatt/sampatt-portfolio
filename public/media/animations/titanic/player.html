@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Titanic's Lifeboats</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
+  :root {
+    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--ground); color: var(--ink); font-family: var(--mono);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+    padding-block: 0; box-sizing: border-box; overflow: hidden; margin: 0;
+  }
+  /* keep 9:16 exactly: as wide as the screen allows, leaving room for the credit line */
+  .stage { position: relative; width: min(100vw, calc((100vh - 44px) * 9 / 16)); width: min(100vw, calc((100dvh - 44px) * 9 / 16)); aspect-ratio: 9 / 16; }
+  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - 44px) * 9 / 16)) * 16 / 9); } }
+  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
+  .play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font: inherit; font-size: clamp(18px, min(4vh, 5.5vw), 34px); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+    background: var(--signal); color: var(--paper); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+    padding: 0.35em 0.9em; cursor: pointer;
+  }
+  .play:hover { background: var(--ink); }
+  .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  .credit { font-size: 13px; padding-inline: 8px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
+  .credit a { color: var(--ink); }
+  .endlink { position: absolute; display: block; cursor: pointer; }
+  .endlink[hidden], .play[hidden] { display: none; }
+  .endlink:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+
+</head>
+<body>
+<div class="stage">
+  <canvas id="c" width="1080" height="1920" aria-label="Animation: the Titanic's lifeboats, seat by seat, and everyone aboard by class"></canvas>
+  <button class="play" id="play" type="button">&#9654; Play with sound</button>
+  <a class="endlink" id="endlink" href="https://sampatt.com/animations" target="_top" hidden aria-label="More animations at sampatt.com/animations"></a>
+</div>
+<p class="credit">Data: Wormstedt, Fitch &amp; Behe lifeboat reconstruction &middot; casualty figures via <a href="https://en.wikipedia.org/wiki/Sinking_of_the_Titanic" target="_blank" rel="noopener">Wikipedia</a> &middot; <a href="https://sampatt.com/animations" target="_top">More animations</a></p>
+
+<script>
+function bootAnim() {
+// 5x7 pixel font (F) and 3x5 digits (F3) shared by the scale animations.
+window.PIXEL_FONT = (function () {
+  const F = {
+    "A":"01110100011000111111100011000110001","B":"11110100011000111110100011000111110","C":"01110100011000010000100001000101110",
+    "D":"11110100011000110001100011000111110","E":"11111100001000011110100001000011111","F":"11111100001000011110100001000010000",
+    "G":"01110100011000010111100011000101111","H":"10001100011000111111100011000110001","I":"01110001000010000100001000010001110",
+    "J":"00111000100001000010000101001001100","K":"10001100101010011000101001001010001","L":"10000100001000010000100001000011111",
+    "M":"10001110111010110101100011000110001","N":"10001110011010110011100011000110001","O":"01110100011000110001100011000101110",
+    "P":"11110100011000111110100001000010000","Q":"01110100011000110001101011001001101","R":"11110100011000111110101001001010001",
+    "S":"01111100001000001110000010000111110","T":"11111001000010000100001000010000100","U":"10001100011000110001100011000101110",
+    "V":"10001100011000110001100010101000100","W":"10001100011000110101101011010101010","X":"10001100010101000100010101000110001",
+    "Y":"10001100010101000100001000010000100","Z":"11111000010001000100010001000011111",
+    "0":"01110100011001110101110011000101110","1":"00100011000010000100001000010001110","2":"01110100010000100010001000100011111",
+    "3":"11111000100010000010000011000101110","4":"00010001100101010010111110001000010","5":"11111100001111000001000011000101110",
+    "6":"00110010001000011110100011000101110","7":"11111000010001000100010000100001000","8":"01110100011000101110100011000101110",
+    "9":"01110100011000101111000010001001100",
+    " ":"00000000000000000000000000000000000",",":"00000000000000000000001100010001000",".":"00000000000000000000000000110001100",
+    ":":"00000011000110000000011000110000000","+":"00000001000010011111001000010000000","-":"00000000000000011111000000000000000",
+    "/":"00001000010001000100010001000010000","'":"01100001000100000000000000000000000","(":"00010001000100001000010000010000010",
+    ")":"01000001000001000010000100010001000","s":"00000000000111110000011100000111110","^":"00000011110001100101010010100000000", // ^ = north-east arrow
+  };
+  // 3x5 digits for rocket labels
+  const F3 = {"0":"111101101101111","1":"010110010010111","2":"111001111100111","3":"111001111001111","4":"101101111001001",
+    "5":"111100111001111","6":"111100111101111","7":"111001001001001","8":"111101111101111","9":"111101111001111"};
+
+  F.s = F.s || "00000000000111110000011100000111110";
+  F["%"] = F["%"] || "11001110010001000100010001001110011";
+  return { F, F3 };
+})();
+
+// Titanic lifeboats animation (v2, isometric). Deterministic: render(ctx, t) draws the frame at t seconds.
+(function () {
+  const D = window.TITANIC, { F, F3 } = window.PIXEL_FONT;
+  const W = 1080, H = 1920, S = 2;
+  const INK = "#111111", PAPER = "#ffffff", RED = "#e0201b", GROUND = "#dcdcdc", ABOARD = "#8e8e8e";
+  const PAL = [PAPER, INK, RED, "#9a9a9a", "#d0d0d0"]; // 0 white, 1 black, 2 red, 3 grey, 4 light grey
+
+  // ---- timing ----
+  // iceberg at 11:40 and a hold; a pop-up; the clock zips the hour to the first boat (12:40); then a steady clock
+  const TM = D.timing, T0 = TM.t0, ICE_HOLD = TM.ice, SEC_PER_MIN = TM.spm, SKIP = TM.skip;
+  const POP_T = T0 + ICE_HOLD, ZIP0 = POP_T + TM.pop, ZIP1 = ZIP0 + TM.zip;
+  const minAt = (t) => (t < ZIP0 ? 0 : t < ZIP1 ? SKIP * (t - ZIP0) / TM.zip : Math.min(D.end, SKIP + (t - ZIP1) / SEC_PER_MIN));
+  const realOfMin = (m) => (m <= 0 ? T0 : m < SKIP ? ZIP0 + TM.zip * m / SKIP : ZIP1 + (m - SKIP) * SEC_PER_MIN);
+  const T_SINK = realOfMin(D.end);  // 2:20 AM
+  const SEA_START = T_SINK + 1.2, SEA_DUR = 2.6;
+  const CHART_T = T_SINK + 4.2, END_LINK_T = T_SINK + 9.4;
+  const DURATION = T_SINK + TM.tail;
+  const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
+  const lerpPts = (pts, x) => { if (x <= pts[0][0]) return pts[0].slice(1); for (let i = 1; i < pts.length; i++) if (x <= pts[i][0]) { const a = pts[i - 1], b = pts[i], u = (x - a[0]) / (b[0] - a[0]); return a.slice(1).map((v, k) => v + (b[k + 1] - v) * u); } return pts[pts.length - 1].slice(1); };
+
+  // ---- card layout (logical px) ----
+  const CARD_W = 524, CX = 8, CY = 4;
+  const SCENE_Y0 = 47, SCENE_Y1 = 347, WIRE_Y = 349, LEDGER_Y = 416, SLOT_W = 131, SLOT_H = 55;
+  const CARD_H = LEDGER_Y + 5 * SLOT_H + 2;
+  const PEOPLE_Y = CARD_H + 8, PEOPLE_H = 960 - CY - PEOPLE_Y - 8;
+  const BW = CARD_W + 4, BH = PEOPLE_Y + PEOPLE_H + 4;
+  const buf = new Uint8Array(BW * BH), zbuf = new Float32Array(BW * BH);
+  const px = (x, y, c) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < BW && y < BH) buf[y * BW + x] = c; };
+  const rect = (x, y, w, h, c) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) px(x + i, y + j, c); };
+  const frame = (x, y, w, h, c) => { rect(x, y, w, 1, c); rect(x, y + h - 1, w, 1, c); rect(x, y, 1, h, c); rect(x + w - 1, y, 1, h, c); };
+  function line(x0, y0, x1, y1, c, dash) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    let err = dx + dy, n = 0;
+    for (;;) { if (!dash || n % dash === 0) px(x0, y0, c); n++; if (x0 === x1 && y0 === y1) break; const e2 = 2 * err; if (e2 >= dy) { err += dy; x0 += sx; } if (e2 <= dx) { err += dx; y0 += sy; } }
+  }
+  const textW = (s, k = 1) => s.length * 6 * k - k;
+  function text(s, x, y, c, k = 1) {
+    const bw = k > 1 ? k + 1 : k;
+    for (const ch of s) { const g = F[ch] || F[" "]; for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") rect(x + q * k, y + r * k, bw, k, c); x += 6 * k; }
+  }
+  const fmt = (n) => n.toLocaleString("en-US");
+  function clockLabel(m) {
+    const total = ((23 * 60 + 40 + Math.floor(m)) % 1440 + 1440) % 1440, hh = Math.floor(total / 60), mm = total % 60;
+    const h12 = hh % 12 === 0 ? 12 : hh % 12;
+    return [hh >= 12 ? "14 APR" : "15 APR", `${h12}:${String(mm).padStart(2, "0")} ${hh >= 12 ? "PM" : "AM"}`];
+  }
+
+  // ---- isometric scene ----
+  // world metres: wx along the ship (bow at -134), wy across (starboard +, towards the viewer), z up from the waterline
+  const K = 1.42, C30 = 0.866, S30 = 0.5, OX = 262, OY = 196;
+  // mirrored so the side nearest the viewer is starboard: seen from starboard, the bow is on the right
+  const iso = (wx, wy, z) => [OX - (wx + wy) * C30 * K, OY + (wy - wx) * S30 * K - z * K];
+  function plot(wx, wy, z, c) {
+    const [sx, sy] = iso(wx, wy, z), x = Math.round(sx), y = Math.round(sy);
+    if (x < 1 || x >= CARD_W - 1 || y < SCENE_Y0 || y >= SCENE_Y1) return;
+    const i = y * BW + x, d = -wx + wy + z;
+    if (d >= zbuf[i]) { zbuf[i] = d; buf[i] = c; }
+  }
+  const STEP = 0.55 / K; // metres per sample, about two samples per logical pixel
+  const HALF = 14, LEN = 134, DECK = 18, SUP = 27;
+  function half(wx) {
+    const fromBow = wx + LEN, fromStern = LEN - wx;
+    if (fromBow < 0 || fromStern < 0) return -1;
+    if (fromBow < 46) return HALF * Math.sqrt(fromBow / 46);
+    if (fromStern < 16) return HALF * (0.35 + 0.65 * Math.sqrt(fromStern / 16));
+    return HALF;
+  }
+  // sinking: the ship settles and tips bow-down (bow at wx=-134 goes deepest)
+  // [minute, settle, bow-down, stern-up]
+  let sink0 = 0, sink1 = 0, sink2 = 0;
+  const SINK = [[0, 0, 0, 0], [60, 0.4, 3, 0], [100, 1, 7, 0], [130, 2, 13, 0], [145, 3, 19, 1], [152, 5, 26, 5], [157, 9, 40, 14], [159, 20, 62, 22], [160, 90, 90, 0]];
+  function shipPlot(wx, wy, z, c) {
+    const f = (LEN - wx) / (2 * LEN), z2 = z - sink0 - sink1 * f + sink2 * (1 - f);
+    if (z2 >= 0) return plot(wx, wy, z2, z2 < 0.6 && z > 0 && c === 1 ? 0 : c); // white waterline where the hull meets the sea
+    // under the surface: a faint ghost of whatever was above the waterline
+    if (z > 0 && z2 > -30) {
+      const [sx, sy] = iso(wx, wy, z2), x = Math.round(sx), y = Math.round(sy);
+      if (x < 1 || x >= CARD_W - 1 || y < SCENE_Y0 || y >= SCENE_Y1 || (x + y) % 2) return;
+      const i = y * BW + x, d = -wx + wy + z2 - 1000;
+      if (d >= zbuf[i]) { zbuf[i] = d; buf[i] = 3; }
+    }
+  }
+
+  const FUNNELS = [-62, -37, -12, 13], MASTS = [-108, 96];
+  const DAVIT = { "1": -74, "3": -64, "5": -54, "7": -44, "2": -74, "4": -64, "6": -54, "8": -44,
+    "9": 18, "11": 28, "13": 38, "15": 48, "10": 18, "12": 28, "14": 38, "16": 48, "C": -74, "D": -74, "A": -70, "B": -70 };
+  for (const b of D.boats) {
+    b.side = b.side === "S" ? 1 : -1;
+    b.dx = DAVIT[b.id];
+    b.dy = /[AB]/.test(b.id) ? b.side * 6 : /[CD]/.test(b.id) ? b.side * 9 : b.side * 12.5;
+    b.launchT = realOfMin(b.t);
+    b.cols = b.cap === 40 ? 10 : b.cap === 47 ? 12 : 13;
+  }
+
+  function drawShip(m) {
+    [sink0, sink1, sink2] = lerpPts(SINK, m);
+    // hull: black sides, white deck with a black rim
+    for (let wx = -LEN; wx <= LEN; wx += STEP) {
+      const h = half(wx); if (h < 0) continue;
+      for (let z = -10; z <= DECK; z += STEP) { shipPlot(wx, h, z, 1); shipPlot(wx, -h, z, 1); }
+      for (let wy = -h; wy <= h; wy += STEP) shipPlot(wx, wy, DECK, Math.abs(Math.abs(wy) - h) < 0.7 ? 1 : 0);
+    }
+    // superstructure: white block with outlined edges and a row of windows
+    const X0 = -82, X1 = 58, Y = 11;
+    for (let wx = X0; wx <= X1; wx += STEP) {
+      for (let z = DECK; z <= SUP; z += STEP) {
+        const edge = z > SUP - 0.7 || Math.abs(wx - X0) < 0.7;
+        const win = Math.abs(z - 22.5) < 0.6 && ((wx - X0) % 3 < 1.2);
+        shipPlot(wx, Y, z, edge || win ? 1 : 0); shipPlot(wx, -Y, z, edge ? 1 : 0);
+      }
+      for (let wy = -Y; wy <= Y; wy += STEP) shipPlot(wx, wy, SUP, Math.abs(Math.abs(wy) - Y) < 0.7 || Math.abs(wx - X0) < 0.7 || Math.abs(wx - X1) < 0.7 ? 1 : 0);
+    }
+    for (let wy = -Y; wy <= Y; wy += STEP) for (let z = DECK; z <= SUP; z += STEP) shipPlot(X0, wy, z, Math.abs(Math.abs(wy) - Y) < 0.7 || z > SUP - 0.7 ? 1 : 0);
+    // funnels: white with black tops; silhouette edges inked
+    const vx = -0.7071, vy = 0.7071;
+    for (const fx of FUNNELS) {
+      for (let a = 0; a < Math.PI * 2; a += STEP / 3.2) {
+        const nx = Math.cos(a), ny = Math.sin(a), edge = Math.abs(nx * vx + ny * vy) < 0.3;
+        for (let z = SUP; z <= 50; z += STEP) shipPlot(fx + nx * 3.2, ny * 3.2, z, z > 45 || edge ? 1 : 0);
+      }
+      for (let r = 0; r <= 3.2; r += STEP) for (let a = 0; a < Math.PI * 2; a += STEP / Math.max(r, 0.5)) shipPlot(fx + Math.cos(a) * r, Math.sin(a) * r, 50, 1);
+    }
+    // masts and the wireless aerial strung between them
+    for (const mx of MASTS) for (let z = DECK; z <= 64; z += STEP) shipPlot(mx, 0, z, 1);
+    for (let wx = MASTS[0]; wx <= MASTS[1]; wx += STEP * 3) shipPlot(wx, 0, 63.5, 1);
+  }
+
+  function boatShape(cx, cy, z0, side, fillOcc, fillEmpty, washed, plotFn) {
+    // 9 m x 2.6 m boat, 1.6 m high; top face split occupied (black) / empty (red)
+    const L2 = 7, W2 = 2.1, HT = 2.2; // drawn 1.5x real size so they read at phone scale
+    for (let u = -L2; u <= L2; u += STEP) {
+      const w = W2 * Math.sqrt(Math.max(0, 1 - (u / (L2 + 0.1)) ** 4));
+      for (let z = 0; z <= HT; z += STEP) { plotFn(cx + u, cy + w, z0 + z, washed ? 3 : 1); plotFn(cx + u, cy - w, z0 + z, washed ? 3 : 1); }
+      for (let v = -w; v <= w; v += STEP) {
+        const rim = Math.abs(Math.abs(v) - w) < 0.5 || Math.abs(u) > L2 - 0.5;
+        const frac = (u + L2) / (2 * L2), c = washed ? 3 : rim ? 1 : frac < fillOcc ? 1 : frac < fillOcc + fillEmpty ? 2 : 0;
+        plotFn(cx + u, cy + v, z0 + HT, c);
+      }
+    }
+  }
+
+  // spots in the water, assigned in launch order nearest each boat's davit, so boats never stack
+  (function assignSpots() {
+    const taken = new Set(), done = { "1": 0, "-1": 0 };
+    for (const b of [...D.boats].sort((a, c) => a.t - c.t)) {
+      const k0 = done[b.side]++, ring = k0 < 4 ? 2 : k0 < 7 ? 1 : 0; // outer ring first, so later boats never row through earlier ones
+      let best = null;
+      for (let k = 0; k < 10; k++) {
+        const wx = -122 + k * 27 + ring * 9, key = b.side + ":" + ring + ":" + k;
+        if (taken.has(key)) continue;
+        const sc = Math.abs(wx - b.dx);
+        if (!best || sc < best.sc) best = { sc, key, wx, wy: b.side * (30 + ring * 16) };
+      }
+      taken.add(best.key); b.spotX = best.wx; b.spotY = best.wy;
+      b.phase = (b.id.charCodeAt(0) * 1.7 + (b.id.charCodeAt(1) || 0)) % 6.28;
+    }
+  })();
+  function drawBoats(t, m) {
+    for (const b of D.boats) {
+      const occ = b.n / b.cap, washed = b.n === 0;
+      if (t < b.launchT) {
+        if (t >= T_SINK) continue;
+        boatShape(b.dx, b.dy, /[AB]/.test(b.id) ? SUP + 0.2 : SUP - 1, 0, 0, 0, false, shipPlot);
+        continue;
+      }
+      const lower = ease((t - b.launchT) / 0.8);
+      const away = ease(Math.max(0, (t - b.launchT - 0.8) / 2.2)); // rows out to its own spot
+      const x0 = b.dx, y0 = b.dy + b.side * (HALF - Math.abs(b.dy) + 4) * lower;
+      const wx = x0 + (b.spotX - x0) * away, wy = y0 + (b.spotY - y0) * away;
+      const z = (SUP - 1) * (1 - lower) + (lower >= 1 ? 0.75 * Math.sin(t * 2.3 + b.phase) : 0);
+      boatShape(wx, wy, z, b.side, Math.min(1, occ), Math.max(0, 1 - occ), washed, plot);
+    }
+  }
+
+  function drawIceberg(t) {
+    const age = t - T0, m = minAt(t); if (age < 0 || m > 30) return;
+    const drift = m * 3; // slips astern as the clock runs on
+    const [sx, sy] = iso(-118 + drift, 34, 0);
+    const shape = ["    ##    ", "   ####   ", "  ######  ", " ######## ", "##########"];
+    shape.forEach((row, j) => [...row].forEach((ch, i) => {
+      if (ch !== "#") return;
+      const edge = j === 0 || row[i - 1] !== "#" || row[i + 1] !== "#" || (shape[j - 1] || "")[i] !== "#";
+      rect(Math.round(sx - 10 + i * 2), Math.round(sy - 10 + j * 2), 2, 2, edge ? 1 : 0);
+    }));
+    if (age < ICE_HOLD) { const ph = (age % 0.6) / 0.6, r = 6 + ph * 18; if (ph < 0.85) frame(Math.round(sx - r), Math.round(sy - 4 - r), Math.round(2 * r), Math.round(2 * r), 2); }
+  }
+
+  // ---- distress rockets (eight, about every six and a half minutes from 12:47; same beats as the audio) ----
+  const ROCKETS = Array.from({ length: 8 }, (_, k) => realOfMin(67 + k * 6.5));
+  function drawRockets(t) {
+    for (const rt of ROCKETS) {
+      const a = t - rt; if (a < 0 || a > 2.2 || t >= T_SINK) continue;
+      const f = (LEN + 80) / (2 * LEN), base = SUP - sink0 - sink1 * f + sink2 * (1 - f);
+      const [bx, by] = iso(-80, 9, base), top = 64;
+      const [tx, ty] = iso(-80, 9, base + top);
+      if (a < 0.7) { // the streak
+        const u = a / 0.7, cy = by + (ty - by) * u;
+        for (let y = Math.round(by); y > cy; y -= 2) if (y > SCENE_Y0) px(Math.round(bx), y, 1);
+        rect(Math.round(bx) - 1, Math.round(cy) - 1, 3, 3, 1);
+      } else { // the burst: rays, then stars drifting down
+        const u = (a - 0.7) / 1.5;
+        for (let k = 0; k < 12; k++) {
+          const ang = k * Math.PI / 6, r = 4 + Math.min(1, u * 3) * 16;
+          const sx = tx + Math.cos(ang) * r, sy = ty + Math.sin(ang) * r * 0.9 + u * u * 22;
+          if (u < 0.35) line(tx + Math.cos(ang) * 3, ty + Math.sin(ang) * 3, sx, sy, 1, 2);
+          else if ((k + Math.floor(u * 10)) % 3) rect(Math.round(sx), Math.round(sy), 2, 2, 1);
+        }
+      }
+    }
+  }
+
+  // ---- wireless ----
+  const WIRE = D.wireless.map(([mm, who, msg, morse]) => ({ m: mm, who, msg, morse: morse && mm >= SKIP, t: mm < 0 ? -1 : realOfMin(mm) }));
+  const MORSE = { A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..", M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-", Y: "-.--", Z: "--..", "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-", "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----." };
+  function drawWireless(t, m) {
+    const y0 = WIRE_Y;
+    rect(1, y0, CARD_W - 2, 66, 0);
+    text("WIRELESS ROOM, CALL SIGN MGY", 6, y0 + 4, 1);
+    const shown = WIRE.filter((w) => w.t < 0 || t >= w.t).slice(-4);
+    // Morse strip for the message being sent right now
+    const live = [...WIRE].reverse().find((w) => w.morse && t >= w.t && t < w.t + 2.6);
+    if (live) {
+      const code = [...live.msg].map((ch) => MORSE[ch] || (ch === " " ? "/" : "")).join(" ");
+      const n = Math.floor((t - live.t) / 2.6 * code.length);
+      let x = CARD_W - 8; // newest symbol at the right, scrolling left
+      for (let i = n; i >= 0 && x > 200; i--) {
+        const s = code[i];
+        if (s === ".") { rect(x - 2, y0 + 6, 2, 2, 1); x -= 5; } else if (s === "-") { rect(x - 7, y0 + 6, 7, 2, 1); x -= 10; } else x -= s === "/" ? 9 : 4;
+      }
+    }
+    shown.forEach((w, i) => {
+      const isNew = w.t >= 0 && w.m >= SKIP && t - w.t < 1.4, full = (w.m < 0 ? "10:07 PM" : clockLabel(w.m)[1]) + "  " + (w.who ? w.who + ": " : "") + w.msg;
+      const chars = isNew ? Math.floor(full.length * (t - w.t) / 1.4) : full.length;
+      const ty = y0 + 16 + i * 12;
+      if (i === shown.length - 1 && w.t >= 0) rect(4, ty - 2, CARD_W - 8, 11, 4);
+      text(full.slice(0, chars).slice(0, 84), 6, ty, w.who === "MGY" ? 1 : 3);
+    });
+  }
+  // radio rings from the aerial while a Morse message is going out
+  function drawRings(t) {
+    const live = WIRE.find((w) => w.morse && t >= w.t && t < w.t + 2.6);
+    if (!live || t >= T_SINK) return;
+    const [ax, ay] = iso((MASTS[0] + MASTS[1]) / 2, 0, 63.5 - sink0 - sink1 * 0.5 + sink2 * 0.5);
+    for (let k = 0; k < 3; k++) {
+      const ph = ((t - live.t) / 0.7 + k / 3) % 1, r = 4 + ph * 46;
+      for (let a = 0; a < Math.PI * 2; a += 0.12) { const x = ax + Math.cos(a) * r, y = ay + Math.sin(a) * r * 0.55; if (y > SCENE_Y0 && y < SCENE_Y1) px(x, y, 1); }
+    }
+  }
+
+  // ---- ledger: each boat drawn from above, with benches, people in their seats and empty seats in red ----
+  const hashf = (str, k) => { // well-mixed per-seat random number, fixed for a given boat
+    let h = 2166136261; for (const ch of str) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+    h = Math.imul(h ^ (k + 0x9e3779b9), 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16;
+    return (h >>> 0) / 4294967296; };
+  function boatPlan(b) {
+    if (b.plan) return b.plan;
+    const collapsible = /[A-D]/.test(b.id), Lb = b.cap === 40 ? 76 : collapsible ? 82 : 90, Hb = b.cap === 40 ? 12.5 : 15;
+    const hw = (u) => { const v = Math.abs(2 * u - 1); return Hb * Math.pow(Math.max(0, 1 - Math.pow(v, collapsible ? 6 : 2.4)), collapsible ? 0.5 : 0.6); };
+    // seats on a tidy grid of benches: rows 5 px apart across the boat, benches along it
+    const rowsY = Hb > 13 ? [-10, -5, 0, 5, 10] : [-7.5, -2.5, 2.5, 7.5];
+    let seats = [];
+    for (let pitch = 7; pitch >= 4; pitch -= 0.25) {
+      seats = [];
+      for (let x = 8; x <= Lb - 8; x += pitch) for (const y of rowsY) if (Math.abs(y) + 4 <= hw(x / Lb)) seats.push([Math.round(x), y, Math.abs(x - Lb / 2)]);
+      if (seats.length >= b.cap) break;
+    }
+    seats.sort((p, q) => p[2] - q[2]); seats = seats.slice(0, b.cap);
+    const order = seats.map((_, i) => i).sort((i, j) => hashf(b.id, i) - hashf(b.id, j)); // people sat anywhere
+    const filled = new Set(order.slice(0, Math.min(b.n, b.cap)));
+    const benches = [...new Set(seats.map((q) => q[0]))];
+    return (b.plan = { Lb, Hb, hw, seats, filled, benches, collapsible });
+  }
+  const PERSON = ["010", "111", "111"]; // a head and shoulders, from above
+  function drawBoatTop(b, bx, cyb, fg, washed) {
+    const P = boatPlan(b), edge = washed ? 3 : 1;
+    // solid hull: 2 px gunwale, white inside
+    for (let u = 0; u <= P.Lb; u++) {
+      const w = Math.round(P.hw(u / P.Lb)); if (w < 1) continue;
+      for (let v = -w; v <= w; v++) px(bx + u, cyb + v, edge);
+      if (w > 2) for (let v = -w + 2; v <= w - 2; v++) px(bx + u, cyb + v, 0);
+    }
+    // benches across the boat, in light grey
+    for (const x of P.benches) { const w = Math.round(P.hw(x / P.Lb)) - 2; for (let v = -w; v <= w; v++) px(bx + x, cyb + v, 4); }
+    P.seats.forEach(([sx, sy], k) => {
+      const X = bx + sx - 1, Y = Math.round(cyb + sy) - 1;
+      if (washed) return;
+      if (P.filled.has(k)) PERSON.forEach((row, r) => [...row].forEach((c, q) => { if (c === "1") px(X + q, Y + r, 1); }));
+      else rect(X, Y + 1, 3, 2, 2); // an empty seat on the bench
+    });
+  }
+  function drawLedger(t) {
+    const live = D.boats.filter((b) => t >= b.launchT + 0.4);
+    live.forEach((b, i) => {
+      const x = 2 + (i % 4) * SLOT_W, y = LEDGER_Y + Math.floor(i / 4) * SLOT_H;
+      const inv = t - (b.launchT + 0.4) < 0.35, fg = inv ? 0 : 1, washed = b.n === 0;
+      rect(x, y, SLOT_W - 3, SLOT_H - 3, 0); frame(x, y, SLOT_W - 3, SLOT_H - 3, 1);
+      if (inv) rect(x + 1, y + 1, SLOT_W - 5, 11, 1);
+      text("NO. " + b.id, x + 4, y + 3, fg);
+      const tm = clockLabel(b.t)[1].replace(" AM", "");
+      text(tm, x + SLOT_W - 8 - textW(tm), y + 3, inv ? 0 : 3);
+      drawBoatTop(b, x + 3, y + 32, fg, washed);
+      const cx = x + 96;
+      if (washed) { text("WASHED", cx - 6, y + 22, 3); text("OFF", cx - 6, y + 32, 3); }
+      else { text(String(b.n), cx, y + 18, b.n > b.cap ? 2 : 1, 2); text("OF " + b.cap, cx, y + 36, 3); }
+    });
+  }
+
+  function drawStatic() {
+    buf.fill(255);
+    rect(3, 3, CARD_W, CARD_H, 1); rect(0, 0, CARD_W, CARD_H, 0); frame(0, 0, CARD_W, CARD_H, 1);
+    for (let y = 2; y < 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);
+    const title = "RMS TITANIC, 14-15 APRIL 1912", tw = textW(title);
+    rect((CARD_W - tw) / 2 - 4, 1, tw + 8, 10, 0); text(title, (CARD_W - tw) / 2, 2, 1);
+    rect(1, 11, CARD_W - 2, 1, 1);
+    rect(1, SCENE_Y0 - 1, CARD_W - 2, 1, 1); rect(1, WIRE_Y - 1, CARD_W - 2, 1, 1); rect(1, LEDGER_Y - 2, CARD_W - 2, 1, 1);
+    // second card: everyone aboard
+    const y0 = PEOPLE_Y;
+    rect(3, y0 + 3, CARD_W, PEOPLE_H, 1); rect(0, y0, CARD_W, PEOPLE_H, 0); frame(0, y0, CARD_W, PEOPLE_H, 1);
+    for (let y = y0 + 2; y < y0 + 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);
+    const t2 = "EVERYONE ABOARD, ONE SQUARE EACH", t2w = textW(t2);
+    rect((CARD_W - t2w) / 2 - 4, y0 + 1, t2w + 8, 10, 0); text(t2, (CARD_W - t2w) / 2, y0 + 2, 1);
+    rect(1, y0 + 11, CARD_W - 2, 1, 1);
+  }
+  let staticCopy = null;
+
+  // ---- people: four class bands inside the second card, drawn in the same 1-bit pixels as the top ----
+  const PITCH = 6, PCOLS = Math.floor((CARD_W - 8) / PITCH), PX0 = Math.floor((CARD_W - PCOLS * PITCH) / 2) + 1;
+  const BANDS = (() => { let y = PEOPLE_Y + 15; return D.aboard.map((n) => { const b = { y, cy: y + 11, n, rows: Math.ceil(n / PCOLS) }; y += 11 + b.rows * PITCH + 4; return b; }); })();
+  function bigText(ctx, s, x, y, k, bw = k + 1) { for (const ch of s) { const g = F[ch] || F[" "]; for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") ctx.fillRect(x + q * k, y + r * k, bw, k); x += 6 * k; } }
+  function drawPeople(t) {
+    const inBoat = [0, 0, 0, 0], sea = [0, 0, 0, 0];
+    for (const b of D.boats) if (t >= b.launchT + 0.6) b.cls.forEach((n, i) => { inBoat[i] += n; });
+    if (t >= SEA_START) { const u = Math.min(1, (t - SEA_START) / SEA_DUR); D.fromSea.forEach((n, i) => { sea[i] = Math.round(n * u); }); }
+    const sunk = t >= T_SINK, wipe = sunk ? Math.min(1, (t - T_SINK) / 0.8) : 0;
+    BANDS.forEach((band, i) => {
+      const lit = inBoat[i] + sea[i];
+      rect(1, band.y - 1, CARD_W - 2, 10, 0);
+      text(D.classes[i], 6, band.y, 1);
+      const label = (sunk ? "SAVED " : "IN BOATS ") + fmt(lit) + " OF " + fmt(band.n);
+      text(label, CARD_W - 6 - textW(label), band.y, 1);
+      for (let k = 0; k < band.n; k++) {
+        const X = PX0 + (k % PCOLS) * PITCH, Y = band.cy + Math.floor(k / PCOLS) * PITCH;
+        if (k < lit) { rect(X, Y, 5, 5, 0); frame(X, Y, 5, 5, 1); }           // in a boat / saved
+        else if (sunk && k / band.n < wipe) rect(X, Y, 5, 5, 1);               // lost
+        else rect(X, Y, 5, 5, 3);                                              // still aboard
+      }
+    });
+  }
+
+  // ---- closing chart: saved and lost, by class ----
+  const SKULL = ["..#####..", ".#######.", "#########", "##..#..##", "##..#..##", ".#######.", "..#.#.#..", ".........", "#.......#", ".##...##.", "...###...", ".##...##.", "#.......#"]; // skull and crossbones
+  const RING = ["...###...", "...###...", "...###...", "#########", "#########", "#########", "...###...", "...###...", "...###..."]; // a medical cross
+  function sprite(ctx, rows, x, y, k) { rows.forEach((r, j) => [...r].forEach((c, i) => { if (c === "#") ctx.fillRect(x + i * k, y + j * k, k, k); })); }
+  function drawChart(ctx, t) {
+    if (t < CHART_T) return;
+    const pop = ease((t - CHART_T) / 0.35), grow = ease((t - CHART_T - 0.3) / 1.2);
+    const x0 = 64, w = W - 128, rowH = 150, hHead = 70, h = hHead + 5 * rowH + 30, y0 = Math.round(H * 0.44 - h / 2 + (1 - pop) * 30);
+    ctx.globalAlpha = pop;
+    ctx.fillStyle = INK; ctx.fillRect(x0 + 10, y0 + 10, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x0, y0, w, h);
+    ctx.fillStyle = RED; ctx.fillRect(x0, y0, w, hHead);
+    ctx.fillStyle = INK; ctx.fillRect(x0, y0, w, 4); ctx.fillRect(x0, y0 + h - 4, w, 4); ctx.fillRect(x0, y0, 4, h); ctx.fillRect(x0 + w - 4, y0, 4, h); ctx.fillRect(x0, y0 + hHead - 4, w, 4);
+    ctx.fillStyle = PAPER; bigText(ctx, "SAVED AND LOST", x0 + 28, y0 + 18, 5);
+    const rows = D.classes.map((c, i) => [c, D.saved[i], D.aboard[i]]).concat([["EVERYONE", D.saved.reduce((a, b) => a + b, 0), D.aboard.reduce((a, b) => a + b, 0)]]);
+    rows.forEach(([name, sv, ab], i) => {
+      const y = y0 + hHead + 24 + i * rowH, bw = w - 56, bx = x0 + 28, lost = ab - sv, bold = i === 4;
+      if (bold) { ctx.fillStyle = INK; ctx.fillRect(x0 + 20, y - 14, w - 40, 4); }
+      ctx.fillStyle = INK; bigText(ctx, name, bx, y, 4);
+      const by = y + 44, bh = 52, sw = Math.round(bw * sv / ab * grow);
+      ctx.fillStyle = INK; ctx.fillRect(bx, by, bw, bh);                       // lost: solid black
+      ctx.fillStyle = INK; ctx.fillRect(bx, by, sw, bh); ctx.fillStyle = PAPER; ctx.fillRect(bx + 5, by + 5, Math.max(0, sw - 10), bh - 10); // saved: open
+      const ss = fmt(sv);
+      if (sw > 150) { ctx.fillStyle = INK; sprite(ctx, RING, bx + 12, by + 8, 4); bigText(ctx, ss, bx + 58, by + 12, 4); }
+      const ls = fmt(lost), lw = ls.length * 24 - 4;
+      ctx.fillStyle = PAPER; bigText(ctx, ls, bx + bw - 16 - lw, by + 12, 4); sprite(ctx, SKULL, bx + bw - 16 - lw - 38, by + 7, 3);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  let endRect = null;
+  function drawEndLink(ctx, t) {
+    if (t < END_LINK_T) return;
+    const pop = ease((t - END_LINK_T) / 0.3), link = "SAMPATT.COM/ANIMATIONS", head = "MORE ANIMATIONS", kh = 4, kb = 5;
+    const w = Math.max(head.length * 6 * kh, link.length * 6 * kb) + 40, hHead = 7 * kh + 20, hBody = 7 * kb + 32, h = hHead + hBody;
+    const x = Math.round(W / 2 - w / 2), y = Math.round(H * 0.44 + 476 + (1 - pop) * 24); // just below the chart
+    endRect = [x, y, w, h];
+    ctx.globalAlpha = pop;
+    ctx.fillStyle = INK; ctx.fillRect(x + 8, y + 8, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = RED; ctx.fillRect(x, y, w, hHead); ctx.fillStyle = INK;
+    ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
+    ctx.fillStyle = PAPER; bigText(ctx, head, x + 20, y + 10, kh);
+    ctx.fillStyle = INK; bigText(ctx, link, Math.round(W / 2 - (link.length * 6 * kb - kb) / 2), y + hHead + 14, kb);
+    ctx.globalAlpha = 1;
+  }
+
+  // the pop-up, centred on screen: the hour before the first boat, out of the ship's 2h40m
+  function drawSkip(ctx, t) {
+    if (t < POP_T || t > ZIP1 + 0.5) return;
+    const a = t - POP_T, pop = ease(a / 0.25), out = 1 - ease((t - ZIP1 - 0.2) / 0.3);
+    const w = 900, hHead = 96, h = hHead + 205, x = Math.round((W - w) / 2), y = Math.round(H / 2 - h / 2 + (1 - pop) * 30);
+    ctx.globalAlpha = Math.min(pop, out);
+    ctx.fillStyle = INK; ctx.fillRect(x + 10, y + 10, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = RED; ctx.fillRect(x, y, w, hHead); ctx.fillStyle = INK;
+    ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
+    const ctr = (str, k, yy, col) => { ctx.fillStyle = col; bigText(ctx, str, Math.round(W / 2 - (str.length * 6 * k - k) / 2), yy, k); };
+    ctr(SKIP + " MINUTES", 8, y + 20, PAPER);
+    ctr("BEFORE THE FIRST LIFEBOAT", 5, y + hHead + 28, INK);
+    ctr("LEFT THE SHIP", 5, y + hHead + 76, INK);
+    const u = Math.max(0, Math.min(1, (t - ZIP0) / TM.zip)); // the hour going by
+    ctx.fillStyle = INK; ctx.fillRect(x + 60, y + h - 54, w - 120, 28); ctx.fillStyle = PAPER; ctx.fillRect(x + 66, y + h - 48, w - 132, 16);
+    ctx.fillStyle = INK; ctx.fillRect(x + 66, y + h - 48, Math.round((w - 132) * u), 16);
+    ctx.globalAlpha = 1;
+  }
+
+  function render(ctx, t) {
+    const m = minAt(t);
+    endRect = null;
+    ctx.fillStyle = GROUND; ctx.fillRect(0, 0, W, H);
+    if (!staticCopy) { drawStatic(); staticCopy = buf.slice(); } else buf.set(staticCopy);
+
+    // header: clock + counters
+    const [day, time] = clockLabel(m);
+    rect(6, 16, 84, 20, 2); frame(6, 16, 84, 20, 1); text(day, 6 + Math.floor((84 - textW(day, 2)) / 2), 19, 0, 2);
+    rect(89, 16, 112, 20, 0); frame(89, 16, 112, 20, 1); frame(90, 17, 110, 18, 1); text(time, 89 + Math.floor((112 - textW(time, 2)) / 2), 19, 1, 2);
+    const inBoats = D.boats.filter((b) => t >= b.launchT + 0.6).reduce((a, b) => a + b.n, 0);
+    const seaN = t >= SEA_START ? Math.round(D.fromSea.reduce((a, b) => a + b, 0) * Math.min(1, (t - SEA_START) / SEA_DUR)) : 0;
+    const empty = D.boats.filter((b) => b.n > 0 && t >= b.launchT + 0.6).reduce((a, b) => a + Math.max(0, b.cap - b.n), 0);
+    const sunk = t >= T_SINK, c1 = fmt(inBoats + seaN), c2 = fmt(empty), bx1 = CARD_W - 232, bx2 = CARD_W - 116;
+    frame(bx1, 16, 110, 20, 1); frame(bx1 + 1, 17, 108, 18, 1); text(c1, bx1 + 104 - textW(c1, 2), 19, 1, 2);
+    rect(bx2, 16, 110, 20, 2); frame(bx2, 16, 110, 20, 1); text(c2, bx2 + 104 - textW(c2, 2), 19, 0, 2);
+    const l1 = sunk ? "SAVED" : "IN THE BOATS", l2 = "EMPTY SEATS";
+    text(l1, bx1 + 110 - textW(l1), 38, 1); text(l2, bx2 + 110 - textW(l2), 38, 1);
+
+    // scene: calm sea, then the ship and boats through a depth buffer
+    for (let y = SCENE_Y0; y < SCENE_Y1; y++) for (let x = 1; x < CARD_W - 1; x++) { const i = y * BW + x; zbuf[i] = -1e9; buf[i] = ((y % 7 === 0) && ((x + y * 3) % 11 < 4)) ? 4 : 0; }
+    if (t < T_SINK) drawShip(m); else { sink0 = 90; sink1 = 90; }
+    drawBoats(t, m);
+    drawIceberg(t);
+    drawRings(t);
+    drawRockets(t);
+    if (t >= T_SINK && t < T_SINK + 3) { // where she went down
+      const [sx, sy] = iso(-20, 0, 0), u = (t - T_SINK) / 3;
+      for (let k = 0; k < 3; k++) { const r = 10 + (u * 60 + k * 18); for (let a = 0; a < Math.PI * 2; a += 0.08) { const y = sy + Math.sin(a) * r * 0.5; if (y > SCENE_Y0 && y < SCENE_Y1) px(sx + Math.cos(a) * r, y, 3); } }
+    }
+    let ev = D.events[0][1];
+    for (const [em, s] of D.events) if (m >= em) ev = s;
+    if (t >= SEA_START) ev = "AFTERWARDS: " + D.fromSea.reduce((a, b) => a + b, 0) + " MORE PULLED FROM THE SEA";
+    if (t >= T0) { const w = textW(ev); rect(4, SCENE_Y1 - 14, w + 6, 11, 0); text(ev, 7, SCENE_Y1 - 12, 1); }
+
+    drawWireless(t, m);
+    drawLedger(t);
+    drawPeople(t);
+
+    const img = ctx.__img || (ctx.__img = new ImageData(BW, BH));
+    const rgb = PAL.map((h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+    for (let i = 0; i < buf.length; i++) { const c = buf[i], o = i * 4; if (c === 255) { img.data[o + 3] = 0; continue; } const [r, g, b] = rgb[c]; img.data[o] = r; img.data[o + 1] = g; img.data[o + 2] = b; img.data[o + 3] = 255; }
+    const off = ctx.__off || (ctx.__off = Object.assign(document.createElement("canvas"), { width: BW, height: BH }));
+    off.getContext("2d").putImageData(img, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, CX * S, CY * S, BW * S, BH * S);
+
+    drawSkip(ctx, t);
+    drawChart(ctx, t);
+    drawEndLink(ctx, t);
+  }
+
+  window.TitanicAnim = { render, DURATION, T_SINK, W, H, S, CX, CY, cardY: () => CY, buttons: () => [], endRect: () => endRect, wireless: WIRE.map((w) => ({ t: w.t, msg: w.msg, morse: w.morse })) };
+})();
+
+}
+</script>
+<script>
+(async function () {
+  const cv = document.getElementById("c"), ctx = cv.getContext("2d"), btn = document.getElementById("play"), endLink = document.getElementById("endlink");
+  window.SAT_OPTS = { labels: "center" };
+  window.TITANIC = await (await fetch("data.json")).json();
+  bootAnim();
+  const A = window.TitanicAnim;
+
+  // clock: the audio context is the master clock while sound plays; rAF otherwise
+  // The page clock (performance.now) drives the animation. Sound follows it and is optional:
+  // some browsers block or suspend Web Audio, and the animation must play regardless.
+  let t = 0, playing = false, wallStart = 0, tAtStart = 0, actx = null, buffer = null, src = null;
+  let audioReady = null; // fetched on first play, so a visit that never plays costs no audio bandwidth
+  let srcCtxStart = 0, srcT = 0, lastSync = 0;
+
+  async function startAudio(at) {
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state !== "running") actx.resume().catch(() => {});
+      if (!audioReady) audioReady = fetch("titanic.mp3").then((r) => r.arrayBuffer()).catch(() => null);
+      if (!buffer) {
+        const ab = await audioReady;
+        if (ab) buffer = await new Promise((ok, no) => { const p = actx.decodeAudioData(ab, ok, no); if (p && p.then) p.then(ok, no); });
+      }
+      if (!buffer || !playing) return;
+      stopAudio();
+      const now = playing ? tAtStart + (performance.now() - wallStart) / 1000 : at;
+      src = actx.createBufferSource(); src.buffer = buffer; src.connect(actx.destination);
+      src.start(0, Math.min(Math.max(0, now), buffer.duration - 0.01));
+      srcCtxStart = actx.currentTime; srcT = now;
+    } catch (e) { src = null; }
+  }
+  function stopAudio() { if (src) { try { src.stop(); } catch (e) {} try { src.disconnect(); } catch (e) {} src = null; } }
+
+  function play(from) {
+    if (from != null) t = from;
+    if (t >= A.DURATION) t = 0;
+    playing = true; btn.hidden = true;
+    wallStart = performance.now(); tAtStart = t;
+    startAudio(t);
+  }
+  function pause() { playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#9654; Resume"; }
+
+  function tick(now) {
+    if (playing) {
+      t = tAtStart + (now - wallStart) / 1000;
+      if (t >= A.DURATION) { t = A.DURATION; playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#8635; Watch again"; }
+      // keep the sound in step; only when the audio clock is actually running
+      if (src && actx && actx.state === "running" && now - lastSync > 2000) {
+        lastSync = now;
+        const audioPos = srcT + (actx.currentTime - srcCtxStart);
+        if (Math.abs(audioPos - t) > 0.3) startAudio(t);
+      }
+    }
+    try { A.render(ctx, t); } catch (e) { console.error(e); }
+    const er = A.endRect(); // keep a real link over the end card
+    if (er) {
+      Object.assign(endLink.style, { left: er[0] / A.W * 100 + "%", top: er[1] / A.H * 100 + "%", width: er[2] / A.W * 100 + "%", height: er[3] / A.H * 100 + "%" });
+      endLink.hidden = false;
+    } else endLink.hidden = true;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  btn.addEventListener("click", () => play());
+  cv.addEventListener("click", (e) => {
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * A.W / A.S - A.CX, y = (e.clientY - r.top) / r.height * A.H / A.S - A.cardY(t);
+    const b = A.buttons(), hit = (i) => b[i] && x >= b[i][0] && x < b[i][0] + b[i][2] && y >= b[i][1] && y < b[i][1] + b[i][3];
+    if (hit(1)) play(0);
+    else if (playing) pause();
+    else play();
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -12,6 +12,16 @@ const MEDIA = import.meta.env.VITE_MEDIA_BASE ?? 'https://cdn.jsdelivr.net/gh/sa
 
 const animations = [
   {
+    slug: 'titanic',
+    title: "The Titanic's Lifeboats",
+    date: '2026-11-25',
+    duration: '1:11',
+    summary:
+      'Every lifeboat, every seat, everyone aboard. How empty the first boats left, and who got a place in them.',
+    poster: `${MEDIA}/animations/2026-11-25-titanic/titanic-poster-v7.jpg`,
+    player: '/media/animations/titanic/player.html',
+  },
+  {
     slug: 'satellites',
     title: 'Every Satellite Ever Launched',
     date: '2026-11-25',
