@@ -1605,7 +1605,7 @@ footer {
 
 .animations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1.25rem;
 }
 
@@ -1698,108 +1698,20 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
-.animation-back {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-decoration: none;
+.animation-fullscreen {
+  position: fixed;
+  inset: 0;
+  background: #dcdcdc;
 }
 
-.animation-back:hover {
-  color: var(--primary);
-}
-
-.animation-title {
-  font-size: 1.6rem;
-  margin: 0.75rem 0 0.4rem;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.animation-summary {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  max-width: 60ch;
-  margin-bottom: 1.5rem;
-}
-
-.animation-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  gap: 2rem;
-  align-items: start;
-}
-
-.animation-video video {
+.animation-fullscreen iframe {
   width: 100%;
-  aspect-ratio: 9 / 16;
+  height: 100%;
+  border: 0;
   display: block;
-  background: #000;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--card-border);
 }
 
-.animation-text {
-  min-width: 0;
-  max-width: 60ch;
-}
-
-.animation-text h2 {
-  font-size: 0.8rem;
-  font-family: var(--font-mono);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--primary);
-  margin: 0 0 0.6rem;
-  padding-left: 0;
-}
-
-.animation-text h2::before {
-  display: none;
-}
-
-.animation-text h2 + p,
-.animation-text p + p {
-  margin-top: 0;
-}
-
-.animation-text p {
-  font-size: 0.9rem;
-  line-height: 1.65;
+.animation-missing {
+  padding: 3rem 1.5rem;
   color: var(--text-secondary);
-  margin-bottom: 0.8rem;
-}
-
-.animation-text p + h2,
-.animation-text ul + h2 {
-  margin-top: 1.5rem;
-}
-
-.animation-sources {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.25rem;
-  font-size: 0.85rem;
-}
-
-.animation-sources li {
-  margin-bottom: 0.3rem;
-}
-
-.animation-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-@media screen and (max-width: 900px) {
-  .animation-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .animation-video {
-    max-width: 420px;
-    width: 100%;
-    margin: 0 auto;
-  }
 }

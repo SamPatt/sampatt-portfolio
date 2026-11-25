@@ -15,12 +15,13 @@
   html, body { height: 100%; }
   body {
     background: var(--ground); color: var(--ink); font-family: var(--mono);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
-    padding-block: 8px; box-sizing: border-box; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+    padding-block: 0; box-sizing: border-box; overflow: hidden; margin: 0;
   }
-  .stage { position: relative; height: calc(100% - 34px); aspect-ratio: 9 / 16; max-width: 100%; }
-  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; box-shadow: 0 0 0 2px var(--ink); }
+  /* keep 9:16 exactly: as wide as the screen allows, leaving room for the credit line */
+  .stage { position: relative; width: min(100vw, calc((100dvh - 44px) * 9 / 16)); aspect-ratio: 9 / 16; }
+  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
   .play {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     font: inherit; font-size: clamp(18px, min(4vh, 5.5vw), 34px); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
@@ -29,7 +30,7 @@
   }
   .play:hover { background: var(--ink); }
   .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
-  .credit { font-size: 15px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
+  .credit { font-size: 13px; padding-inline: 8px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
   .credit a { color: var(--ink); }
   .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
 </style>
@@ -41,7 +42,7 @@
   <canvas id="c" width="1080" height="1920" aria-label="Animation: every satellite launched since Sputnik, one grid cell per satellite"></canvas>
   <button class="play" id="play" type="button">&#9654; Play with sound</button>
 </div>
-<p class="credit">Data: <a href="https://planet4589.org/space/gcat/" target="_blank" rel="noopener">GCAT, J. McDowell</a> (CC-BY), payloads launched through 30 Jun 2026 &middot; Sputnik audio: NASA &middot; tap to pause</p>
+<p class="credit">Data: <a href="https://planet4589.org/space/gcat/" target="_blank" rel="noopener">GCAT, J. McDowell</a> (CC-BY), payloads launched through 30 Jun 2026 &middot; Sputnik audio: NASA &middot; <a href="https://sampatt.com/animations" target="_top">More animations</a></p>
 
 <script>
 function bootAnim() {

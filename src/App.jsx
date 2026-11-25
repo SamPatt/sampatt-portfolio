@@ -16,6 +16,16 @@ import Animation from "./pages/Animation";
 
 function App() {
   return (
+    <Routes>
+      {/* animations play full screen, outside the site layout */}
+      <Route path="/animations/:slug" element={<Animation />} />
+      <Route path="*" element={<SiteLayout />} />
+    </Routes>
+  );
+}
+
+function SiteLayout() {
+  return (
     <>
     <div className="app-container">
       <Header />
@@ -33,7 +43,6 @@ function App() {
           <Route path="/notes/:slug" element={<Note />} />
           <Route path="/now" element={<Now />} />
           <Route path="/animations" element={<Animations />} />
-          <Route path="/animations/:slug" element={<Animation />} />
         </Routes>
       </main>
     </div>
