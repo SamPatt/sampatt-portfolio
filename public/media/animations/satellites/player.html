@@ -32,6 +32,8 @@
   .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
   .credit { font-size: 13px; padding-inline: 8px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
   .credit a { color: var(--ink); }
+  .endlink { position: absolute; display: block; cursor: pointer; }
+  .endlink:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
   .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
@@ -41,6 +43,7 @@
 <div class="stage">
   <canvas id="c" width="1080" height="1920" aria-label="Animation: every satellite launched since Sputnik, one grid cell per satellite"></canvas>
   <button class="play" id="play" type="button">&#9654; Play with sound</button>
+  <a class="endlink" id="endlink" href="https://sampatt.com/animations" target="_top" hidden aria-label="More animations at sampatt.com/animations"></a>
 </div>
 <p class="credit">Data: <a href="https://planet4589.org/space/gcat/" target="_blank" rel="noopener">GCAT, J. McDowell</a> (CC-BY), payloads launched through 30 Jun 2026 &middot; Sputnik audio: NASA &middot; <a href="https://sampatt.com/animations" target="_top">More animations</a></p>
 
@@ -393,14 +396,18 @@ function bootAnim() {
   }
   // end card: where to find more, after the card has lifted away
   const END_LINK = (window.SAT_OPTS && window.SAT_OPTS.endLink) || "SAMPATT.COM/ANIMATIONS";
+  let endRect = null; // where the end card was last drawn (real px), so the player can put a real link over it
   function drawEndLink(ctx, t) {
     const t0 = T_END + 3.0;
+    endRect = null;
     if (t < t0 || !END_LINK) return;
     const pop = ease((t - t0) / 0.3);
     const head = "MORE ANIMATIONS", kh = 4, kb = 5;
     const w = Math.max(head.length * 6 * kh, END_LINK.length * 6 * kb) + 40;
     const hHead = 7 * kh + 20, hBody = 7 * kb + 32, h = hHead + hBody;
-    const x = Math.round(W / 2 - w / 2), y = Math.round(H / 2 - h / 2 + (1 - pop) * 24);
+    // lower third, so it stays clear of the player's centred "Watch again" button
+    const x = Math.round(W / 2 - w / 2), y = Math.round(H * 0.76 - h / 2 + (1 - pop) * 24);
+    endRect = [x, y, w, h];
     ctx.globalAlpha = pop;
     ctx.fillStyle = "#111111"; ctx.fillRect(x + 8, y + 8, w, h);
     ctx.fillStyle = "#ffffff"; ctx.fillRect(x, y, w, h);
@@ -562,7 +569,7 @@ function bootAnim() {
     drawEndLink(ctx, t);
   }
 
-  window.SatAnim = { grid: () => [COLS, ROWS, COLS * ROWS - N_ALL], render, DURATION, T_END, W, H, S, CX, cardY, buttons: () => btnX, events: EV.map((e) => ({ kind: e.kind, t: realOf(e.day), hold: e.hold })) };
+  window.SatAnim = { endRect: () => endRect, grid: () => [COLS, ROWS, COLS * ROWS - N_ALL], render, DURATION, T_END, W, H, S, CX, cardY, buttons: () => btnX, events: EV.map((e) => ({ kind: e.kind, t: realOf(e.day), hold: e.hold })) };
 })();
 
 }
@@ -610,6 +617,11 @@ function bootAnim() {
     }
     last = now;
     A.render(ctx, t);
+    const er = A.endRect(); // keep a real link over the end card
+    if (er) {
+      Object.assign(endLink.style, { left: er[0] / A.W * 100 + "%", top: er[1] / A.H * 100 + "%", width: er[2] / A.W * 100 + "%", height: er[3] / A.H * 100 + "%" });
+      endLink.hidden = false;
+    } else endLink.hidden = true;
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
