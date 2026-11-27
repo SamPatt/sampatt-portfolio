@@ -12,22 +12,26 @@
     --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
     color-scheme: light;
   }
-  html, body { height: 100%; }
+  html { height: 100%; } body { min-height: 100%; }
   body {
     background: var(--ground); color: var(--ink); font-family: var(--mono);
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; overflow-x: hidden;
     padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
-    padding-top: var(--top); padding-bottom: 4px; box-sizing: border-box; overflow: hidden; margin: 0;
+    padding-top: var(--top); padding-bottom: 8px; box-sizing: border-box; margin: 0;
   }
   /* headroom above the animation: some mobile browsers draw their toolbar over the top of the page */
-  :root { --top: max(16px, env(safe-area-inset-top, 0px)); }
-  /* keep 9:16 exactly: as wide as the screen allows, leaving room for the credit line */
-  /* the animation takes whatever height is left after the headroom and the credit line, at exactly 9:16 */
-  .fit { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; container-type: size; }
-  .credit { flex: none; }
-  .stage { position: relative; width: min(100vw, calc((100vh - 48px - var(--top)) * 9 / 16)); width: min(100vw, calc((100svh - 48px - var(--top)) * 9 / 16)); aspect-ratio: 9 / 16; }
-  @supports (container-type: size) { .stage { width: min(100cqw, calc(100cqh * 9 / 16)); } }
-  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - 48px - var(--top)) * 9 / 16)) * 16 / 9); } }
+  :root { --top: max(6px, env(safe-area-inset-top, 0px)); }
+  /* Phones (portrait): the animation is as wide as the screen allows and the credit follows below it, a short scroll
+     away if needed. Wider screens keep the credit in view under the animation. Auto margins centre the pair when there
+     is room and collapse to zero when there isn't. */
+  .fit { margin-top: auto; width: 100%; display: flex; justify-content: center; }
+  .credit { flex: none; margin-bottom: auto; }
+  .stage { position: relative; aspect-ratio: 9 / 16;
+    width: min(100vw, calc((100vh - var(--top) - 10px) * 9 / 16)); width: min(100vw, calc((100svh - var(--top) - 10px) * 9 / 16)); }
+  @media (min-aspect-ratio: 3/4) {
+    .stage { width: min(100vw, calc((100vh - var(--top) - 60px) * 9 / 16)); width: min(100vw, calc((100svh - var(--top) - 60px) * 9 / 16)); }
+  }
+  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - var(--top) - 10px) * 9 / 16)) * 16 / 9); } }
   canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
   .play {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
