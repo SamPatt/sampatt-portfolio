@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Everyone Who Has Been to Space</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
+  :root {
+    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  html { height: 100%; } body { min-height: 100%; }
+  body {
+    background: var(--ground); color: var(--ink); font-family: var(--mono);
+    display: flex; flex-direction: column; align-items: center; gap: 6px; overflow-x: hidden;
+    padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+    padding-top: var(--top); padding-bottom: 8px; box-sizing: border-box; margin: 0;
+  }
+  /* headroom above the animation: some mobile browsers draw their toolbar over the top of the page */
+  :root { --top: max(6px, env(safe-area-inset-top, 0px)); }
+  /* Phones (portrait): the animation is as wide as the screen allows and the credit follows below it, a short scroll
+     away if needed. Wider screens keep the credit in view under the animation. Auto margins centre the pair when there
+     is room and collapse to zero when there isn't. */
+  .fit { margin-top: auto; width: 100%; display: flex; justify-content: center; }
+  .credit { flex: none; margin-bottom: auto; }
+  .stage { position: relative; aspect-ratio: 9 / 16;
+    width: min(100vw, calc((100vh - var(--top) - 10px) * 9 / 16)); width: min(100vw, calc((100svh - var(--top) - 10px) * 9 / 16)); }
+  @media (min-aspect-ratio: 3/4) {
+    .stage { width: min(100vw, calc((100vh - var(--top) - 60px) * 9 / 16)); width: min(100vw, calc((100svh - var(--top) - 60px) * 9 / 16)); }
+  }
+  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - var(--top) - 10px) * 9 / 16)) * 16 / 9); } }
+  canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
+  .play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    font: inherit; font-size: clamp(18px, min(4vh, 5.5vw), 34px); letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+    background: var(--signal); color: var(--paper); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+    padding: 0.35em 0.9em; cursor: pointer;
+  }
+  .play:hover { background: var(--ink); }
+  .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  .credit { font-size: 13px; padding-inline: 8px; color: var(--muted); letter-spacing: 0.04em; text-align: center; line-height: 1.2; }
+  .credit a { color: var(--ink); }
+  .endlink { position: absolute; display: block; cursor: pointer; }
+  .endlink[hidden], .play[hidden] { display: none; }
+  .endlink:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
+  /* BEGIN scrub */
+  /* swipe scrubber: invisible until you swipe across the animation (shared/scrub.js) */
+  .scrub { position: absolute; left: 4%; right: 4%; bottom: 1.5%; opacity: 0; transition: opacity 0.25s; pointer-events: none; font-family: var(--mono); color: var(--ink); -webkit-user-select: none; user-select: none; }
+  .scrub.dragging, .scrub:focus-within { opacity: 1; transition: opacity 0.08s; }
+  .scrub .track { position: relative; height: 46px; }
+  .scrub .track:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .scrub .groove { position: absolute; left: 0; right: 0; top: 50%; height: 12px; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: 2px solid var(--ink); box-sizing: border-box; overflow: hidden; }
+  .scrub .fill { background: var(--ink); width: 0; height: 100%; }
+  .scrub .tick { position: absolute; left: calc(var(--p) * 100%); top: 50%; width: 6px; height: 26px; transform: translate(-50%, -50%); background: var(--signal); border: 1px solid var(--ink); box-sizing: border-box; }
+  .scrub .tick.end { background: var(--ink); }
+  .scrub .tick.on { height: 36px; }
+  .scrub .thumb { position: absolute; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); background: var(--signal); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); box-sizing: border-box; }
+  .scrub .bubble { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--ink); color: var(--paper); padding: 0 7px; font-size: 20px; line-height: 1.3; }
+  .swipe-hint { position: absolute; left: 50%; bottom: 3%; transform: translate(-50%, 8px); font-family: var(--mono); font-size: clamp(18px, 5.4vw, 26px); letter-spacing: 0.06em;
+    white-space: nowrap; background: var(--ink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--signal); padding: 2px 12px; opacity: 0; pointer-events: none; transition: opacity 0.35s, transform 0.35s; }
+  .swipe-hint b { color: var(--signal); font-weight: 400; }
+  .swipe-hint.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { .swipe-hint, .scrub { transition: none; } }
+  /* END scrub */
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+
+</head>
+<body>
+<main class="fit">
+<div class="stage">
+  <canvas id="c" width="1080" height="1920" aria-label="Animation: everyone who has flown to space, by first flight, counted on the country they came from, with every name"></canvas>
+  <button class="play" id="play" type="button">&#9654; Play with sound</button>
+  <a class="endlink" id="endlink" href="https://sampatt.com/animations" target="_top" hidden aria-label="More animations at sampatt.com/animations"></a>
+</div>
+</main>
+<p class="credit">Data: Wikipedia, <a href="https://en.wikipedia.org/wiki/List_of_space_travellers_by_first_flight" target="_blank" rel="noopener">List of space travellers by first flight</a> (CC BY-SA 4.0), to 25 Nov 2026 &middot; anyone who crossed 100 km, first nationality listed &middot; <a href="https://sampatt.com/animations" target="_top">More animations</a></p>
+
+<script>
+function bootAnim() {
+// 5x7 pixel font (F) and 3x5 digits (F3) shared by the scale animations.
+window.PIXEL_FONT = (function () {
+  const F = {
+    "A":"01110100011000111111100011000110001","B":"11110100011000111110100011000111110","C":"01110100011000010000100001000101110",
+    "D":"11110100011000110001100011000111110","E":"11111100001000011110100001000011111","F":"11111100001000011110100001000010000",
+    "G":"01110100011000010111100011000101111","H":"10001100011000111111100011000110001","I":"01110001000010000100001000010001110",
+    "J":"00111000100001000010000101001001100","K":"10001100101010011000101001001010001","L":"10000100001000010000100001000011111",
+    "M":"10001110111010110101100011000110001","N":"10001110011010110011100011000110001","O":"01110100011000110001100011000101110",
+    "P":"11110100011000111110100001000010000","Q":"01110100011000110001101011001001101","R":"11110100011000111110101001001010001",
+    "S":"01111100001000001110000010000111110","T":"11111001000010000100001000010000100","U":"10001100011000110001100011000101110",
+    "V":"10001100011000110001100010101000100","W":"10001100011000110101101011010101010","X":"10001100010101000100010101000110001",
+    "Y":"10001100010101000100001000010000100","Z":"11111000010001000100010001000011111",
+    "0":"01110100011001110101110011000101110","1":"00100011000010000100001000010001110","2":"01110100010000100010001000100011111",
+    "3":"11111000100010000010000011000101110","4":"00010001100101010010111110001000010","5":"11111100001111000001000011000101110",
+    "6":"00110010001000011110100011000101110","7":"11111000010001000100010000100001000","8":"01110100011000101110100011000101110",
+    "9":"01110100011000101111000010001001100",
+    " ":"00000000000000000000000000000000000",",":"00000000000000000000001100010001000",".":"00000000000000000000000000110001100",
+    ":":"00000011000110000000011000110000000","+":"00000001000010011111001000010000000","-":"00000000000000011111000000000000000",
+    "/":"00001000010001000100010001000010000","'":"01100001000100000000000000000000000","(":"00010001000100001000010000010000010",
+    ")":"01000001000001000010000100010001000","s":"00000000000111110000011100000111110","^":"00000011110001100101010010100000000", // ^ = north-east arrow
+  };
+  // 3x5 digits for rocket labels
+  const F3 = {"0":"111101101101111","1":"010110010010111","2":"111001111100111","3":"111001111001111","4":"101101111001001",
+    "5":"111100111001111","6":"111100111101111","7":"111001001001001","8":"111101111101111","9":"111101111001111"};
+
+  F.s = F.s || "00000000000111110000011100000111110";
+  F["&"] = F["&"] || "01100100101010001000101011001001101";
+  F["%"] = F["%"] || "11001110010001000100010001001110011";
+  return { F, F3 };
+})();
+
+// Shared scale-animation engine. Deterministic: render(ctx, t) draws the frame at t seconds.
+// Everything specific to one animation lives in its data.js (window.ANIM, built by its build/build_data.py):
+// the map (pre-projected to logical pixels), the events (one per real item), the clock, the cards.
+// House style: STYLE.md. Historical subjects use Newsprint A, modern ones Field.
+(function () {
+  const A = window.ANIM, { F } = window.PIXEL_FONT;
+  const W = 1080, H = 1920, S = 2, CX = 8, CY = 4, CARD_W = 524;
+  const THEMES = {
+    historical: { ink: "#1b1a18", paper: "#f5f2ea", red: "#c42a1c", ground: "#d8d3c8", grey: "#99958c", light: "#dedad0", dark: "#5a5751" }, // Newsprint A
+    modern: { ink: "#111111", paper: "#ffffff", red: "#e0201b", ground: "#dcdcdc", grey: "#9a9a9a", light: "#d0d0d0", dark: "#555555" },   // Field
+    night: { ink: "#efe8d2", paper: "#0b1022", red: "#ff7a45", ground: "#04060d", grey: "#5a6385", light: "#1b2340", dark: "#a4acc8", shadow: "#000000" }, // night sky
+  };
+  const TH = THEMES[A.era] || THEMES.modern;
+  const INK = TH.ink, PAPER = TH.paper, RED = TH.red, ONRED = "#ffffff";
+  // palette indices: 0 paper, 1 ink, 2 red, 3 grey, 4 light, 6 dark grey (the third kind)
+  const PAL = [PAPER, INK, RED, TH.grey, TH.light, "#1d5bd8", TH.dark, "#000000"];
+  for (const [i, c] of Object.entries(A.pal || {})) PAL[+i] = c;   // extra colours an animation needs (flags, rivers...), indices 8+
+  const SH = TH.shadow ? 7 : 1, SHADOW = TH.shadow || INK;          // card shadows: ink on paper themes, black at night
+  const CSS = { 1: INK, 2: RED, 3: TH.grey, 4: TH.light, 5: PAL[5], 6: TH.dark }; for (const [i, c] of Object.entries(A.pal || {})) CSS[+i] = c;
+  const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+  const K = A.kinds, NK = K.length, EV = A.ev, N = EV.t.length;
+
+  // ---- clock: data time (days since 1970) → seconds, from the knots, with holds for the cards ----
+  const KN = A.knots, HOLDS = (A.holds || []).slice().sort((a, b) => a.t - b.t);
+  function baseT(d) {
+    if (d <= KN[0][0]) return KN[0][1];
+    for (let i = 1; i < KN.length; i++) if (d <= KN[i][0]) { const [a, sa] = KN[i - 1], [b, sb] = KN[i]; return sa + (sb - sa) * (d - a) / (b - a); }
+    return KN[KN.length - 1][1];
+  }
+  function baseInv(s) {
+    if (s <= KN[0][1]) return KN[0][0];
+    for (let i = 1; i < KN.length; i++) if (s <= KN[i][1]) { const [a, sa] = KN[i - 1], [b, sb] = KN[i]; return a + (b - a) * (s - sa) / (sb - sa); }
+    return KN[KN.length - 1][0];
+  }
+  // A card can play out its own event while it is up: `span: [a, b]` runs data time from a to b during the card
+  // (after a short beat to read it), and `ramp: [from, to]` counts the items in that window up from nothing, so a single
+  // huge item (a quake's energy, a storm's deaths) visibly pours into the counters, chart and squares.
+  for (const h of HOLDS) if (h.span) h.t = h.span[0];
+  const prog = (h, ht) => Math.max(0, Math.min(1, (ht - 0.5) / Math.max(0.5, h.hold - 1.3)));
+  function realOf(d) {
+    let acc = 0;
+    for (const h of HOLDS) {
+      if (h.span) {
+        const [a, b] = h.span; if (d <= a) break;
+        if (d < b) return baseT(a) + acc + 0.5 + (d - a) / (b - a) * Math.max(0.5, h.hold - 1.3);
+        acc += h.hold - (baseT(b) - baseT(a));
+      } else { if (h.t >= d) break; acc += h.hold; }
+    }
+    return baseT(d) + acc;
+  }
+  function clock(t) {
+    let acc = 0;
+    for (const h of HOLDS) {
+      const ts = baseT(h.t) + acc; if (t < ts) break;
+      if (t < ts + h.hold) {
+        const ht = t - ts, u = prog(h, ht);
+        if (h.span) { const d = h.span[0] + (h.span[1] - h.span[0]) * u; return { d, hold: h, ht, u, base: baseT(d) }; }
+        return { d: h.t, hold: h, ht, u, base: baseT(h.t) };
+      }
+      acc += h.span ? h.hold - (baseT(h.span[1]) - baseT(h.span[0])) : h.hold;
+    }
+    const b = t - acc; return { d: Math.min(A.t1, baseInv(b)), base: b };
+  }
+  const T_END = realOf(A.t1), FINAL_T = T_END + 0.6, LINK_T = FINAL_T + (A.finalHold || 5.5), DURATION = LINK_T + 4.0;
+  const evReal = new Float64Array(N); for (let i = 0; i < N; i++) evReal[i] = realOf(EV.t[i]); // seconds on screen, for flashes
+
+  // ---- prefix sums: counts (and weights) per kind, so any total at any time is a lookup ----
+  const hasW = !!EV.w;
+  const cnt = [], wsum = [];
+  for (let k = 0; k < NK; k++) { cnt.push(new Float64Array(N + 1)); if (hasW) wsum.push(new Float64Array(N + 1)); }
+  for (let i = 0; i < N; i++) for (let k = 0; k < NK; k++) {
+    const me = EV.k[i] === k; cnt[k][i + 1] = cnt[k][i] + (me ? 1 : 0); if (hasW) wsum[k][i + 1] = wsum[k][i] + (me ? EV.w[i] : 0);
+  }
+  const upTo = (d) => { let lo = 0, hi = N; while (lo < hi) { const m = (lo + hi) >> 1; if (EV.t[m] <= d) lo = m + 1; else hi = m; } return lo; }; // events with t <= d
+  const before = (d) => { let lo = 0, hi = N; while (lo < hi) { const m = (lo + hi) >> 1; if (EV.t[m] < d) lo = m + 1; else hi = m; } return lo; };  // events with t < d
+  const sumAt = (n, kinds, w) => kinds.reduce((s, k) => s + (w ? wsum[k][n] : cnt[k][n]), 0);
+  let PART = null; // a ramp in progress: items lo..hi count only a fraction f
+  const partAdj = (kinds, w, end, start) => (PART && w && end >= PART.hi && start <= PART.lo ? (1 - PART.f) * (sumAt(PART.hi, kinds, w) - sumAt(PART.lo, kinds, w)) : 0);
+  const counterVal = (c, n) => (c.base || 0) + (sumAt(n, c.kinds, c.w) - partAdj(c.kinds, c.w, n, 0)) * (c.scale || 1);
+
+  // ---- layout (logical px) ----
+  // Below the map card: an optional feed panel (a running list, e.g. names), then the squares.
+  // Squares either take whatever room is left (pitch shrinks to fit), or, with a fixed pitch and `bottom` or chartH "fill",
+  // sit at the bottom at their own size, and the chart (or the feed) takes the rest.
+  const BW = CARD_W + 4, BH = 956 - CY;
+  const SQ = A.squares || null, FEED = A.feed || null;
+  const sqCols = (p) => Math.floor((CARD_W - 8) / p);
+  const sqNeed = (p) => SQ.groups.reduce((a, g) => a + 19 + Math.ceil(g.total / sqCols(p)) * p, 0);
+  if (SQ) SQ.groups.forEach((g) => { g.total = Math.round(counterVal({ kinds: g.kinds, w: g.w }, N) / g.per); });
+  const SQ_BOX = SQ && (SQ.bottom || A.chartH === "fill") ? sqNeed(SQ.pitch) + 20 : 0;
+  const MAP_Y0 = 47, MAP_H = A.mapH || 0, CHART_Y0 = MAP_Y0 + MAP_H + (MAP_H ? 2 : 0);
+  const CHART_H = !A.chart ? 0 : A.chartH === "fill" ? BH - 6 - SQ_BOX - 8 - (FEED ? FEED.h + 8 : 0) - 2 - CHART_Y0 : (A.chartH || 158);
+  const CARD_H = CHART_Y0 + CHART_H + 2, FEED_Y = CARD_H + 8;
+  const FEED_H = !FEED ? 0 : SQ_BOX && A.chartH !== "fill" ? BH - 6 - SQ_BOX - 8 - FEED_Y : FEED.h;
+  const SQ_Y = SQ_BOX ? BH - 6 - SQ_BOX : FEED ? FEED_Y + FEED_H + 8 : CARD_H + 8;
+  const buf = new Uint8Array(BW * BH);
+  const px = (x, y, c) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < BW && y < BH) buf[y * BW + x] = c; };
+  const rect = (x, y, w, h, c) => { x = Math.round(x); y = Math.round(y); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) px(x + i, y + j, c); };
+  const frame = (x, y, w, h, c) => { rect(x, y, w, 1, c); rect(x, y + h - 1, w, 1, c); rect(x, y, 1, h, c); rect(x + w - 1, y, 1, h, c); };
+  const inMap = (x, y) => x >= 2 && x < CARD_W - 2 && y >= MAP_Y0 && y < MAP_Y0 + MAP_H;
+  let LW = 1; // line width for tracks: 1 or 2 px
+  function line(x0, y0, x1, y1, c, clip) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy;
+    for (let g = 0; g < 4000; g++) { if (!clip || clip(x0, y0)) { px(x0, y0, c); if (LW > 1) { px(x0 + 1, y0, c); px(x0, y0 + 1, c); px(x0 + 1, y0 + 1, c); } } if (x0 === x1 && y0 === y1) break; const e2 = 2 * err; if (e2 >= dy) { err += dy; x0 += sx; } if (e2 <= dx) { err += dx; y0 += sy; } }
+  }
+  const poly = (P, c, clip) => { for (let i = 2; i + 1 < P.length; i += 2) line(P[i - 2], P[i - 1], P[i], P[i + 1], c, clip); };
+  const textW = (s, k = 1) => s.length * 6 * k - k;
+  function text(s, x, y, c, k = 1) { x = Math.round(x); y = Math.round(y); const bw = k > 1 ? k + 1 : k; for (const ch of s) { const g = F[ch] || F[" "]; for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") rect(x + q * k, y + r * k, bw, k, c); x += 6 * k; } }
+  const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  function dateLabel(d) {
+    const dt = new Date(Math.min(d, A.t1 - 1e-6) * 86400000), Y = dt.getUTCFullYear(), M = MONTHS[dt.getUTCMonth()], D = dt.getUTCDate();
+    return A.fmt === "year" ? String(Y) : A.fmt === "month" ? M + " " + Y : String(D).padStart(2, " ") + " " + M + " " + Y; // day padded: month and year never move
+  }
+  function subLabel(d) { let s = ""; for (const [t, v] of A.sub || []) if (d >= t) s = v; return s; }
+
+  // ---- static layer: cards, map base, labels ----
+  const titleBar = (y0, t) => { const tw = textW(t); for (let y = y0 + 2; y < y0 + 10; y += 2) rect(1, y, CARD_W - 2, 1, 1); rect((CARD_W - tw) / 2 - 4, y0 + 1, tw + 8, 10, 0); text(t, (CARD_W - tw) / 2, y0 + 2, 1); };
+  function drawStatic() {
+    buf.fill(255);
+    rect(3, 3, CARD_W, CARD_H, SH); rect(0, 0, CARD_W, CARD_H, 0); frame(0, 0, CARD_W, CARD_H, 1);
+    titleBar(0, A.title);
+    rect(1, 11, CARD_W - 2, 1, 1); rect(1, MAP_Y0 - 1, CARD_W - 2, 1, 1); if (MAP_H) rect(1, CHART_Y0 - 1, CARD_W - 2, 1, 1);
+    if (MAP_H) {
+      if (A.mapBg != null) rect(1, MAP_Y0, CARD_W - 2, MAP_H, A.mapBg);
+      for (const [x, y, n, c] of A.runs || []) rect(x, y, n, 1, c);  // a pre-drawn picture behind the data (e.g. a mountain), as runs
+      if (A.grid) for (const g of A.grid) poly(g, A.gridCol || 4, inMap); // sky grid or graticule, light
+      for (const [c, P] of A.lines || []) poly(P, c, inMap);          // extra figures (e.g. constellations), each in its own colour
+      for (const P of A.borders || []) poly(P, 4, inMap);            // borders, state lines, lakes: light
+      for (const P of A.rivers || []) poly(P, A.riverCol || 4, inMap);
+      for (const P of A.coast || []) poly(P, 3, inMap);              // coastlines: grey
+      if (A.cells) drawCellAxes();
+    }
+    const panel = (y0, h, title) => { rect(3, y0 + 3, CARD_W, h, SH); rect(0, y0, CARD_W, h, 0); frame(0, y0, CARD_W, h, 1); titleBar(y0, title); rect(1, y0 + 11, CARD_W - 2, 1, 1); };
+    if (SQ) panel(SQ_Y, BH - SQ_Y - 6, SQ.title);
+    if (FEED) panel(FEED_Y, FEED_H, FEED.title);
+  }
+  // coastlines and borders that must stay visible over dense data: their pixels are re-drawn on top every frame
+  let outline = null;
+  function makeOutline() {
+    const save = buf.slice(); buf.fill(255);
+    for (const P of A.borders || []) poly(P, A.outlineTop.borders, inMap);
+    for (const P of A.coast || []) poly(P, A.outlineTop.coast, inMap);
+    const ix = []; for (let i = 0; i < buf.length; i++) if (buf[i] !== 255) ix.push(i, buf[i]);
+    outline = Int32Array.from(ix); buf.set(save);
+  }
+  let staticCopy = null;
+
+  // ---- map: committed layer (old items, drawn once) + live items (recent, flashing, moving) ----
+  const TR = EV.tr || null; // optional tracks: flat [x, y, t, x, y, t, ...] per event
+  const tEnd = new Float64Array(N); for (let i = 0; i < N; i++) { const T = TR && TR[i]; tEnd[i] = T && T.length ? T[T.length - 1] : EV.t[i]; }
+  const byEnd = Array.from({ length: N }, (_, i) => i).sort((a, b) => tEnd[a] - tEnd[b] || a - b);
+  const endT = Float64Array.from(byEnd, (i) => tEnd[i]);
+  let maxDur = 0; for (let i = 0; i < N; i++) maxDur = Math.max(maxDur, tEnd[i] - EV.t[i]);
+  const RECENT = A.recent || 0, FLASH = 0.55; // data days in the kind's colour before settling; flash in seconds
+  const LIFE = K.map((k) => (k.recent != null ? k.recent : RECENT)), LIVE = Math.max(RECENT, ...LIFE); // per-kind window; `old: -1` vanishes after it
+  const z = (i) => (EV.z ? EV.z[i] : 2);
+  function drawItem(i, c, upto) {
+    if (c < 0) return;
+    const T = TR && TR[i]; LW = K[EV.k[i]].lw || 1;
+    if (T && T.length >= 6) {
+      let last = 0;
+      for (let j = 3; j < T.length; j += 3) {
+        if (T[j + 2] <= upto) { line(T[j - 3], T[j - 2], T[j], T[j + 1], c, inMap); last = j; continue; }
+        if (T[j - 1] <= upto) { const u = (upto - T[j - 1]) / (T[j + 2] - T[j - 1]); line(T[j - 3], T[j - 2], T[j - 3] + (T[j] - T[j - 3]) * u, T[j - 2] + (T[j + 1] - T[j - 2]) * u, c, inMap); }
+        break;
+      }
+      LW = 1; return;
+    }
+    LW = 1; if (K[EV.k[i]].dot === false) return;
+    const s = z(i), x = Math.round(EV.x[i] - s / 2), y = Math.round(EV.y[i] - s / 2);
+    if (s <= 1) { if (inMap(x, y)) px(x, y, c); return; }
+    for (let j = 0; j < s; j++) for (let q = 0; q < s; q++) if (inMap(x + q, y + j)) px(x + q, y + j, c);
+  }
+  const MC = (k) => (k.mcol != null ? k.mcol : k.col); // a kind's colour on the map (may differ from the chart's, e.g. white planets on a night sky)
+  const oldCol = (i) => { const k = K[EV.k[i]]; return k.old != null ? k.old : MC(k); };
+  let mapLayer = null, committed = 0, lastD = -Infinity;
+  function updateCommitted(d) {
+    if (!mapLayer || d < lastD) { mapLayer = staticCopy.slice(); committed = 0; }
+    lastD = d;
+    const lim = d - LIVE; // items whose end is older than the recent window go to the committed layer, in their settled colour
+    if (committed < N && endT[committed] <= lim) {
+      buf.set(mapLayer);
+      while (committed < N && endT[committed] <= lim) { const i = byEnd[committed]; drawItem(i, oldCol(i), Infinity); committed++; }
+      mapLayer = buf.slice();
+    }
+  }
+  // an isolating card greys out everything already on the map, so only its own event is in colour
+  const MUTE = { 1: 3, 2: 3, 6: 3 }; let muted = null, mutedKey = "";
+  function mutedLayer() {
+    const key = committed + ":" + ISO; if (key === mutedKey) return muted;
+    muted = mapLayer.slice(); const st = staticCopy;
+    for (let y = MAP_Y0; y < MAP_Y0 + MAP_H; y++) for (let x = 2; x < CARD_W - 2; x++) { const i = y * BW + x, c = muted[i]; if (c !== st[i] && (A.muteTo != null || MUTE[c] != null)) muted[i] = A.muteTo != null ? A.muteTo : c === 1 || c === 6 ? 4 : 3; }
+    mutedKey = key; return muted;
+  }
+  function drawLive(d, sec) {
+    // items still in the recent window (or still moving), drawn in their kind's colour; the most recent on top
+    const live = [];
+    for (let j = committed; j < N && endT[j] <= d + maxDur; j++) { const i = byEnd[j]; if (EV.t[i] <= d) live.push(i); }
+    live.sort((a, b) => EV.t[a] - EV.t[b]);
+    for (const i of live) {
+      const k = K[EV.k[i]], age = d - tEnd[i], life = LIFE[EV.k[i]];
+      if (EV.t[i] < ISO && ((i * 2654435761) % 1000) / 1000 >= ISO_P) { const c = oldCol(i); drawItem(i, c < 0 ? c : A.muteTo != null ? A.muteTo : MUTE[c] ?? c, d); continue; }
+      if (age > life) { drawItem(i, oldCol(i), d); continue; }
+      drawItem(i, k.fade != null && age > life * 0.55 ? k.fade : MC(k), d);
+      const T = TR && TR[i];
+      if (k.xEnd && T && age >= 0) { const x = Math.round(T[T.length - 3]), y = Math.round(T[T.length - 2]); for (let q = -2; q <= 2; q++) for (const [a, b] of [[q, q], [q, -q]]) { if (inMap(x + a, y + b)) { px(x + a, y + b, k.col); px(x + a + 1, y + b, k.col); } } }
+    }
+    if (ISO > -Infinity && !ISO_P) for (let j = before(ISO), m = upTo(d); j < m; j++) if (EV.t[j] >= ISO) drawItem(j, MC(K[EV.k[j]]), d); // the card's own event, always in full colour
+    // moving heads (tracks still under way) and flashes for new items of ringed kinds
+    for (const i of live) {
+      const T = TR && TR[i];
+      if (T && T.length >= 6 && tEnd[i] > d && A.heads !== false) {
+        for (let j = 3; j < T.length; j += 3) if (T[j + 2] > d) { const u = (d - T[j - 1]) / (T[j + 2] - T[j - 1]); rect(T[j - 3] + (T[j] - T[j - 3]) * u - 1, T[j - 2] + (T[j + 1] - T[j - 2]) * u - 1, 3, 3, MC(K[EV.k[i]])); break; }
+      }
+    }
+    const n = upTo(d);
+    for (let j = n - 1; j >= 0 && sec - evReal[j] < FLASH; j--) {
+      const k = K[EV.k[j]]; if (!k.ring || EV.t[j] < ISO) continue;
+      const age = (sec - evReal[j]) / FLASH; if (age < 0) continue;
+      const r = 2 + age * (k.ring === 2 ? 14 : 6), x0 = TR && TR[j] ? TR[j][0] : EV.x[j], y0 = TR && TR[j] ? TR[j][1] : EV.y[j];
+      for (let a = 0; a < 6.283; a += 0.6 / Math.max(1, r / 6)) { const x = Math.round(x0 + Math.cos(a) * r), y = Math.round(y0 + Math.sin(a) * r); if (inMap(x, y)) px(x, y, MC(k)); }
+    }
+  }
+
+  // labels sit on top of the map's items, on a paper patch so they stay legible
+  function drawLabels() {
+    for (const [x, y, s, mark, col, al, from] of A.labels || []) {
+      if (from != null && curD < from) continue;
+      if (mark) rect(x - 1, y - 1, 3, 3, 1);
+      const lx = al === "r" ? x - 4 - textW(s) : al === "c" || al === "b" ? x - textW(s) / 2 : x + 4, ly = al === "c" ? y - 11 : al === "b" ? y + 2 : y - 3;
+      if (A.labelPatch !== false) rect(lx - 1, ly - 1, textW(s) + 2, 9, 0); text(s, lx, ly, col || 3);
+    }
+  }
+
+  // ---- cells: a calendar grid coloured by how many items have landed in each cell (e.g. summits per day) ----
+  const CE = A.cells || null, cellCount = CE ? new Int32Array(CE.rects.length) : null; let cellN = 0;
+  function drawCellAxes() {
+    for (const [x, y, s, al] of CE.axis || []) text(s, al === "r" ? x - textW(s) : al === "c" ? x - textW(s) / 2 : x, y, 3);
+    for (const [x, y, s] of CE.key || []) { const [c, label] = [s[0], s[1]]; rect(x, y, 7, 5, c); text(label, x + 10, y - 1, 1); }
+  }
+  function drawCells(d) {
+    const n = upTo(d);
+    if (n < cellN) { cellCount.fill(0); cellN = 0; }
+    for (; cellN < n; cellN++) { const c = EV.c[cellN]; if (c >= 0) cellCount[c]++; }
+    for (let c = 0; c < CE.rects.length; c++) {
+      const v = cellCount[c]; if (!v) continue; let col = 4;
+      for (const [th, cc] of CE.steps) if (v >= th) col = cc;
+      const [x, y, w, h] = CE.rects[c]; rect(x, y, w, h, col);
+    }
+    const sec = curT;
+    for (let j = n - 1; j >= 0 && sec - evReal[j] < FLASH; j--) { const c = EV.c[j]; if (c < 0) continue; const [x, y, w, h] = CE.rects[c], g = Math.round((1 - (sec - evReal[j]) / FLASH) * 3); if (g > 0) frame(x - g, y - g, w + 2 * g, h + 2 * g, 1); }
+  }
+
+  // ---- legend on the map, its rows flash with the card that names them ----
+  function drawLegend(hi, on) {
+    const rows = K.map((k, i) => [i, k.legend]).filter(([, l]) => l); if (!rows.length || !MAP_H) return;
+    const w = Math.max(...rows.map(([, l]) => textW(l))) + 14, h = rows.length * 10 + 2, pos = A.legend || "bl";
+    const lx = pos[1] === "l" ? 4 : CARD_W - 4 - w, ly = pos[0] === "b" ? MAP_Y0 + MAP_H - h - 3 : MAP_Y0 + 3;
+    const LB = A.legendBg != null ? A.legendBg : 0, LI = A.legendInk != null ? A.legendInk : 1;
+    rect(lx, ly, w, h, LB);
+    rows.forEach(([i, l], j) => {
+      const y = ly + 2 + j * 10, lit = hi.includes(i) && on, c = MC(K[i]);
+      if (lit) rect(lx, y - 2, w, 11, c);
+      rect(lx + 3, y + 1, 3, 3, lit ? LB : c); text(l, lx + 9, y, lit ? LB : LI);
+    });
+  }
+
+  // ---- chart: one row of bars per series, the current bar grows as its items land ----
+  const CH = A.chart || null, NB = CH ? CH.edges.length - 1 : 0, CH_X0 = 62, BARW = CH ? (CARD_W - CH_X0 - 6) / NB : 0;
+  const binStart = CH ? CH.edges.map((e) => before(e)) : [];
+  const rowVal = (r, n) => sumAt(n, r.kinds, r.w);
+  const rowMax = CH ? CH.rows.map((r) => { let m = 0; for (let b = 0; b < NB; b++) m = Math.max(m, rowVal(r, binStart[b + 1]) - rowVal(r, binStart[b])); return m || 1; }) : [];
+  function drawChart(d) {
+    const nr = CH.rows.length, rowH = Math.floor((CHART_H - 18) / nr), n = upTo(d);
+    CH.rows.forEach((r, ri) => {
+      const base = CHART_Y0 + 4 + (ri + 1) * rowH, c = r.col;
+      text(r.label, 6, base - 8, c);
+      rect(CH_X0 - 2, base, CARD_W - CH_X0 - 4, 1, 3);
+      for (let b = 0; b < NB; b++) {
+        if (binStart[b] >= n && CH.edges[b] > d) break;
+        const e = Math.min(n, binStart[b + 1]), adj = partAdj(r.kinds, r.w, e, binStart[b]), v = rowVal(r, e) - rowVal(r, binStart[b]) - adj;
+        const hgt = Math.round(v / rowMax[ri] * (rowH - 3)); if (hgt <= 0) continue;
+        const x0 = Math.round(CH_X0 + b * BARW), x1 = Math.round(CH_X0 + (b + 1) * BARW) - (BARW >= 3 ? 1 : 0), bw = Math.max(1, x1 - x0);
+        rect(x0, base - hgt, bw, hgt, c);
+        if (adj || (PART && r.w && e >= PART.hi && binStart[b] <= PART.lo)) {   // this bar is growing under a card: the new part in a contrasting colour, boxed and pointed at
+          const v0 = v - PART.f * (sumAt(PART.hi, r.kinds, r.w) - sumAt(PART.lo, r.kinds, r.w)), h0 = Math.round(Math.max(0, v0) / rowMax[ri] * (rowH - 3)), hc = c === 2 ? 1 : 2;
+          if (hgt > h0) rect(x0, base - hgt, bw, hgt - h0, hc);
+          if ((curT * 3) % 1 < 0.65) { frame(x0 - 3, base - hgt - 3, bw + 6, hgt + 4, hc); for (let q = 0; q < 4; q++) rect(x0 + bw / 2 - 3 + q, base - hgt - 10 + q, 7 - 2 * q, 1, hc); }
+        }
+      }
+    });
+    for (const [lab, b] of CH.ticks || []) text(lab, Math.round(CH_X0 + b * BARW), CHART_Y0 + CHART_H - 9, 3);
+  }
+
+  // ---- a card about one place: rings keep pulsing out from it while the card is up ----
+  function drawFocus(h, ht) {
+    const c = h.fcol || 2;
+    for (const [x0, y0] of h.focus) {
+      for (let r3 = 0; r3 < 3; r3++) {
+        const u = (ht / 1.1 + r3 / 3) % 1, r = 4 + u * (h.fr || 36); if (u > 0.92) continue;
+        for (let a = 0; a < 6.283; a += 0.5 / Math.max(1, r / 4)) { const x = Math.round(x0 + Math.cos(a) * r), y = Math.round(y0 + Math.sin(a) * r); if (inMap(x, y)) { px(x, y, c); if (u < 0.6) { px(x + 1, y, c); px(x, y + 1, c); } } }
+      }
+      rect(x0 - 2, y0 - 2, 5, 5, c); frame(x0 - 3, y0 - 3, 7, 7, 0);
+    }
+  }
+
+  // ---- tags: a label per place with a count that goes up as its items land (e.g. people per country) ----
+  const TAGS = A.tags || null, tagN = TAGS ? new Int32Array(TAGS.length) : null, tagLast = TAGS ? new Float64Array(TAGS.length) : null;
+  function drawTags(n, sec) {
+    tagN.fill(0); tagLast.fill(-1e9);
+    for (let i = 0; i < n; i++) { const g = EV.g[i]; if (g >= 0) { tagN[g]++; tagLast[g] = evReal[i]; } }
+    const order = TAGS.map((_, g) => g).sort((a, b) => tagLast[a] - tagLast[b]); // the latest on top
+    for (const g of order) {
+      if (!tagN[g]) continue;
+      const [cx, cy, tx, ty, al, label, col, k = 1] = TAGS[g], s = label + " " + tagN[g], w = textW(s, k) + 4 * k, hh = 7 * k + 2 * k, lit = sec - tagLast[g] < 0.35;
+      const bx = al === "r" ? tx - w : al === "c" ? Math.round(tx - w / 2) : tx, by = ty - Math.round(hh / 2);
+      if (Math.abs(tx - cx) + Math.abs(ty - cy) > 6) line(cx, cy, al === "r" ? bx + w : al === "c" ? bx + w / 2 : bx, ty, 3, inMap);
+      if (k === 1) rect(cx - 1, cy - 1, 3, 3, col);
+      rect(bx, by, w, hh, lit ? col : 0); frame(bx, by, w, hh, col); if (k > 1) frame(bx + 1, by + 1, w - 2, hh - 2, col);
+      text(s, bx + 2 * k, by + k, lit ? 0 : col, k);
+    }
+  }
+
+  // ---- bell: a little bell on the map that rings each time another `every` items have landed (matches the soundtrack's toll) ----
+  const BELL = A.bell || null, bellCum = BELL ? new Float64Array(N + 1) : null;
+  if (BELL) for (let i = 0; i < N; i++) bellCum[i + 1] = bellCum[i] + (BELL.kinds.includes(EV.k[i]) ? 1 : 0);
+  const BELL_PX = ["...11...", "..1111..", ".111111.", ".111111.", ".111111.", "11111111", "11111111", "...11..."];
+  function drawBell(n, sec) {
+    const m = Math.floor(bellCum[n] / BELL.every); let age = 9;
+    if (m > 0) { let lo = 0, hi = N; while (lo < hi) { const md = (lo + hi) >> 1; if (bellCum[md + 1] >= m * BELL.every) hi = md; else lo = md + 1; } age = sec - evReal[lo]; }
+    const ring = age < 0.6, sw = ring ? Math.round(Math.sin(age * 30) * 3 * (1 - age / 0.6)) : 0, { x, y } = BELL, w = Math.max(textW(BELL.label), textW(m + " TOLLS SO FAR")) + 34;
+    rect(x, y, w, 26, 0); frame(x, y, w, 26, ring ? 2 : 1);
+    BELL_PX.forEach((row, j) => { for (let q = 0; q < 8; q++) if (row[q] === "1") rect(x + 6 + q * 2 + sw, y + 5 + j * 2, 2, 2, ring ? 2 : 1); });
+    if (ring) { const r = 11 + age * 14; for (const sgn of [-1, 1]) for (let j = -4; j <= 4; j++) px(x + 14 + sgn * r, y + 13 + j, 2); }
+    text(BELL.label, x + 28, y + 4, 1); text(m + (m === 1 ? " TOLL" : " TOLLS") + " SO FAR", x + 28, y + 14, ring ? 2 : 3);
+  }
+
+  // ---- feed: a running list, newest first (e.g. every name), each with a little picture (a flag) ----
+  if (FEED) FEED.moonReal = {};
+  function drawFeed(n, sec) {
+    const rows = Math.floor((FEED_H - 18) / 10), cols = FEED.cols || 1, cw = Math.floor((CARD_W - 8) / cols), maxc = Math.floor((cw - 40) / 6);
+    let slot = 0;
+    for (let j = n - 1; j >= 0 && slot < rows * cols; j--) {
+      const f = EV.f[j]; if (f < 0) continue;
+      const [name, flag, right] = FEED.items[f], x = 5 + Math.floor(slot / rows) * cw, y = FEED_Y + 16 + (slot % rows) * 10, fresh = sec - evReal[j] < 0.3;
+      const fl = FEED.flags[flag], fw = fl[0].length;
+      for (let r = 0; r < fl.length; r++) for (let q = 0; q < fw; q++) rect(x + q, y + r, 1, 1, fl[r].charCodeAt(q) - 48);
+      frame(x - 1, y - 1, fw + 2, fl.length + 2, 3);
+      const nm = name.length > maxc - 5 ? name.slice(0, maxc - 6) + "." : name;
+      if (fresh) rect(x + fw + 3, y - 1, textW(nm) + 4, 9, 2);
+      text(nm, x + fw + 5, y, fresh ? 0 : 1);
+      if (right) text(right, x + cw - 10 - textW(right), y, 3);
+      const mf = FEED.items[f][3];   // went to the Moon: a little moon beside the number, from the day they landed
+      if (mf != null && curD >= mf) {
+        const age = curT - (FEED.moonReal[f] ?? (FEED.moonReal[f] = realOf(mf))), fresh = age < 1.5 && Math.floor(age * 5) % 2 === 0, mx = x + cw - 22 - textW(right || "");
+        MOON.forEach((row, jj) => { for (let q = 0; q < 8; q++) if (row[q] !== ".") px(mx + q, y - 1 + jj, fresh ? 2 : row[q] === "2" ? 6 : 3); });
+      }
+      slot++;
+    }
+  }
+
+  // ---- squares: the screen fills one square per unit ----
+  let PITCH = 0, SCOLS = 0, SX0 = 0;
+  if (SQ) {
+    const room = BH - SQ_Y - 6 - 18;
+    PITCH = SQ.pitch || 12; if (!SQ_BOX) while (PITCH > 2 && sqNeed(PITCH) > room) PITCH--;
+    SCOLS = sqCols(PITCH); SX0 = Math.floor((CARD_W - SCOLS * PITCH) / 2) + 1;
+    let y = SQ_Y + 16; SQ.groups.forEach((g) => { g.y = y; y += 12 + Math.ceil(g.total / SCOLS) * PITCH + 7; });
+  }
+  function drawSquares(d) {
+    const n = upTo(d), sz = PITCH >= 4 ? PITCH - 1 : PITCH - 1 || 1;
+    SQ.groups.forEach((g) => {
+      const v = counterVal({ kinds: g.kinds, w: g.w }, n), nL = Math.min(g.total, Math.round(v / g.per));
+      text(g.label, 6, g.y, g.col); if (g.unit) text(g.unit, 6 + textW(g.label) + 8, g.y, 3);
+      const c = g.right ? g.right(v) : fmt(v * (g.scale || 1)); text(c, CARD_W - 6 - textW(c), g.y, g.col);
+      // squares filling under a card get a contrasting colour and a blinking box, so the eye finds them
+      let k0 = nL; if (PART && g.w) k0 = Math.max(0, Math.round((v - PART.f * (sumAt(PART.hi, g.kinds, true) - sumAt(PART.lo, g.kinds, true))) / g.per));
+      const hc = g.col === 2 ? 1 : 2;
+      for (let k = 0; k < g.total; k++) rect(SX0 + (k % SCOLS) * PITCH, g.y + 11 + Math.floor(k / SCOLS) * PITCH, sz, sz, k < k0 ? g.col : k < nL ? hc : 4);
+      if (nL > k0 && (curT * 3) % 1 < 0.65) { const r0 = Math.floor(k0 / SCOLS), r1 = Math.floor((nL - 1) / SCOLS); frame(SX0 - 3, g.y + 11 + r0 * PITCH - 3, SCOLS * PITCH + 5, (r1 - r0 + 1) * PITCH + 5, hc); }
+    });
+  }
+  if (SQ) SQ.groups.forEach((g) => { if (g.pct) g.right = (v) => fmt(v * (g.scale || 1)) + (g.suffix || ""); });
+
+  // ---- pop-ups and the closing card (real px) ----
+  function bigText(ctx, s, x, y, k, bw = k + 1) { for (const ch of s) { const g = F[ch] || F[" "]; for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") ctx.fillRect(x + q * k, y + r * k, bw, k); x += 6 * k; } }
+  // the Moon, as a little pixel disc with craters and a shadow that sweeps across it (cards and the names list)
+  const MOON = ["..1111..", ".111111.", "11121111", "11111211", "11211111", "11111121", ".112111.", "..1111.."];
+  function moonIcon(ctx, cx, cy, hs, a) {
+    const k = Math.max(3, Math.round(hs / 4)), x0 = Math.round(cx - 4 * k), y0 = Math.round(cy - 4 * k), sh = Math.floor(((a * 0.8) % 1) * 12) - 2;
+    MOON.forEach((row, j) => { for (let q = 0; q < 8; q++) if (row[q] !== ".") { ctx.fillStyle = q < sh - 2 ? TH.dark : row[q] === "2" ? TH.dark : TH.grey; ctx.fillRect(x0 + q * k, y0 + j * k, k, k); } });
+  }
+  const ICON = { "#M ": TH.grey, "#K ": INK, "#R ": RED, "#G ": TH.dark, "#L ": TH.grey }; if (CSS[10]) ICON["#Y "] = CSS[10]; ICON["#B "] = PAL[5];
+  function box(ctx, x, y, w, h, hHead, sh = 10) {
+    ctx.fillStyle = SHADOW; ctx.fillRect(x + sh, y + sh, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = RED; ctx.fillRect(x, y, w, hHead); ctx.fillStyle = INK;
+    ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
+  }
+  function popup(ctx, a, head, lines, alpha, low) {
+    const w = 940, hHead = 96, h = hHead + 40 + lines.length * 56, x = Math.round((W - w) / 2), y = Math.round(H * (typeof low === "number" ? low : low ? 0.56 : 0.33) - h / 2 + (1 - ease(a / 0.25)) * 30);
+    ctx.globalAlpha = alpha; box(ctx, x, y, w, h, hHead);
+    const ctr = (s, k, yy, col) => { ctx.fillStyle = col; bigText(ctx, s, Math.round(W / 2 - (s.length * 6 * k - k) / 2), yy, k); };
+    const fit = (str, kmax) => Math.max(2, Math.min(kmax, Math.floor((w - 70) / (str.length * 6))));
+    const kh = fit(head, 8); ctr(head, kh, y + Math.round((hHead - 7 * kh) / 2), ONRED);
+    const kBody = Math.min(...lines.map((l) => (ICON[l.slice(0, 3)] ? Math.max(2, Math.min(5, Math.floor((w - 130) / ((l.length - 3) * 6)))) : fit(l, 5))));
+    lines.forEach((l, i) => {
+      const yy = y + hHead + 28 + i * 56, icon = l.slice(0, 3);
+      if (ICON[icon]) {
+        const s0 = l.slice(3), k = kBody, w0 = s0.length * 6 * k - k + 56, x1 = Math.round(W / 2 - w0 / 2), iy = yy + Math.round((7 * k - 34) / 2);
+        const pulse = 1 + 0.35 * Math.max(0, Math.sin((a - 0.3) * Math.PI * 2 * 1.25)) * (a > 0.3 ? 1 : 0), hs = 17 * pulse; // beats with the map legend
+        if (icon === "#M ") moonIcon(ctx, x1 + 17, iy + 17, hs, a); else { ctx.fillStyle = ICON[icon]; ctx.fillRect(Math.round(x1 + 17 - hs), Math.round(iy + 17 - hs), Math.round(2 * hs), Math.round(2 * hs)); }
+        ctx.fillStyle = INK; bigText(ctx, s0, x1 + 56, yy, k);
+      } else ctr(l, kBody, yy, INK);
+    });
+    ctx.globalAlpha = 1;
+  }
+  function drawHold(ctx, clk) {
+    if (!clk.hold) return;
+    const h = clk.hold, a = clk.ht, alpha = Math.min(ease(a / 0.25), 1 - ease((a - h.hold + 0.3) / 0.3));
+    popup(ctx, a, h.head, h.lines, alpha, h.pos || h.low);
+  }
+  function drawFinal(ctx, t) {
+    const FN = A.final; if (!FN || t < FINAL_T) return;
+    const pop = ease((t - FINAL_T) / 0.35), grow = ease((t - FINAL_T - 0.3) / 1.2);
+    const rows = FN.rows, foot = FN.foot || [], x0 = 64, w = W - 128, hHead = 70, rowH = 150, h = hHead + rows.length * rowH + (foot.length ? 40 + foot.length * 42 : 20);
+    const y0 = Math.round(H * 0.42 - h / 2 + (1 - pop) * 30);
+    ctx.globalAlpha = pop; box(ctx, x0, y0, w, h, hHead);
+    ctx.fillStyle = ONRED; bigText(ctx, FN.head, x0 + 28, y0 + 18, 5);
+    rows.forEach(([col, value, label, suffix], i) => {
+      const y = y0 + hHead + 34 + i * rowH, bx = x0 + 40, v = fmt(value * grow) + (suffix || "");
+      ctx.fillStyle = CSS[col] || INK; ctx.fillRect(bx, y + 6, 72, 72);
+      const kv = Math.min(10, Math.floor((w - 190) / (v.length * 6)));
+      ctx.fillStyle = INK; bigText(ctx, v, bx + 104, y, kv); ctx.fillStyle = TH.dark; bigText(ctx, label, bx + 104, y + 86, Math.min(4, Math.floor((w - 190) / (label.length * 6))));
+    });
+    if (foot.length) {
+      const y = y0 + hHead + 24 + rows.length * rowH; ctx.fillStyle = INK; ctx.fillRect(x0 + 20, y - 10, w - 40, 4);
+      const kf = Math.min(4, ...foot.map((l) => Math.floor((w - 56) / (l.length * 6))));
+      foot.forEach((l, i) => bigText(ctx, l, x0 + 28, y + 14 + i * 42, kf));
+    }
+    ctx.globalAlpha = 1;
+  }
+  let endRect = null;
+  function drawEndLink(ctx, t) {
+    if (t < LINK_T) return;
+    const pop = ease((t - LINK_T) / 0.3), link = "SAMPATT.COM/ANIMATIONS", head = "MORE ANIMATIONS", kh = 4, kb = 5;
+    const w = Math.max(head.length * 6 * kh, link.length * 6 * kb) + 40, hHead = 7 * kh + 20, hBody = 7 * kb + 32, h = hHead + hBody;
+    const x = Math.round(W / 2 - w / 2), y = Math.round(H * 0.42 + 400 + (1 - pop) * 24);
+    endRect = [x, y, w, h];
+    ctx.globalAlpha = pop; box(ctx, x, y, w, h, hHead, 8);
+    ctx.fillStyle = ONRED; bigText(ctx, head, x + 20, y + 10, kh);
+    ctx.fillStyle = INK; bigText(ctx, link, Math.round(W / 2 - (link.length * 6 * kb - kb) / 2), y + hHead + 14, kb);
+    ctx.globalAlpha = 1;
+  }
+
+  // ---- frame ----
+  const RGB = PAL.map((h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
+  let curD = 0, curT = 0, ISO = -Infinity, ISO_P = 0; const ISO_FADE = 1.6;
+  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]; // ISO: during an isolating card, items from before its event show in their settled colour
+  function render(ctx, t) {
+    const clk = clock(t), d = clk.d, sec = t; curD = d; curT = t;
+    PART = null; ISO = clk.hold && clk.hold.isolate && clk.hold.span ? clk.hold.span[0] : -Infinity; ISO_P = 0;
+    if (ISO === -Infinity) for (const h of HOLDS) if (h.isolate && h.span) { const e = realOf(h.span[0]) + h.hold; if (t >= e && t < e + ISO_FADE) { ISO = h.span[0]; ISO_P = (t - e) / ISO_FADE; } }
+    if (clk.hold && clk.hold.ramp) { const lo = upTo(clk.hold.ramp[0]), hi = Math.min(upTo(clk.hold.ramp[1]), upTo(d)); if (hi > lo) PART = { lo, hi, f: clk.u }; }
+    endRect = null;
+    ctx.fillStyle = TH.ground; ctx.fillRect(0, 0, W, H);
+    if (!staticCopy) { drawStatic(); staticCopy = buf.slice(); }
+    if (MAP_H && !CE) {
+      updateCommitted(d);
+      if (ISO === -Infinity) buf.set(mapLayer);
+      else if (!ISO_P) buf.set(mutedLayer());
+      else { const m = mutedLayer(); buf.set(mapLayer); for (let y = MAP_Y0; y < MAP_Y0 + MAP_H; y++) for (let x = 2; x < CARD_W - 2; x++) if ((BAYER[(y & 3) * 4 + (x & 3)] + 0.5) / 16 >= ISO_P) { const i = y * BW + x; buf[i] = m[i]; } }
+    } else buf.set(staticCopy);
+    // header: the date, then the running counters
+    const dl = dateLabel(d), DW = A.dateW || 136; rect(6, 16, DW, 20, 1); text(dl, 6 + Math.floor((DW - textW(dl, 2)) / 2), 19, 0, 2);
+    const sub = subLabel(d); if (sub) text(sub, 6 + Math.floor((DW - textW(sub)) / 2), 38, 1);
+    const n = upTo(d), CT = A.counters || [], BOXW = A.boxW || 94;
+    CT.forEach((c, j) => {
+      const bx = CARD_W - 6 - (CT.length - j) * (BOXW + 4) + 4, v = fmt(counterVal(c, n)) + (c.suffix || "");
+      rect(bx, 16, BOXW, 20, c.col); text(v, bx + BOXW - 6 - textW(v, 2), 19, 0, 2); text(c.label, bx + BOXW - textW(c.label), 38, 1);
+    });
+    const hi = clk.hold && clk.hold.hi ? clk.hold.hi : [], on = hi.length > 0 && clk.ht > 0.3 && ((clk.ht - 0.3) * 1.25) % 1 < 0.5;
+    if (MAP_H) {
+      if (CE) drawCells(d); else drawLive(d, sec);
+      if (A.outlineTop) { if (!outline) makeOutline(); for (let i = 0; i < outline.length; i += 2) buf[outline[i]] = outline[i + 1]; }
+      if (TAGS) drawTags(n, sec);
+      if (BELL) drawBell(n, sec);
+      drawLabels(); drawLegend(hi, on);
+      if (clk.hold && clk.hold.focus) drawFocus(clk.hold, clk.ht);
+    }
+    if (FEED) drawFeed(n, sec);
+    if (CH) drawChart(d);
+    if (SQ) drawSquares(d);
+    const img = ctx.__img || (ctx.__img = new ImageData(BW, BH));
+    for (let i = 0; i < buf.length; i++) {
+      const c = buf[i], o = i * 4; if (c === 255) { img.data[o + 3] = 0; continue; }
+      const p = RGB[c]; img.data[o] = p[0]; img.data[o + 1] = p[1]; img.data[o + 2] = p[2]; img.data[o + 3] = 255;
+    }
+    const off = ctx.__off || (ctx.__off = Object.assign(document.createElement("canvas"), { width: BW, height: BH }));
+    off.getContext("2d").putImageData(img, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(off, CX * S, CY * S, BW * S, BH * S);
+    drawHold(ctx, clk); drawFinal(ctx, t); drawEndLink(ctx, t);
+  }
+
+  // events for the soundtrack: seconds of each item, by kind, plus the holds
+  function soundEvents() {
+    const by = K.map(() => []); for (let i = 0; i < N; i++) by[EV.k[i]].push(+realOf(EV.t[i]).toFixed(4));
+    const merged = (ks) => ks.flatMap((k) => by[k]).sort((a, b) => a - b);
+    const AU = A.audio || {}, extra = {};
+    if (AU.bell) extra.bell = merged(AU.bell.kinds).filter((_, j) => (j + 1) % AU.bell.every === 0);
+    extra.ramps = HOLDS.filter((h) => h.ramp).map((h) => { return { t0: +(realOf(h.span ? h.span[0] : h.t) + 0.5).toFixed(3), dur: Math.max(0.5, h.hold - 1.3), n: h.rampTicks || 36 }; });
+    if (AU.drone) extra.drone = { times: merged(AU.drone.kinds), win: AU.drone.win || 1.5, gain: AU.drone.gain || 1 };
+    return { duration: DURATION, kinds: K.map((k, i) => ({ sound: k.sound || null, vol: k.vol || 1, times: by[i] })), holds: HOLDS.map((h) => +realOf(h.t).toFixed(4)), ...extra };
+  }
+  window.ScaleAnim = { render, DURATION, T_END, W, H, S, CX, CY, cardY: () => CY, buttons: () => [], endRect: () => endRect, realOf, soundEvents, holds: HOLDS.map((h) => realOf(h.t)),
+    cards: HOLDS.map((h) => ({ t: realOf(h.t), hold: h.hold, head: h.head })).concat(A.final ? [{ t: FINAL_T, hold: LINK_T - FINAL_T, head: A.final.head, final: true }] : []) };
+})();
+
+}
+</script>
+<script>
+(async function () {
+  const cv = document.getElementById("c"), ctx = cv.getContext("2d"), btn = document.getElementById("play"), endLink = document.getElementById("endlink");
+  window.SAT_OPTS = { labels: "center" };
+  window.ANIM = await (await fetch("data.json")).json();
+  bootAnim();
+  const A = window.ScaleAnim;
+
+  // clock: the audio context is the master clock while sound plays; rAF otherwise
+  // The page clock (performance.now) drives the animation. Sound follows it and is optional:
+  // some browsers block or suspend Web Audio, and the animation must play regardless.
+  let t = 0, playing = false, wallStart = 0, tAtStart = 0, actx = null, buffer = null, src = null;
+  let audioReady = null; // fetched on first play, so a visit that never plays costs no audio bandwidth
+  let srcCtxStart = 0, srcT = 0, lastSync = 0;
+
+  async function startAudio(at) {
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state !== "running") actx.resume().catch(() => {});
+      if (!audioReady) audioReady = fetch("space-travellers.mp3").then((r) => r.arrayBuffer()).catch(() => null);
+      if (!buffer) {
+        const ab = await audioReady;
+        if (ab) buffer = await new Promise((ok, no) => { const p = actx.decodeAudioData(ab, ok, no); if (p && p.then) p.then(ok, no); });
+      }
+      if (!buffer || !playing) return;
+      stopAudio();
+      const now = playing ? tAtStart + (performance.now() - wallStart) / 1000 : at;
+      src = actx.createBufferSource(); src.buffer = buffer; src.connect(actx.destination);
+      src.start(0, Math.min(Math.max(0, now), buffer.duration - 0.01));
+      srcCtxStart = actx.currentTime; srcT = now;
+    } catch (e) { src = null; }
+  }
+  function stopAudio() { if (src) { try { src.stop(); } catch (e) {} try { src.disconnect(); } catch (e) {} src = null; } }
+
+  function play(from) {
+    if (from != null) t = from;
+    if (t >= A.DURATION) t = 0;
+    playing = true; btn.hidden = true;
+    wallStart = performance.now(); tAtStart = t;
+    startAudio(t);
+  }
+  function pause() { playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#9654; Resume"; }
+
+  function tick() {
+    // one clock: performance.now(), never the rAF timestamp, which can run on a different base inside nested frames
+    const now = performance.now();
+    if (playing) {
+      t = Math.max(0, tAtStart + (now - wallStart) / 1000);
+      if (t >= A.DURATION) { t = A.DURATION; playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#8635; Watch again"; }
+      // keep the sound in step; only when the audio clock is actually running
+      if (src && actx && actx.state === "running" && now - lastSync > 2000) {
+        lastSync = now;
+        const audioPos = srcT + (actx.currentTime - srcCtxStart);
+        if (Math.abs(audioPos - t) > 0.3) startAudio(t);
+      }
+    }
+    try { A.render(ctx, t); } catch (e) { console.error(e); }
+    const er = A.endRect(); // keep a real link over the end card
+    if (er) {
+      Object.assign(endLink.style, { left: er[0] / A.W * 100 + "%", top: er[1] / A.H * 100 + "%", width: er[2] / A.W * 100 + "%", height: er[3] / A.H * 100 + "%" });
+      endLink.hidden = false;
+    } else endLink.hidden = true;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  /* BEGIN scrub */
+  window.__player = {   // for the scrubber
+    anim: A, get t() { return t; }, get playing() { return playing; },
+    seek(v) { t = Math.max(0, Math.min(A.DURATION, v)); if (playing) { tAtStart = t; wallStart = performance.now(); startAudio(t); } btn.hidden = true; },
+    hold() { if (playing) { playing = false; stopAudio(); } btn.hidden = true; },
+    resume() { play(); },
+  };
+  (function () {
+// Swipe scrubbing for the interactive players (Sam's pick, 2026-11-27). Drag sideways across the animation to move
+// through time; the frame stays while the finger stays; drag near a card and it snaps onto it; let go and it carries
+// on (or stays paused). The bar is invisible except while swiping. A small hint shows once, the first time it plays.
+// Taps still play and pause; vertical swipes still scroll the page. Arrow keys step 2 s, Page keys jump card to card.
+// Needs window.__player = { anim, t, playing, seek(t), hold(), resume() } from the player page. Cards come from
+// ScaleAnim.cards ({t, hold, head}), or from the older animations' holds/events lists.
+(function () {
+  const P = window.__player, A = P.anim, D = A.DURATION;
+  const src = A.cards || A.holds || A.events || [];
+  const cards = src.filter((c) => c && typeof c.t === "number" && c.t >= 0 && c.t <= D)
+    .map((c) => ({ t: c.t, hold: c.hold || 3, head: c.head || "", final: !!c.final }))
+    .map((c) => ({ ...c, at: c.t + Math.min(1.0, c.hold * 0.3) })); // land just after the card has faded in
+  const stage = document.querySelector(".stage"), cv = document.getElementById("c"), clamp = (v) => Math.max(0, Math.min(1, v));
+  const fmtT = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const label = (c) => (c.head ? c.head.replace(/,.*$/, "").slice(0, 18) : fmtT(c.at));
+
+  const root = document.createElement("div"); root.className = "scrub";
+  root.innerHTML = `
+    <div class="track" role="slider" tabindex="0" aria-label="Move through the animation" aria-valuemin="0" aria-valuemax="${Math.round(D)}">
+      <div class="groove"><div class="fill"></div></div>
+      ${cards.map((c) => `<i class="tick${c.final ? " end" : ""}" style="--p:${c.at / D}"></i>`).join("")}
+      <div class="thumb"><span class="bubble"></span></div>
+    </div>`;
+  stage.appendChild(root);
+  const track = root.querySelector(".track"), thumb = root.querySelector(".thumb"), fill = root.querySelector(".fill"), bubble = root.querySelector(".bubble");
+
+  // a position → a time, pulled onto a card when close (within ~14 px of bar), with a little buzz on phones
+  let snapped = null;
+  function timeAt(p, lenPx) {
+    let t = clamp(p) * D, best = null;
+    for (const c of cards) { const dpx = Math.abs(c.at - t) / D * lenPx; if (dpx < 14 && (!best || dpx < best.d)) best = { c, d: dpx }; }
+    if (best) { if (snapped !== best.c && navigator.vibrate) try { navigator.vibrate(8); } catch (e) {} snapped = best.c; return best.c.at; }
+    snapped = null; return t;
+  }
+  let dragging = false, wasPlaying = false;
+  function begin() { dragging = true; wasPlaying = P.playing; P.hold(); root.classList.add("dragging"); hideHint(); }
+  function end() { if (!dragging) return; dragging = false; root.classList.remove("dragging"); snapped = null; if (wasPlaying) P.resume(); }
+
+  // the swipe: sideways only (vertical stays a page scroll); a full-width swipe covers 60% of the animation
+  let sx = 0, st = 0, armed = false, swiping = false, swallow = false;
+  cv.style.touchAction = "pan-y";
+  cv.addEventListener("pointerdown", (e) => { sx = e.clientX; st = P.t; armed = true; swiping = false; });
+  cv.addEventListener("pointermove", (e) => {
+    if (!armed) return; const dx = e.clientX - sx, w = cv.getBoundingClientRect().width;
+    if (!swiping && Math.abs(dx) > 10) { swiping = true; try { cv.setPointerCapture(e.pointerId); } catch (err) {} begin(); }
+    if (swiping) P.seek(timeAt(clamp(st / D + dx / w * 0.6), w * 0.92 / 0.6));
+  });
+  const up = () => { armed = false; if (swiping) { swiping = false; swallow = true; end(); setTimeout(() => (swallow = false), 0); } };
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  cv.addEventListener("click", (e) => { if (swallow) { e.stopImmediatePropagation(); e.preventDefault(); } }, true); // a swipe is not a tap
+
+  // keyboard, on the (focusable, otherwise invisible) bar
+  track.addEventListener("keydown", (e) => {
+    const k = e.key; let t = P.t;
+    if (k === "ArrowRight" || k === "ArrowUp") t += 2; else if (k === "ArrowLeft" || k === "ArrowDown") t -= 2;
+    else if (k === "PageDown") t = (cards.find((c) => c.at > P.t + 0.1) || { at: D }).at;
+    else if (k === "PageUp") t = ([...cards].reverse().find((c) => c.at < P.t - 0.1) || { at: 0 }).at;
+    else if (k === " " || k === "Enter") { e.preventDefault(); return P.playing ? P.hold() : P.resume(); } else return;
+    e.preventDefault(); P.seek(Math.max(0, Math.min(D, t)));
+  });
+
+  // the hint: once, the first time it plays; it leaves after a few seconds or at the first swipe
+  const hint = document.createElement("div"); hint.className = "swipe-hint"; hint.setAttribute("aria-hidden", "true");
+  hint.innerHTML = "<b>&#9664;</b> SWIPE TO MOVE THROUGH TIME <b>&#9654;</b>"; stage.appendChild(hint);
+  let hinted = false, hideT = 0;
+  function hideHint() { clearTimeout(hideT); hint.classList.remove("show"); }
+  (function watch() { if (P.playing && !hinted) { hinted = true; hint.classList.add("show"); hideT = setTimeout(hideHint, 3500); return; } if (!hinted) requestAnimationFrame(watch); })();
+
+  // keep the bar in step with the player; touch the page only when something changed
+  let lastP = -1, lastTxt = "", lastCur;
+  const ticks = [...root.querySelectorAll(".tick")];
+  function frame() {
+    const p = P.t / D;
+    if (p !== lastP) { lastP = p; thumb.style.left = p * 100 + "%"; fill.style.width = p * 100 + "%"; track.setAttribute("aria-valuenow", Math.round(P.t)); }
+    const cur = [...cards].reverse().find((c) => P.t >= c.t && P.t < c.t + c.hold);
+    const txt = cur ? label(cur) : fmtT(P.t); if (txt !== lastTxt) { lastTxt = txt; bubble.textContent = txt; }
+    if (cur !== lastCur) { lastCur = cur; ticks.forEach((el, i) => el.classList.toggle("on", cards[i] === cur)); }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+  })();
+  /* END scrub */
+  btn.addEventListener("click", () => play());
+  cv.addEventListener("click", (e) => {
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width * A.W / A.S - A.CX, y = (e.clientY - r.top) / r.height * A.H / A.S - A.cardY(t);
+    const b = A.buttons(), hit = (i) => b[i] && x >= b[i][0] && x < b[i][0] + b[i][2] && y >= b[i][1] && y < b[i][1] + b[i][3];
+    if (hit(1)) play(0);
+    else if (playing) pause();
+    else play();
+  });
+})();
+</script>
+
+</body>
+</html>

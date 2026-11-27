@@ -47,6 +47,25 @@
   .endlink[hidden], .play[hidden] { display: none; }
   .endlink:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
   .status { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font-size: 14px; color: var(--muted); }
+  /* BEGIN scrub */
+  /* swipe scrubber: invisible until you swipe across the animation (shared/scrub.js) */
+  .scrub { position: absolute; left: 4%; right: 4%; bottom: 1.5%; opacity: 0; transition: opacity 0.25s; pointer-events: none; font-family: var(--mono); color: var(--ink); -webkit-user-select: none; user-select: none; }
+  .scrub.dragging, .scrub:focus-within { opacity: 1; transition: opacity 0.08s; }
+  .scrub .track { position: relative; height: 46px; }
+  .scrub .track:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .scrub .groove { position: absolute; left: 0; right: 0; top: 50%; height: 12px; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: 2px solid var(--ink); box-sizing: border-box; overflow: hidden; }
+  .scrub .fill { background: var(--ink); width: 0; height: 100%; }
+  .scrub .tick { position: absolute; left: calc(var(--p) * 100%); top: 50%; width: 6px; height: 26px; transform: translate(-50%, -50%); background: var(--signal); border: 1px solid var(--ink); box-sizing: border-box; }
+  .scrub .tick.end { background: var(--ink); }
+  .scrub .tick.on { height: 36px; }
+  .scrub .thumb { position: absolute; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); background: var(--signal); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); box-sizing: border-box; }
+  .scrub .bubble { position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--ink); color: var(--paper); padding: 0 7px; font-size: 20px; line-height: 1.3; }
+  .swipe-hint { position: absolute; left: 50%; bottom: 3%; transform: translate(-50%, 8px); font-family: var(--mono); font-size: clamp(18px, 5.4vw, 26px); letter-spacing: 0.06em;
+    white-space: nowrap; background: var(--ink); color: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--signal); padding: 2px 12px; opacity: 0; pointer-events: none; transition: opacity 0.35s, transform 0.35s; }
+  .swipe-hint b { color: var(--signal); font-weight: 400; }
+  .swipe-hint.show { opacity: 1; transform: translate(-50%, 0); }
+  @media (prefers-reduced-motion: reduce) { .swipe-hint, .scrub { transition: none; } }
+  /* END scrub */
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
 
@@ -525,7 +544,7 @@ function bootAnim() {
     rect(6, 16, 88, 20, 2); frame(6, 16, 88, 20, 1); text(red, 6 + Math.floor((88 - textW(red, 2)) / 2), 19, 0, 2);
     rect(93, 16, 64, 20, 0); frame(93, 16, 64, 20, 1); frame(94, 17, 62, 18, 1);
     const ys = String(d.getUTCFullYear()); text(ys, 93 + Math.floor((64 - textW(ys, 2)) / 2), 19, 1, 2);
-    const ds = d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear();
+    const ds = String(d.getUTCDate()).padStart(2, " ") + " " + MONTHS[d.getUTCMonth()] + " " + d.getUTCFullYear();
     text(ds, 6 + Math.floor((88 - textW(ds)) / 2), 38, 1);
     // counter
     const ts = fmt(total);
@@ -631,9 +650,11 @@ function bootAnim() {
   }
   function pause() { playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#9654; Resume"; }
 
-  function tick(now) {
+  function tick() {
+    // one clock: performance.now(), never the rAF timestamp, which can run on a different base inside nested frames
+    const now = performance.now();
     if (playing) {
-      t = tAtStart + (now - wallStart) / 1000;
+      t = Math.max(0, tAtStart + (now - wallStart) / 1000);
       if (t >= A.DURATION) { t = A.DURATION; playing = false; stopAudio(); btn.hidden = false; btn.innerHTML = "&#8635; Watch again"; }
       // keep the sound in step; only when the audio clock is actually running
       if (src && actx && actx.state === "running" && now - lastSync > 2000) {
@@ -652,6 +673,98 @@ function bootAnim() {
   }
   requestAnimationFrame(tick);
 
+  /* BEGIN scrub */
+  window.__player = {   // for the scrubber
+    anim: A, get t() { return t; }, get playing() { return playing; },
+    seek(v) { t = Math.max(0, Math.min(A.DURATION, v)); if (playing) { tAtStart = t; wallStart = performance.now(); startAudio(t); } btn.hidden = true; },
+    hold() { if (playing) { playing = false; stopAudio(); } btn.hidden = true; },
+    resume() { play(); },
+  };
+  (function () {
+// Swipe scrubbing for the interactive players (Sam's pick, 2026-11-27). Drag sideways across the animation to move
+// through time; the frame stays while the finger stays; drag near a card and it snaps onto it; let go and it carries
+// on (or stays paused). The bar is invisible except while swiping. A small hint shows once, the first time it plays.
+// Taps still play and pause; vertical swipes still scroll the page. Arrow keys step 2 s, Page keys jump card to card.
+// Needs window.__player = { anim, t, playing, seek(t), hold(), resume() } from the player page. Cards come from
+// ScaleAnim.cards ({t, hold, head}), or from the older animations' holds/events lists.
+(function () {
+  const P = window.__player, A = P.anim, D = A.DURATION;
+  const src = A.cards || A.holds || A.events || [];
+  const cards = src.filter((c) => c && typeof c.t === "number" && c.t >= 0 && c.t <= D)
+    .map((c) => ({ t: c.t, hold: c.hold || 3, head: c.head || "", final: !!c.final }))
+    .map((c) => ({ ...c, at: c.t + Math.min(1.0, c.hold * 0.3) })); // land just after the card has faded in
+  const stage = document.querySelector(".stage"), cv = document.getElementById("c"), clamp = (v) => Math.max(0, Math.min(1, v));
+  const fmtT = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const label = (c) => (c.head ? c.head.replace(/,.*$/, "").slice(0, 18) : fmtT(c.at));
+
+  const root = document.createElement("div"); root.className = "scrub";
+  root.innerHTML = `
+    <div class="track" role="slider" tabindex="0" aria-label="Move through the animation" aria-valuemin="0" aria-valuemax="${Math.round(D)}">
+      <div class="groove"><div class="fill"></div></div>
+      ${cards.map((c) => `<i class="tick${c.final ? " end" : ""}" style="--p:${c.at / D}"></i>`).join("")}
+      <div class="thumb"><span class="bubble"></span></div>
+    </div>`;
+  stage.appendChild(root);
+  const track = root.querySelector(".track"), thumb = root.querySelector(".thumb"), fill = root.querySelector(".fill"), bubble = root.querySelector(".bubble");
+
+  // a position → a time, pulled onto a card when close (within ~14 px of bar), with a little buzz on phones
+  let snapped = null;
+  function timeAt(p, lenPx) {
+    let t = clamp(p) * D, best = null;
+    for (const c of cards) { const dpx = Math.abs(c.at - t) / D * lenPx; if (dpx < 14 && (!best || dpx < best.d)) best = { c, d: dpx }; }
+    if (best) { if (snapped !== best.c && navigator.vibrate) try { navigator.vibrate(8); } catch (e) {} snapped = best.c; return best.c.at; }
+    snapped = null; return t;
+  }
+  let dragging = false, wasPlaying = false;
+  function begin() { dragging = true; wasPlaying = P.playing; P.hold(); root.classList.add("dragging"); hideHint(); }
+  function end() { if (!dragging) return; dragging = false; root.classList.remove("dragging"); snapped = null; if (wasPlaying) P.resume(); }
+
+  // the swipe: sideways only (vertical stays a page scroll); a full-width swipe covers 60% of the animation
+  let sx = 0, st = 0, armed = false, swiping = false, swallow = false;
+  cv.style.touchAction = "pan-y";
+  cv.addEventListener("pointerdown", (e) => { sx = e.clientX; st = P.t; armed = true; swiping = false; });
+  cv.addEventListener("pointermove", (e) => {
+    if (!armed) return; const dx = e.clientX - sx, w = cv.getBoundingClientRect().width;
+    if (!swiping && Math.abs(dx) > 10) { swiping = true; try { cv.setPointerCapture(e.pointerId); } catch (err) {} begin(); }
+    if (swiping) P.seek(timeAt(clamp(st / D + dx / w * 0.6), w * 0.92 / 0.6));
+  });
+  const up = () => { armed = false; if (swiping) { swiping = false; swallow = true; end(); setTimeout(() => (swallow = false), 0); } };
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  cv.addEventListener("click", (e) => { if (swallow) { e.stopImmediatePropagation(); e.preventDefault(); } }, true); // a swipe is not a tap
+
+  // keyboard, on the (focusable, otherwise invisible) bar
+  track.addEventListener("keydown", (e) => {
+    const k = e.key; let t = P.t;
+    if (k === "ArrowRight" || k === "ArrowUp") t += 2; else if (k === "ArrowLeft" || k === "ArrowDown") t -= 2;
+    else if (k === "PageDown") t = (cards.find((c) => c.at > P.t + 0.1) || { at: D }).at;
+    else if (k === "PageUp") t = ([...cards].reverse().find((c) => c.at < P.t - 0.1) || { at: 0 }).at;
+    else if (k === " " || k === "Enter") { e.preventDefault(); return P.playing ? P.hold() : P.resume(); } else return;
+    e.preventDefault(); P.seek(Math.max(0, Math.min(D, t)));
+  });
+
+  // the hint: once, the first time it plays; it leaves after a few seconds or at the first swipe
+  const hint = document.createElement("div"); hint.className = "swipe-hint"; hint.setAttribute("aria-hidden", "true");
+  hint.innerHTML = "<b>&#9664;</b> SWIPE TO MOVE THROUGH TIME <b>&#9654;</b>"; stage.appendChild(hint);
+  let hinted = false, hideT = 0;
+  function hideHint() { clearTimeout(hideT); hint.classList.remove("show"); }
+  (function watch() { if (P.playing && !hinted) { hinted = true; hint.classList.add("show"); hideT = setTimeout(hideHint, 3500); return; } if (!hinted) requestAnimationFrame(watch); })();
+
+  // keep the bar in step with the player; touch the page only when something changed
+  let lastP = -1, lastTxt = "", lastCur;
+  const ticks = [...root.querySelectorAll(".tick")];
+  function frame() {
+    const p = P.t / D;
+    if (p !== lastP) { lastP = p; thumb.style.left = p * 100 + "%"; fill.style.width = p * 100 + "%"; track.setAttribute("aria-valuenow", Math.round(P.t)); }
+    const cur = [...cards].reverse().find((c) => P.t >= c.t && P.t < c.t + c.hold);
+    const txt = cur ? label(cur) : fmtT(P.t); if (txt !== lastTxt) { lastTxt = txt; bubble.textContent = txt; }
+    if (cur !== lastCur) { lastCur = cur; ticks.forEach((el, i) => el.classList.toggle("on", cards[i] === cur)); }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+  })();
+  /* END scrub */
   btn.addEventListener("click", () => play());
   cv.addEventListener("click", (e) => {
     const r = cv.getBoundingClientRect();

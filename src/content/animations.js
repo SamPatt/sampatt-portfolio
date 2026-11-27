@@ -12,6 +12,96 @@ const MEDIA = import.meta.env.VITE_MEDIA_BASE ?? 'https://cdn.jsdelivr.net/gh/sa
 
 const animations = [
   {
+    slug: 'earthquakes',
+    title: 'Every Big Earthquake Since 1900',
+    date: '2026-11-27',
+    duration: '1:48',
+    summary:
+      'Every earthquake of magnitude 6 or more since 1900, and how much of all that energy came from a handful of giants.',
+    poster: `${MEDIA}/animations/2026-11-27-earthquakes/earthquakes-poster-v1.jpg`,
+    player: '/media/animations/earthquakes/player.html',
+  },
+  {
+    slug: 'space-travellers',
+    title: 'Everyone Who Has Been to Space',
+    date: '2026-11-27',
+    duration: '1:48',
+    summary:
+      'Everyone who has flown to space, country by country, from Gagarin on, with every name listed as they launch.',
+    poster: `${MEDIA}/animations/2026-11-27-space-travellers/space-travellers-poster-v1.jpg`,
+    player: '/media/animations/space-travellers/player.html',
+  },
+  {
+    slug: 'exoplanets',
+    title: 'Every Planet Found Beyond the Sun',
+    date: '2026-11-27',
+    duration: '1:57',
+    summary:
+      'Every planet found around another star, placed on the night sky where its star sits, from a trickle in the 1990s to the Kepler flood.',
+    poster: `${MEDIA}/animations/2026-11-27-exoplanets/exoplanets-poster-v1.jpg`,
+    player: '/media/animations/exoplanets/player.html',
+  },
+  {
+    slug: 'hurricanes',
+    title: 'Every Atlantic Storm Since 1851',
+    date: '2026-11-27',
+    duration: '1:47',
+    summary:
+      'Every Atlantic storm since 1851, track by track, with the deaths of the worst from Galveston to Mitch.',
+    poster: `${MEDIA}/animations/2026-11-27-hurricanes/hurricanes-poster-v1.jpg`,
+    player: '/media/animations/hurricanes/player.html',
+  },
+  {
+    slug: 'tornadoes',
+    title: 'Every American Tornado Since 1950',
+    date: '2026-11-27',
+    duration: '1:54',
+    summary:
+      'Every tornado recorded in the United States since 1950, each track drawn at its real length, and the outbreaks that killed the most.',
+    poster: `${MEDIA}/animations/2026-11-27-tornadoes/tornadoes-poster-v1.jpg`,
+    player: '/media/animations/tornadoes/player.html',
+  },
+  {
+    slug: 'rocket-launches',
+    title: 'Every Rocket That Tried for Orbit',
+    date: '2026-11-27',
+    duration: '1:40',
+    summary:
+      'Every rocket launched toward orbit, where each one flew and where the failures fell, from Sputnik to the Falcon era.',
+    poster: `${MEDIA}/animations/2026-11-27-rocket-launches/rocket-launches-poster-v1.jpg`,
+    player: '/media/animations/rocket-launches/player.html',
+  },
+  {
+    slug: 'everest',
+    title: 'Every Summit of Everest',
+    date: '2026-11-27',
+    duration: '1:42',
+    summary:
+      'Every person who has stood on top of Everest, day by day, from 1953 to the crowded spring seasons of today.',
+    poster: `${MEDIA}/animations/2026-11-27-everest/everest-poster-v1.jpg`,
+    player: '/media/animations/everest/player.html',
+  },
+  {
+    slug: 'chicago-1918',
+    title: 'Chicago, Autumn 1918',
+    date: '2026-11-27',
+    duration: '1:41',
+    summary:
+      'The 1918 flu in Chicago, death by death through the autumn wave. A bell rings for every hundred.',
+    poster: `${MEDIA}/animations/2026-11-27-chicago-1918/chicago-1918-poster-v1.jpg`,
+    player: '/media/animations/chicago-1918/player.html',
+  },
+  {
+    slug: 'lewis-and-clark',
+    title: "Lewis and Clark, Every Night's Camp",
+    date: '2026-11-27',
+    duration: '1:50',
+    summary:
+      "Every night's camp of the Corps of Discovery, from St. Louis to the Pacific and back, 1804 to 1806.",
+    poster: `${MEDIA}/animations/2026-11-27-lewis-and-clark/lewis-and-clark-poster-v1.jpg`,
+    player: '/media/animations/lewis-and-clark/player.html',
+  },
+  {
     slug: 'dday',
     title: 'D-Day: The American Beaches',
     date: '2026-11-27',
