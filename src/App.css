@@ -1700,7 +1700,12 @@ footer {
 
 .animation-fullscreen {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* the small viewport: the area that stays visible while mobile browser toolbars are showing */
+  height: 100vh;
+  height: 100svh;
   background: #dcdcdc;
 }
 

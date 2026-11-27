@@ -15,13 +15,19 @@
   html, body { height: 100%; }
   body {
     background: var(--ground); color: var(--ink); font-family: var(--mono);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
     padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
-    padding-block: 0; box-sizing: border-box; overflow: hidden; margin: 0;
+    padding-top: var(--top); padding-bottom: 4px; box-sizing: border-box; overflow: hidden; margin: 0;
   }
+  /* headroom above the animation: some mobile browsers draw their toolbar over the top of the page */
+  :root { --top: max(16px, env(safe-area-inset-top, 0px)); }
   /* keep 9:16 exactly: as wide as the screen allows, leaving room for the credit line */
-  .stage { position: relative; width: min(100vw, calc((100vh - 44px) * 9 / 16)); width: min(100vw, calc((100dvh - 44px) * 9 / 16)); aspect-ratio: 9 / 16; }
-  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - 44px) * 9 / 16)) * 16 / 9); } }
+  /* the animation takes whatever height is left after the headroom and the credit line, at exactly 9:16 */
+  .fit { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; container-type: size; }
+  .credit { flex: none; }
+  .stage { position: relative; width: min(100vw, calc((100vh - 48px - var(--top)) * 9 / 16)); width: min(100vw, calc((100svh - 48px - var(--top)) * 9 / 16)); aspect-ratio: 9 / 16; }
+  @supports (container-type: size) { .stage { width: min(100cqw, calc(100cqh * 9 / 16)); } }
+  @supports not (aspect-ratio: 9 / 16) { .stage { height: calc(min(100vw, calc((100vh - 48px - var(--top)) * 9 / 16)) * 16 / 9); } }
   canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; cursor: pointer; }
   .play {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -42,11 +48,13 @@
 
 </head>
 <body>
+<main class="fit">
 <div class="stage">
   <canvas id="c" width="1080" height="1920" aria-label="Animation: every satellite launched since Sputnik, one grid cell per satellite"></canvas>
   <button class="play" id="play" type="button">&#9654; Play with sound</button>
   <a class="endlink" id="endlink" href="https://sampatt.com/animations" target="_top" hidden aria-label="More animations at sampatt.com/animations"></a>
 </div>
+</main>
 <p class="credit">Data: <a href="https://planet4589.org/space/gcat/" target="_blank" rel="noopener">GCAT, J. McDowell</a> (CC-BY), payloads launched through 30 Jun 2026 &middot; Sputnik audio: NASA &middot; <a href="https://sampatt.com/animations" target="_top">More animations</a></p>
 
 <script>
