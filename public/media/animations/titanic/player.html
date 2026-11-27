@@ -8,7 +8,7 @@
 <style>
   /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
   :root {
-    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --ground: #d8d3c8; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
     --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
     color-scheme: light;
   }
@@ -94,8 +94,8 @@ window.PIXEL_FONT = (function () {
 (function () {
   const D = window.TITANIC, { F, F3 } = window.PIXEL_FONT;
   const W = 1080, H = 1920, S = 2;
-  const INK = "#111111", PAPER = "#ffffff", RED = "#e0201b", GROUND = "#dcdcdc", ABOARD = "#8e8e8e";
-  const PAL = [PAPER, INK, RED, "#9a9a9a", "#d0d0d0"]; // 0 white, 1 black, 2 red, 3 grey, 4 light grey
+  const INK = "#1b1a18", PAPER = "#f5f2ea", RED = "#c42a1c", GROUND = "#d8d3c8", ABOARD = "#8f8b82"; // house style: Newsprint A (historical)
+  const PAL = [PAPER, INK, RED, "#99958c", "#dedad0"]; // 0 white, 1 black, 2 red, 3 grey, 4 light grey
 
   // ---- timing ----
   // iceberg at 11:40 and a hold; a pop-up; the clock zips the hour to the first boat (12:40); then a steady clock

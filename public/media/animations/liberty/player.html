@@ -8,7 +8,7 @@
 <style>
   /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
   :root {
-    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --ground: #d8d3c8; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
     --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
     color-scheme: light;
   }
@@ -96,8 +96,8 @@ window.LIBERTY_ROUTES={"step":20.0,"lane":15,"routes":{"NA":[[146.83,150.6,0.0],
 (function () {
   const D = window.LIBERTY, { F } = window.PIXEL_FONT;
   const W = 1080, H = 1920, S = 2;
-  const INK = "#111111", PAPER = "#ffffff", RED = "#e0201b", GROUND = "#dcdcdc", BLUE = "#1d5bd8";
-  const PAL = [PAPER, INK, RED, "#9a9a9a", "#d0d0d0", BLUE];
+  const INK = "#1b1a18", PAPER = "#f5f2ea", RED = "#c42a1c", GROUND = "#d8d3c8", BLUE = "#1d5bd8"; // house style: Newsprint A (historical)
+  const PAL = [PAPER, INK, RED, "#99958c", "#dedad0", BLUE];
   const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
   const epoch = Date.parse(D.epoch);
   const dayOf = (iso) => Math.round((Date.parse(iso) - epoch) / 86400000);

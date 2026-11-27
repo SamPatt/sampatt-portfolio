@@ -18,7 +18,7 @@ const animations = [
     duration: '1:17',
     summary:
       'Every man, vehicle and ton of supplies landed at Omaha and Utah, day by day through June 1944, storm and all.',
-    poster: `${MEDIA}/animations/2026-11-27-dday/dday-poster-v3.jpg`,
+    poster: `${MEDIA}/animations/2026-11-27-dday/dday-poster-v4.jpg`,
     player: '/media/animations/dday/player.html',
   },
   {
@@ -28,7 +28,7 @@ const animations = [
     duration: '1:19',
     summary:
       'Every ship a U-boat sank, every Liberty ship America built, every U-boat destroyed. The Battle of the Atlantic, one dot at a time.',
-    poster: `${MEDIA}/animations/2026-11-26-liberty/liberty-poster-v7.jpg`,
+    poster: `${MEDIA}/animations/2026-11-26-liberty/liberty-poster-v8.jpg`,
     player: '/media/animations/liberty/player.html',
   },
   {
@@ -38,7 +38,7 @@ const animations = [
     duration: '1:11',
     summary:
       'Every lifeboat, every seat, everyone aboard. How empty the first boats left, and who got a place in them.',
-    poster: `${MEDIA}/animations/2026-11-25-titanic/titanic-poster-v7.jpg`,
+    poster: `${MEDIA}/animations/2026-11-25-titanic/titanic-poster-v8.jpg`,
     player: '/media/animations/titanic/player.html',
   },
   {

@@ -8,7 +8,7 @@
 <style>
   /* Single deliberate look: the animation's own 1-bit grey grid, black ink and signal red. */
   :root {
-    --ground: #dcdcdc; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
+    --ground: #d8d3c8; --ink: #111111; --paper: #ffffff; --signal: #e0201b; --muted: #555555;
     --mono: "VT323", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
     color-scheme: light;
   }
@@ -98,8 +98,21 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
 (function () {
   const D = window.DDAY, G = window.DDAY_GEO, { F } = window.PIXEL_FONT;
   const W = 1080, H = 1920, S = 2;
-  const INK = "#111111", PAPER = "#ffffff", RED = "#e0201b", GROUND = "#dcdcdc", BLUE = "#1d5bd8";
-  const PAL = [PAPER, INK, RED, "#9a9a9a", "#d0d0d0", BLUE, "#555555", "#f2a19e"];
+  // ---- house style, with five small variations for comparison (?style=) ----
+  const THEMES = {
+    field:     { ink: "#111111", paper: "#ffffff", red: "#e0201b", ground: "#dcdcdc", grey: "#9a9a9a", light: "#d0d0d0", veh: "#555555", night: [178, 186, 204] },
+    newsprint: { ink: "#1b1a17", paper: "#f6f0e2", red: "#c42a1c", ground: "#d9cfbb", grey: "#9b9384", light: "#ded5c2", veh: "#5d574d", night: [196, 190, 178] },
+    newsprint2: { ink: "#1b1a18", paper: "#f5f2ea", red: "#c42a1c", ground: "#d8d3c8", grey: "#99958c", light: "#dedad0", veh: "#5a5751", night: [192, 191, 184] }, // less yellow
+    newsprint3: { ink: "#1a1a19", paper: "#f4f3ee", red: "#c42a1c", ground: "#d6d4ce", grey: "#979590", light: "#dddbd5", veh: "#585652", night: [188, 190, 190] }, // nearly neutral, a hint of warmth
+    blackout:  { ink: "#ececec", paper: "#161616", red: "#ff3b2e", ground: "#050505", grey: "#6f6f6f", light: "#2c2c2c", veh: "#9a9a9a", night: [10, 14, 26] },
+    plotting:  { ink: "#111111", paper: "#fbfcfb", red: "#e0201b", ground: "#cfd6d0", grey: "#8f9a91", light: "#d6e2d8", veh: "#555555", night: [178, 186, 204], grid: true },
+    poster:    { ink: "#111111", paper: "#ffffff", red: "#e0201b", ground: "#e0201b", grey: "#9a9a9a", light: "#d0d0d0", veh: "#555555", night: [178, 186, 204], solidBars: true },
+    scanline:  { ink: "#111111", paper: "#ffffff", red: "#e0201b", ground: "#c9c9c9", grey: "#9a9a9a", light: "#d0d0d0", veh: "#555555", night: [178, 186, 204], scan: true },
+  };
+  const STYLE = (typeof location !== "undefined" && location.search && new URLSearchParams(location.search).get("style")) || "newsprint2"; // D-Day: Newsprint A (historical)
+  const TH = THEMES[STYLE] || THEMES.field;
+  const INK = TH.ink, PAPER = TH.paper, RED = TH.red, GROUND = TH.ground, BLUE = "#1d5bd8", ONRED = "#ffffff", VEHC = TH.veh;
+  const PAL = [PAPER, INK, RED, TH.grey, TH.light, BLUE, TH.veh, "#f2a19e"];
   // vehicles get a second shade inside the black-and-red look: "hollow" | "dither" | "grey" | "pink" (?veh= to compare)
   const VEH = (typeof location !== "undefined" && location.search && new URLSearchParams(location.search).get("veh")) || "grey";
   const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
@@ -186,6 +199,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     o.bx = Math.round(ln.P[ln.P.length - 1][0]); o.by = Math.round(ln.P[ln.P.length - 1][1]);
   });
   function pathPos(ln, d, off) {
+    if (!Number.isFinite(d)) { if (!pathPos.warned) { pathPos.warned = 1; console.warn("pathPos: non-finite distance", d, ln && ln.L, off); } return [-99, -99]; }
     const P = ln.P, f = Math.max(0, Math.min(P.length - 1, d / G.step)), i = Math.min(P.length - 2, Math.floor(f)), u = f - i;
     const a = P[i], b = P[i + 1], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1;
     const o = off * ((a[2] + (b[2] - a[2]) * u) / G.lane) * Math.max(0, Math.min(1, d / 6, (ln.L - d) / 6));
@@ -210,16 +224,20 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     return Math.asin(Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha)) * 180 / Math.PI;
   }
   const night = (d) => Math.max(0, Math.min(1, (0.5 - sunAlt(d)) / 8)); // 0 in daylight, 1 once the sun is 8 degrees down
-  const NIGHT_RGB = [178, 186, 204]; // the map's paper at full night: a soft slate
+  const NIGHT_RGB = TH.night; // the map's paper at full night: a soft slate
 
   // ---- static layer ----
   const MAP_LEG = [[1, "250 MEN"], [5, "50 VEHICLES"], [2, "250 TONS OF SUPPLIES"]];
   function drawStatic() {
     buf.fill(255);
     rect(3, 3, CARD_W, CARD_H, 1); rect(0, 0, CARD_W, CARD_H, 0); frame(0, 0, CARD_W, CARD_H, 1);
-    for (let y = 2; y < 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);
-    const title = "D-DAY: THE AMERICAN BEACHES, JUNE 1944", tw = textW(title);
-    rect((CARD_W - tw) / 2 - 4, 1, tw + 8, 10, 0); text(title, (CARD_W - tw) / 2, 2, 1);
+    const titleBar = (y0, t) => { const tw = textW(t); // ruled bar with the title on paper, or a solid ink bar
+      if (TH.solidBars) { rect(1, y0 + 1, CARD_W - 2, 10, 1); text(t, (CARD_W - tw) / 2, y0 + 2, 0); return; }
+      for (let y = y0 + 2; y < y0 + 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);
+      rect((CARD_W - tw) / 2 - 4, y0 + 1, tw + 8, 10, 0); text(t, (CARD_W - tw) / 2, y0 + 2, 1); };
+    titleBar(0, "D-DAY: THE AMERICAN BEACHES, JUNE 1944");
+    if (TH.grid) for (let y = MAP_Y0 + 8; y < MAP_Y0 + MAP_H; y += 16) for (let x = 2; x < CARD_W - 2; x += 1) px(x, y, 4); // plotting-table grid
+    if (TH.grid) for (let x = 16; x < CARD_W - 2; x += 16) for (let y = MAP_Y0; y < MAP_Y0 + MAP_H; y += 1) px(x, y, 4);
     rect(1, 11, CARD_W - 2, 1, 1); rect(1, MAP_Y0 - 1, CARD_W - 2, 1, 1); rect(1, CHART_Y0 - 1, CARD_W - 2, 1, 1);
     for (const ring of G.coast) for (let i = 1; i < ring.length; i++) line(ring[i - 1][0], ring[i - 1][1], ring[i][0], ring[i][1], 3, inMap);
     // ports
@@ -238,8 +256,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     // second card
     const y0 = SQ_Y, h = BH - SQ_Y - 6;
     rect(3, y0 + 3, CARD_W, h, 1); rect(0, y0, CARD_W, h, 0); frame(0, y0, CARD_W, h, 1);
-    for (let y = y0 + 2; y < y0 + 10; y += 2) rect(1, y, CARD_W - 2, 1, 1);
-    const t2 = "ONE SQUARE PER LOAD", t2w = textW(t2); rect((CARD_W - t2w) / 2 - 4, y0 + 1, t2w + 8, 10, 0); text(t2, (CARD_W - t2w) / 2, y0 + 2, 1);
+    titleBar(y0, "ONE SQUARE PER LOAD");
     rect(1, y0 + 11, CARD_W - 2, 1, 1);
   }
   let staticCopy = null;
@@ -323,7 +340,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
   function bigText(ctx, s, x, y, k, bw = k + 1) { for (const ch of s) { const g = F[ch] || F[" "]; for (let r = 0; r < 7; r++) for (let q = 0; q < 5; q++) if (g[r * 5 + q] === "1") ctx.fillRect(x + q * k, y + r * k, bw, k); x += 6 * k; } }
   const ICON = { "#K ": INK, "#B ": "veh", "#R ": RED };
   function vehIcon(ctx, x, y, w) { // the vehicle shade at pop-up size
-    if (VEH === "grey" || VEH === "pink") { ctx.fillStyle = VEH === "grey" ? "#555555" : "#f2a19e"; ctx.fillRect(x, y, w, w); return; }
+    if (VEH === "grey" || VEH === "pink") { ctx.fillStyle = VEH === "grey" ? VEHC : "#f2a19e"; ctx.fillRect(x, y, w, w); return; }
     if (VEH === "dither") { const c = Math.max(3, Math.round(w / 8)); for (let j = 0; j * c < w; j++) for (let i = 0; i * c < w; i++) { ctx.fillStyle = (i + j) % 2 ? PAPER : INK; ctx.fillRect(x + i * c, y + j * c, Math.min(c, w - i * c), Math.min(c, w - j * c)); } return; }
     ctx.fillStyle = INK; ctx.fillRect(x, y, w, w); const b = Math.max(4, Math.round(w / 6)); ctx.fillStyle = PAPER; ctx.fillRect(x + b, y + b, w - 2 * b, w - 2 * b);
   }
@@ -335,7 +352,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
     const ctr = (s, k, yy, col) => { ctx.fillStyle = col; bigText(ctx, s, Math.round(W / 2 - (s.length * 6 * k - k) / 2), yy, k); };
     const fit = (str, kmax) => Math.max(2, Math.min(kmax, Math.floor((w - 70) / (str.length * 6))));
-    const kh = fit(head, 8); ctr(head, kh, y + Math.round((hHead - 7 * kh) / 2), PAPER);
+    const kh = fit(head, 8); ctr(head, kh, y + Math.round((hHead - 7 * kh) / 2), ONRED);
     const kBody = Math.min(...lines.map((l) => (ICON[l.slice(0, 3)] ? Math.max(2, Math.min(5, Math.floor((w - 130) / ((l.length - 3) * 6)))) : fit(l, 5))));
     lines.forEach((l, i) => {
       const yy = y + hHead + 28 + i * 56, icon = l.slice(0, 3);
@@ -369,12 +386,12 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     ctx.fillStyle = INK; ctx.fillRect(x0 + 10, y0 + 10, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x0, y0, w, h);
     ctx.fillStyle = RED; ctx.fillRect(x0, y0, w, hHead); ctx.fillStyle = INK;
     ctx.fillRect(x0, y0, w, 4); ctx.fillRect(x0, y0 + h - 4, w, 4); ctx.fillRect(x0, y0, 4, h); ctx.fillRect(x0 + w - 4, y0, 4, h); ctx.fillRect(x0, y0 + hHead - 4, w, 4);
-    ctx.fillStyle = PAPER; bigText(ctx, "BY 30 JUNE", x0 + 28, y0 + 18, 5);
+    ctx.fillStyle = ONRED; bigText(ctx, "BY 30 JUNE", x0 + 28, y0 + 18, 5);
     const sum = (k) => A(k).reduce((s, v) => s + (v || 0), 0);
     [["MEN", "troops", INK], ["VEHICLES", "vehicles", "veh"], ["TONS OF SUPPLIES", "tons", RED]].forEach(([label, k, col], i) => {
       const y = y0 + hHead + 34 + i * rowH, bx = x0 + 40, n = Math.round(sum(k) * grow);
       if (col === "veh") vehIcon(ctx, bx, y + 6, 72); else { ctx.fillStyle = col; ctx.fillRect(bx, y + 6, 72, 72); }
-      ctx.fillStyle = INK; bigText(ctx, fmt(n), bx + 104, y, 10); ctx.fillStyle = "#555555"; bigText(ctx, label, bx + 104, y + 86, 4);
+      ctx.fillStyle = INK; bigText(ctx, fmt(n), bx + 104, y, 10); ctx.fillStyle = VEHC; bigText(ctx, label, bx + 104, y + 86, 4);
     });
     const y = y0 + hHead + 24 + 3 * rowH; ctx.fillStyle = INK; ctx.fillRect(x0 + 20, y - 10, w - 40, 4);
     bigText(ctx, "ALL ALLIED BEACHES BY THE END", x0 + 28, y + 14, 4); bigText(ctx, "OF JUNE: ABOUT 875,000 MEN", x0 + 28, y + 56, 4); // Whitmarsh 2009, p. 104, via Wikipedia
@@ -391,7 +408,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     ctx.fillStyle = INK; ctx.fillRect(x + 8, y + 8, w, h); ctx.fillStyle = PAPER; ctx.fillRect(x, y, w, h);
     ctx.fillStyle = RED; ctx.fillRect(x, y, w, hHead); ctx.fillStyle = INK;
     ctx.fillRect(x, y, w, 4); ctx.fillRect(x, y + h - 4, w, 4); ctx.fillRect(x, y, 4, h); ctx.fillRect(x + w - 4, y, 4, h); ctx.fillRect(x, y + hHead - 4, w, 4);
-    ctx.fillStyle = PAPER; bigText(ctx, head, x + 20, y + 10, kh);
+    ctx.fillStyle = ONRED; bigText(ctx, head, x + 20, y + 10, kh);
     ctx.fillStyle = INK; bigText(ctx, link, Math.round(W / 2 - (link.length * 6 * kb - kb) / 2), y + hHead + 14, kb);
     ctx.globalAlpha = 1;
   }
@@ -416,7 +433,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
 
     const img = ctx.__img || (ctx.__img = new ImageData(BW, BH));
     const rgb = PAL.map((h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
-    const nt = night(Math.min(day, END_DAY - 1e-6)), paperN = [0, 1, 2].map((k) => Math.round(255 + (NIGHT_RGB[k] - 255) * nt));
+    const nt = night(Math.min(day, END_DAY - 1e-6)), P0 = [1, 3, 5].map((k) => parseInt(PAPER.slice(k, k + 2), 16)), paperN = [0, 1, 2].map((k) => Math.round(P0[k] + (NIGHT_RGB[k] - P0[k]) * nt));
     for (let i = 0; i < buf.length; i++) {
       const c = buf[i], o = i * 4; if (c === 255) { img.data[o + 3] = 0; continue; }
       const y = (i / BW) | 0, x = i - y * BW, inside = c === 0 && nt > 0 && y >= MAP_Y0 && y < MAP_Y0 + MAP_H && x >= 1 && x < CARD_W - 1;
@@ -429,6 +446,7 @@ window.DDAY_GEO={"coast":[[[244.3,332.8],[241.6,335.5],[241.9,331.4],[243.2,329.
     drawHold(ctx, clk);
     drawFinal(ctx, t);
     drawEndLink(ctx, t);
+    if (TH.scan) { ctx.fillStyle = "rgba(0,0,0,0.11)"; for (let y = 0; y < H; y += 4) ctx.fillRect(0, y, W, 2); } // a faint monitor raster
   }
 
   window.DDayAnim = { render, DURATION, T_END, W, H, S, CX, CY, cardY: () => CY, buttons: () => [], endRect: () => endRect,
