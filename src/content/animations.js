@@ -12,6 +12,16 @@ const MEDIA = import.meta.env.VITE_MEDIA_BASE ?? 'https://cdn.jsdelivr.net/gh/sa
 
 const animations = [
   {
+    slug: 'liberty',
+    title: 'Liberty Ships vs U-boats',
+    date: '2026-11-26',
+    duration: '1:19',
+    summary:
+      'Every ship a U-boat sank, every Liberty ship America built, every U-boat destroyed. The Battle of the Atlantic, one dot at a time.',
+    poster: `${MEDIA}/animations/2026-11-26-liberty/liberty-poster-v7.jpg`,
+    player: '/media/animations/liberty/player.html',
+  },
+  {
     slug: 'titanic',
     title: "The Titanic's Lifeboats",
     date: '2026-11-25',
