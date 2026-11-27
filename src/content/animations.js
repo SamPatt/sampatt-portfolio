@@ -12,6 +12,16 @@ const MEDIA = import.meta.env.VITE_MEDIA_BASE ?? 'https://cdn.jsdelivr.net/gh/sa
 
 const animations = [
   {
+    slug: 'dday',
+    title: 'D-Day: The American Beaches',
+    date: '2026-11-27',
+    duration: '1:17',
+    summary:
+      'Every man, vehicle and ton of supplies landed at Omaha and Utah, day by day through June 1944, storm and all.',
+    poster: `${MEDIA}/animations/2026-11-27-dday/dday-poster-v3.jpg`,
+    player: '/media/animations/dday/player.html',
+  },
+  {
     slug: 'liberty',
     title: 'Liberty Ships vs U-boats',
     date: '2026-11-26',
